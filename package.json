@@ -1,0 +1,25 @@
+{
+  "name": "warehub-client",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^2.6.0",
+    "@emotion/react": "^11.10.8",
+    "@emotion/styled": "^11.10.8",
+    "@react-icons/all-files": "^4.1.0",
+    "eslint": "8.39.0",
+    "eslint-config-next": "13.3.4",
+    "framer-motion": "^10.12.6",
+    "next": "13.3.4",
+    "next-connect": "^0.13.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-icons": "^4.8.0"
+  }
+}
