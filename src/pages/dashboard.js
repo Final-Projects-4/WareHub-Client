@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
-import { fetchProducts, fetchOrders } from '@/fetching/fetchData';
+import { fetchProducts, fetchOrders, fetchCustomers } from '@/fetching/fetchData';
 
 const Dashboard = () => {
-  const [data, setData] = useState({ products: [], orders: [] });
+  const [data, setData] = useState({ products: [], orders: [], customers: [] });
 
   useEffect(() => {
-    Promise.all([fetchProducts(), fetchOrders()])
-      .then(([productsData, ordersData]) => setData({ products: productsData, orders: ordersData }))
+    Promise.all([fetchProducts(), fetchOrders(), fetchCustomers()])
+      .then(([productsData, ordersData, customersData]) => {
+        setData({ products: productsData, orders: ordersData, customers: customersData });
+        console.log(customersData);
+      })
       .catch(err => console.log(err));
   }, []);
   
@@ -21,6 +24,10 @@ const Dashboard = () => {
         {data.orders.map((order) => (
             <li key={order.id}>{order.name} price: {order.total_price}</li>
         ))}
+        {data.customers.map((customer) => (
+            <li key={customer.id}>{customer.first_name}</li>
+        ))}
+
       </ul>
     </>
   );

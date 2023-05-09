@@ -22,3 +22,8 @@ export const fetchOrders = async () => {
     const data = await fetchData('orders');
     return data.data;
 };
+
+export const fetchCustomers = async () => {
+    const data = await fetchData('customers');
+    return data;
+};

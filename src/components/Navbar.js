@@ -1,4 +1,4 @@
-import { Flex, Heading,Button, useColorMode, useColorModeValue, Container, HStack, Spacer,Box } from "@chakra-ui/react";
+import { Flex, Heading,Button, useColorMode, useColorModeValue, HStack, Spacer} from "@chakra-ui/react";
 import { WiMoonAltThirdQuarter } from "react-icons/wi";
 
 const Navbar = () => {
