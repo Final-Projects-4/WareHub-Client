@@ -1,12 +1,12 @@
 import { Flex, Heading, Input, Button } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { postLoginData } from "@/fetching/postData";
-
+import { useRouter } from "next/router";
 
 const LoginPage = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-
+  const router = useRouter()
 
 
   const handleSubmit = (e) => {
@@ -16,6 +16,7 @@ const LoginPage = () => {
       .then(data => {
         const {token} = data;
         sessionStorage.setItem("accessToken", token)
+        router.push("/dashboard")
       })
       .catch(err => {
         console.log(err)
