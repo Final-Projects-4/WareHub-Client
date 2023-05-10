@@ -25,28 +25,25 @@ const Dashboard = () => {
         fetchWarehouses()
       ]
       )
-      .then(
-            (
-              [
-                productsData, ordersData, customersData, expensesData, revenuesData,
-                orderDetailsData, stocksData, vendorsData, warehousesData, categoriesData
-              ]
-            ) => {
-                      setData(
-                              { products: productsData, 
-                                orders: ordersData, 
-                                customers: customersData,
-                                expenses: expensesData,
-                                revenues: revenuesData,
-                                orderDetails: orderDetailsData,
-                                stocks: stocksData,
-                                vendors: vendorsData,
-                                warehouses: warehousesData,
-                                categories: categoriesData 
-                              });
-                      
-                  }
-      )
+      .then((
+        [
+          productsData, ordersData, customersData, expensesData, revenuesData,
+          orderDetailsData, stocksData, vendorsData, warehousesData, categoriesData
+        ]
+      ) => {
+        setData({
+          products: productsData, 
+          orders: ordersData, 
+          customers: customersData,
+          expenses: expensesData,
+          revenues: revenuesData,
+          orderDetails: orderDetailsData,
+          stocks: stocksData,
+          vendors: vendorsData,
+          warehouses: warehousesData,
+          categories: categoriesData 
+        });
+      })      
       .catch(err => console.log(err));
   }, []);
   
