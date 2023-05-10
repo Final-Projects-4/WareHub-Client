@@ -1,15 +1,15 @@
 import { Card,Text,Image,Stack,Heading,Divider,Button,ButtonGroup, CardHeader, CardBody, CardFooter } from '@chakra-ui/react'
 
 function Product({ product}) {
-    const {name,price,weight,size, description,SKU} = product;
+    const {name,price,weight,size, description,SKU,image} = product;
     return(
         <>
 <Card maxW='sm'>
 <Heading>Product</Heading>
   <CardBody>
     <Image
-      src='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
-      alt='Green double couch with wooden legs'
+      src={image}
+      alt={name}
       borderRadius='lg'
     />
     <Stack mt='6' spacing='3'>
@@ -48,15 +48,15 @@ function Product({ product}) {
   }
 
 function Warehouse({ warehouse}) {
-    const {name,city,address} = warehouse;
+    const {name,city,address,image} = warehouse;
     return(
         <>
 <Card maxW='sm'>
 <Heading>Warehouse</Heading>
   <CardBody>
     <Image
-      src='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
-      alt='Green double couch with wooden legs'
+      src={image}
+      alt={name}
       borderRadius='lg'
     />
     <Stack mt='6' spacing='3'>
@@ -86,15 +86,15 @@ function Warehouse({ warehouse}) {
   }
 
 function Categori({ categori}) {
-    const {name,description} = categori;
+    const {name,description,image} = categori;
     return(
         <>
 <Card maxW='sm'>
-<Heading>Warehouse</Heading>
+<Heading>Categori</Heading>
   <CardBody>
     <Image
-      src='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
-      alt='Green double couch with wooden legs'
+      src={image}
+      alt={name}
       borderRadius='lg'
     />
     <Stack mt='6' spacing='3'>
