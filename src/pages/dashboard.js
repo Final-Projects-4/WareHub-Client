@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { fetchProducts, fetchOrders, fetchCustomers, fetchExpenses, fetchRevenues, fetchOrderDetails, fetchStocks, fetchVendors, fetchWarehouses, fetchCategories } from '@/fetching/fetchData';
-import { Box, Heading, List, ListItem, Text, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
+import { Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
 
 const Dashboard = () => {
   const [data, setData] = useState(
@@ -47,17 +47,26 @@ const Dashboard = () => {
       .catch(err => console.log(err));
   }, []);
   
-  const allProducts = data.products
-  allProducts.map((product) => (
-    product.Warehouses.map((warehouse) => (
-      console.log(warehouse)
-    ))
-  ))
+  const products = data.products;
+  const totalWarehouses = [];
+  let totalQuantity = 0;
+
+  if (products.length > 0) {
+    products.forEach((product) => {
+      product.Warehouses.forEach((warehouse) => {
+        totalWarehouses.push(warehouse.name)
+      });
+    });
+  }
+  
+  
   
 
 
   function renderProduct(products) {
+    
 
+    
 
     return products.map((product) => (
           <Tr key={product.id}>
@@ -80,9 +89,10 @@ const Dashboard = () => {
         <Th>Category</Th>
         <Th>Warehouse</Th>
         <Th>Vendor</Th>
+        <Th>Quantity</Th>
       </Tr>
     </Thead>
-    <Tbody>{renderProduct(allProducts)}</Tbody>
+    <Tbody>{renderProduct(products)}</Tbody>
   </Table>
   );
   
