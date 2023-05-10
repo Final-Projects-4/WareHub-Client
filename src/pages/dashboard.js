@@ -47,43 +47,42 @@ const Dashboard = () => {
       .catch(err => console.log(err));
   }, []);
   
+  const allProducts = data.products
+  allProducts.map((product) => (
+    product.Warehouses.map((warehouse) => (
+      console.log(warehouse)
+    ))
+  ))
+  
+
+
+  function renderProduct(products) {
+
+
+    return products.map((product) => (
+          <Tr key={product.id}>
+            <Td>{product.name}</Td>
+            <Td>{product.Categories.map((category) => (<span key={category.id}>{category.name}</span>))}</Td>
+            <Td></Td>
+          </Tr>
+    ));
+    
+    
+
+  }
+
 
   return (
     <Table>
     <Thead>
       <Tr>
-        <Th>Product Name</Th>
-        <Th>Order Name</Th>
-        <Th>Total Price</Th>
-        <Th>Customer Name</Th>
+        <Th>Products List</Th>
+        <Th>Category</Th>
+        <Th>Warehouse</Th>
+        <Th>Vendor</Th>
       </Tr>
     </Thead>
-    <Tbody>
-      {data.products.map((product) => (
-        <Tr key={product.id}>
-          <Td>{product.name}</Td>
-          <Td></Td>
-          <Td></Td>
-          <Td></Td>
-        </Tr>
-      ))}
-      {data.orders.map((order) => (
-        <Tr key={order.id}>
-          <Td></Td>
-          <Td>{order.name}</Td>
-          <Td>{order.total_price}</Td>
-          <Td></Td>
-        </Tr>
-      ))}
-      {data.customers.map((customer) => (
-        <Tr key={customer.id}>
-          <Td></Td>
-          <Td></Td>
-          <Td></Td>
-          <Td>{customer.first_name} {customer.last_name}</Td>
-        </Tr>
-      ))}
-    </Tbody>
+    <Tbody>{renderProduct(allProducts)}</Tbody>
   </Table>
   );
   
