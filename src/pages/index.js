@@ -33,6 +33,7 @@ const Home = () => {
 
   return(
     <Container>
+      <LoginPage/>
       <SimpleGrid spacing={8} templateColumns='repeat(auto-fill, minmax(200px, 1fr))'>   
         <Cards props={warehouse} type={"warehouse"}/>
         <Cards props={categori} type={"categori"}/>

@@ -1,5 +1,5 @@
 import { Flex, Heading, Input, Button } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { postLoginData } from "@/fetching/postData";
 import { useRouter } from "next/router";
 

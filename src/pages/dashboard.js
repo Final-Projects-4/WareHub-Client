@@ -1,54 +1,36 @@
-import { useState, useEffect } from 'react';
-import { fetchProducts, fetchOrders, fetchCustomers, fetchExpenses, fetchRevenues, fetchOrderDetails, fetchStocks, fetchVendors, fetchWarehouses, fetchCategories } from '@/fetching/fetchData';
-import { Table, Thead, Tbody, Tr, Th, Td, Select, Container } from "@chakra-ui/react";
+import { HStack, Stack, Box, Table, Thead, Tbody, Tr, Th, Td, Select, Container } from "@chakra-ui/react";
+import { allExpenses, allProducts, allRevenues } from '@/components/dataComponents/allData';
+import { AddProductForm } from "@/components/dataComponents/products";
+import { AddVendorForm } from "@/components/dataComponents/vendor";
+import { AddCategoryForm } from "@/components/dataComponents/category";
+import { AddCustomerForm } from "@/components/dataComponents/customers";
+import { AddStockForm } from "@/components/dataComponents/stocks";
+
+//Compile needed Data here
+const useProducts = () => {
+  const { data } = allProducts();
+  const products = data.products;
+  return products;
+};
+
+const useRevenues = () => {
+  const { revenues } = allRevenues();
+  const revenuesData = revenues.revenues;
+  return revenuesData;
+};
+
+const useExpenses = () => {
+  const { expenses } = allExpenses();
+  const expensesData = expenses.expenses;
+  return expensesData;
+};
+
 
 const Dashboard = () => {
-  const [data, setData] = useState(
-    { products: [], 
-      orders: [], 
-      customers: [],
-      expenses: [],
-      revenues: [],
-      orderDetails: [],
-      stocks: [],
-      vendors: [],
-      warehouses: [],
-      categories:[]
-    });
-
-  useEffect(() => {
-    Promise.all(
-      [
-        fetchProducts(), fetchOrders(), fetchCustomers(),
-        fetchCategories(),fetchExpenses(),fetchRevenues(),
-        fetchOrderDetails(),fetchStocks(),fetchVendors(),
-        fetchWarehouses()
-      ]
-      )
-      .then((
-        [
-          productsData, ordersData, customersData, expensesData, revenuesData,
-          orderDetailsData, stocksData, vendorsData, warehousesData, categoriesData
-        ]
-      ) => {
-        setData({
-          products: productsData, 
-          orders: ordersData, 
-          customers: customersData,
-          expenses: expensesData,
-          revenues: revenuesData,
-          orderDetails: orderDetailsData,
-          stocks: stocksData,
-          vendors: vendorsData,
-          warehouses: warehousesData,
-          categories: categoriesData 
-        });
-      })      
-      .catch(err => console.log(err));
-  }, []);
+  const products = useProducts();
+  const revenuesData = useRevenues();
+  const expensesData = useExpenses();
   
-  const products = data.products;
-
   function renderProduct(products) {
     return products.map((product) => {
       const warehousesForProduct = product.Warehouses.map((warehouse) => ({
@@ -66,7 +48,7 @@ const Dashboard = () => {
 
       const warehouseSelect =
         warehousesForProduct.length > 1 ? (
-          <Select>
+          <Select variant="unstyled">
             {warehousesForProduct.map((warehouse) => (
               <option key={warehouse.name}>
                 {warehouse.name} Q({warehouse.WarehouseStock.quantity})
@@ -79,7 +61,7 @@ const Dashboard = () => {
       
       const vendorSelect =
         vendorsForProduct.length > 1 ? (
-          <Select>
+          <Select variant="unstyled">
             {vendorsForProduct.map((vendor) => (
               <option key={vendor.name}>
                 {vendor.name}
@@ -107,22 +89,39 @@ const Dashboard = () => {
   }
 
   const tableBody = renderProduct(products);
-
-
+  
+  
   return (
-    <Container maxW="container.x1">
-      <Table>
-        <Thead>
-          <Tr>
-            <Th>Products List</Th>
-            <Th>Category</Th>
-            <Th>Warehouse</Th>
-            <Th>Vendor</Th>
-            <Th>Quantity</Th>
-          </Tr>
-        </Thead>
-        <Tbody>{tableBody}</Tbody>
-      </Table>
+    <Container justifyContent="center">
+      <Stack>
+        <Box bg="teal" display="flex">
+          {revenuesData.totalRevenue}
+        </Box>
+        <Box bg="red" display="flex">
+          {expensesData.totalExpense}
+        </Box>
+        <Container maxW="700px" maxH="400px" overflowY="scroll">
+          <Table>
+            <Thead style={{ position: 'sticky', top: 0}}>
+              <Tr>
+                <Th>Products List</Th>
+                <Th>Category</Th>
+                <Th>Warehouse</Th>
+                <Th>Vendor</Th>
+                <Th>Quantity</Th>
+              </Tr>
+            </Thead>
+            <Tbody>{tableBody}</Tbody>
+          </Table>
+        </Container>
+        <HStack>
+        <AddProductForm/>
+        <AddVendorForm/>
+        <AddCategoryForm/>
+        <AddCustomerForm/>
+        <AddStockForm/>
+        </HStack>
+      </Stack>
     </Container>
   );
 }

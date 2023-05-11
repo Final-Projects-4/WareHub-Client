@@ -1,4 +1,4 @@
-import { Flex, Heading,Button, useColorMode, useColorModeValue, HStack, Spacer} from "@chakra-ui/react";
+import { Flex, Heading,Button, Link, useColorMode, useColorModeValue, HStack, Spacer} from "@chakra-ui/react";
 import { WiMoonAltThirdQuarter } from "react-icons/wi";
 
 const Navbar = () => {
@@ -7,12 +7,12 @@ const Navbar = () => {
 
   return (
         <Flex>
-          <Heading>WareHub</Heading>
+          <Heading><Link href="/">WareHub</Link></Heading>
             <Spacer/>
               <HStack>
-                <Button>1</Button>
-                <Button>2</Button>
-                <Button onClick={toggleColorMode} leftIcon={<WiMoonAltThirdQuarter />}/>
+                <Button variant="ghost">1</Button>
+                <Button variant="ghost">2</Button>
+                <Button variant="ghost" onClick={toggleColorMode} leftIcon={<WiMoonAltThirdQuarter />}/>
               </HStack>
         </Flex>
   );
