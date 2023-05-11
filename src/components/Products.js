@@ -21,11 +21,13 @@ export const AddProductForm = () => {
     size: '',
     description: '',
     SKU: '',
-    category_id: null,
+    category_id: 1,
   })
 
-  const [data, setData] = useState(
-    { categories:[]});
+  const [data, setData] = useState({ categories:[]});
+  const [productCreated, setProductCreated] = useState(false);
+
+
 
     useEffect(() => {
         Promise.all([fetchCategories()])
@@ -66,12 +68,21 @@ export const AddProductForm = () => {
             size: '',
             description: '',
             SKU: '',
-            category_id: null,
+            category_id: 1,
           });
+          setProductCreated(true);
         } catch (err) {
           console.log(err);
         }
       };
+
+      useEffect(() => {
+        if (productCreated) {
+            setProductCreated(false)
+        }
+      }, [productCreated]);
+
+
       return (
         <form onSubmit={handleSubmit}>
           <h3>Name:</h3>{' '}

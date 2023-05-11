@@ -137,9 +137,9 @@ const Dashboard = () => {
 
         </Box>
         
-        <Container maxW="container.x1" maxH="400px" overflowY="scroll">
+        <Container maxW="700px" maxH="400px" overflowY="scroll">
           <Table>
-            <Thead>
+            <Thead style={{ position: 'sticky', top: 0}}>
               <Tr>
                 <Th>Products List</Th>
                 <Th>Category</Th>
