@@ -10,9 +10,9 @@ const Navbar = () => {
           <Heading>WareHub</Heading>
             <Spacer/>
               <HStack>
-                <Button>1</Button>
-                <Button>2</Button>
-                <Button onClick={toggleColorMode} leftIcon={<WiMoonAltThirdQuarter />}/>
+                <Button variant="ghost">1</Button>
+                <Button variant="ghost">2</Button>
+                <Button variant="ghost" onClick={toggleColorMode} leftIcon={<WiMoonAltThirdQuarter />}/>
               </HStack>
         </Flex>
   );

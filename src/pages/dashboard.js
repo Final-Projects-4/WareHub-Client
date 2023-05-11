@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { fetchProducts, fetchOrders, fetchCustomers, fetchExpenses, fetchRevenues, fetchOrderDetails, fetchStocks, fetchVendors, fetchWarehouses, fetchCategories } from '@/fetching/fetchData';
-import { Table, Thead, Tbody, Tr, Th, Td, Select, Container } from "@chakra-ui/react";
+import { Box, Button, Stack, Collapse, Table, Thead, Tbody, Tr, Th, Td, Select, Container } from "@chakra-ui/react";
+import { AddProductForm } from '@/components/Products';
 
 const Dashboard = () => {
   const [data, setData] = useState(
@@ -14,7 +15,7 @@ const Dashboard = () => {
       vendors: [],
       warehouses: [],
       categories:[]
-    });
+  });
 
   useEffect(() => {
     Promise.all(
@@ -27,8 +28,8 @@ const Dashboard = () => {
       )
       .then((
         [
-          productsData, ordersData, customersData, expensesData, revenuesData,
-          orderDetailsData, stocksData, vendorsData, warehousesData, categoriesData
+          productsData, ordersData, customersData, categoriesData, expensesData,
+          revenuesData, orderDetailsData, stocksData, vendorsData, warehousesData
         ]
       ) => {
         setData({
@@ -48,6 +49,7 @@ const Dashboard = () => {
   }, []);
   
   const products = data.products;
+  const revenues = data.revenues;
 
   function renderProduct(products) {
     return products.map((product) => {
@@ -66,7 +68,7 @@ const Dashboard = () => {
 
       const warehouseSelect =
         warehousesForProduct.length > 1 ? (
-          <Select>
+          <Select variant="unstyled">
             {warehousesForProduct.map((warehouse) => (
               <option key={warehouse.name}>
                 {warehouse.name} Q({warehouse.WarehouseStock.quantity})
@@ -79,7 +81,7 @@ const Dashboard = () => {
       
       const vendorSelect =
         vendorsForProduct.length > 1 ? (
-          <Select>
+          <Select variant="unstyled">
             {vendorsForProduct.map((vendor) => (
               <option key={vendor.name}>
                 {vendor.name}
@@ -89,6 +91,8 @@ const Dashboard = () => {
         ) : (
           <span>{vendorsForProduct[0]?.name}</span>
         );
+
+        
 
         return (
           <Tr key={product.id}>
@@ -107,22 +111,48 @@ const Dashboard = () => {
   }
 
   const tableBody = renderProduct(products);
-
+  const AddProductButton = () => {
+    const [showForm, setShowForm] = useState(false);
+  
+    const handleToggle = () => {
+      setShowForm(!showForm);
+    };
+    return (
+      <Box display='flex' justifyContent="center" textAlign="center" borderRadius={15}  w='100%' p={4} >
+        <Button onClick={handleToggle}>{showForm ? 'Cancel' : '+ Product'}</Button>
+        <Collapse in={showForm} animateOpacity>
+          <Box mt="4">
+            <AddProductForm />
+          </Box>
+        </Collapse>
+      </Box>
+    );
+  };
 
   return (
-    <Container maxW="container.x1">
-      <Table>
-        <Thead>
-          <Tr>
-            <Th>Products List</Th>
-            <Th>Category</Th>
-            <Th>Warehouse</Th>
-            <Th>Vendor</Th>
-            <Th>Quantity</Th>
-          </Tr>
-        </Thead>
-        <Tbody>{tableBody}</Tbody>
-      </Table>
+    <Container justifyContent="center">
+      <Stack>
+        <Box maxW="300px" bg="teal" display='flex' justifyContent="center" textAlign="center" borderRadius={15}  w='100%' p={4} >
+          ${revenues.totalRevenue}
+
+        </Box>
+        
+        <Container maxW="container.x1" maxH="400px" overflowY="scroll">
+          <Table>
+            <Thead>
+              <Tr>
+                <Th>Products List</Th>
+                <Th>Category</Th>
+                <Th>Warehouse</Th>
+                <Th>Vendor</Th>
+                <Th>Quantity</Th>
+              </Tr>
+            </Thead>
+            <Tbody>{tableBody}</Tbody>
+          </Table>
+        </Container>
+        <AddProductButton />
+      </Stack>
     </Container>
   );
 }
