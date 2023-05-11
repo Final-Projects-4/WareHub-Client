@@ -129,7 +129,7 @@ export async function postOrder(
       'Authorization': `Bearer ${accessToken}`
     },
     body: JSON.stringify({
-      name, customer_id, warehouse_id, order_products, accessToken
+      name, customer_id, warehouse_id, order_products
     })
   });
   
@@ -140,6 +140,7 @@ export async function postOrder(
   const data = await response.json();
   return data;
 };
+
 
 export async function postStock(
   product_id, quantity, vendor_id, warehouse_id, accessToken

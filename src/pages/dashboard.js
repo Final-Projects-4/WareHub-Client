@@ -5,6 +5,7 @@ import { AddVendorForm } from "@/components/dataComponents/vendor";
 import { AddCategoryForm } from "@/components/dataComponents/category";
 import { AddCustomerForm } from "@/components/dataComponents/customers";
 import { AddStockForm } from "@/components/dataComponents/stocks";
+import { AddOrderForm } from "@/components/dataComponents/orders";
 
 //Compile needed Data here
 const useProducts = () => {
@@ -92,15 +93,16 @@ const Dashboard = () => {
   
   
   return (
-    <Container justifyContent="center">
+    
       <Stack>
+      <AddOrderForm/>
         <Box bg="teal" display="flex">
           {revenuesData.totalRevenue}
         </Box>
         <Box bg="red" display="flex">
           {expensesData.totalExpense}
         </Box>
-        <Container maxW="700px" maxH="400px" overflowY="scroll">
+        
           <Table>
             <Thead style={{ position: 'sticky', top: 0}}>
               <Tr>
@@ -113,7 +115,7 @@ const Dashboard = () => {
             </Thead>
             <Tbody>{tableBody}</Tbody>
           </Table>
-        </Container>
+        
         <HStack>
         <AddProductForm/>
         <AddVendorForm/>
@@ -121,8 +123,9 @@ const Dashboard = () => {
         <AddCustomerForm/>
         <AddStockForm/>
         </HStack>
+        
       </Stack>
-    </Container>
+    
   );
 }
 

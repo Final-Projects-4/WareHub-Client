@@ -10,10 +10,7 @@ export const AddStockForm = () => {
   const { warehouses } = allWarehouses();
 
   const vendorsData = vendors;
-
-
   const warehousesData = warehouses;
-
   const products = data.products
 
   const [details, setDetails] = useState({
