@@ -70,13 +70,13 @@ export const allCategories = () => {
 };
 
 export const allWarehouses = () => {
-  const [data, setData] = useState({ warehouses: [] });
+  const [warehouses, setWarehouses] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const warehousesData = await fetchWarehouses();
-        setData({ warehouses: warehousesData });
+        setWarehouses(warehousesData)
       } catch (err) {
         
       }
@@ -85,17 +85,17 @@ export const allWarehouses = () => {
     fetchData();
   }, []);
 
-  return { data, setData };
+  return { warehouses, setWarehouses };
 };
 
 export const allVendors = () => {
-  const [data, setData] = useState({ vendors: [] });
+  const [vendors, setVendors] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const vendorsData = await fetchVendors();
-        setData({ vendors: vendorsData });
+        setVendors(vendorsData);
       } catch (err) {
         
       }
@@ -104,7 +104,7 @@ export const allVendors = () => {
     fetchData();
   }, []);
 
-  return { data, setData };
+  return { vendors, setVendors };
 };
 
 export const allProducts = () => {

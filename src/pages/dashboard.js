@@ -1,22 +1,18 @@
 import { HStack, Stack, Box, Table, Thead, Tbody, Tr, Th, Td, Select, Container } from "@chakra-ui/react";
 import { allProducts, allRevenues } from '@/components/dataComponents/allData';
-import { AddProductForm } from "@/components/dataComponents/Products";
+import { AddProductForm } from "@/components/dataComponents/products";
 import { AddVendorForm } from "@/components/dataComponents/vendor";
 import { AddCategoryForm } from "@/components/dataComponents/category";
 import { AddCustomerForm } from "@/components/dataComponents/customers";
 import { useState, useEffect } from "react";
+import { AddStockForm } from "@/components/dataComponents/stocks";
 
 const Dashboard = () => {
   const {data} = allProducts();
   const {revenues} = allRevenues();
-  
-  
   const products = data.products;
   const revenuesData = revenues.revenues
-
-  console.log(products)
   
-
   function renderProduct(products) {
     return products.map((product) => {
       const warehousesForProduct = product.Warehouses.map((warehouse) => ({
@@ -102,6 +98,7 @@ const Dashboard = () => {
         <AddVendorForm/>
         <AddCategoryForm/>
         <AddCustomerForm/>
+        <AddStockForm/>
         </HStack>
       </Stack>
     </Container>
