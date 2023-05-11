@@ -1,16 +1,21 @@
-import { Box, Button, HStack, Stack, Collapse, Table, Thead, Tbody, Tr, Th, Td, Select, Container } from "@chakra-ui/react";
-import { allData } from '@/components/dataComponents/allData';
-import { AddProductForm } from "@/components/Products";
+import { HStack, Stack, Box, Table, Thead, Tbody, Tr, Th, Td, Select, Container } from "@chakra-ui/react";
+import { allProducts, allRevenues } from '@/components/dataComponents/allData';
+import { AddProductForm } from "@/components/dataComponents/Products";
 import { AddVendorForm } from "@/components/dataComponents/vendor";
+import { AddCategoryForm } from "@/components/dataComponents/category";
+import { AddCustomerForm } from "@/components/dataComponents/customers";
 import { useState, useEffect } from "react";
 
 const Dashboard = () => {
-  const {data} = allData();
-  const [dataDashboard, setDataDashboard] = useState(data);
+  const {data} = allProducts();
+  const {revenues} = allRevenues();
   
   
   const products = data.products;
-  const revenues = data.revenues;
+  const revenuesData = revenues.revenues
+
+  console.log(products)
+  
 
   function renderProduct(products) {
     return products.map((product) => {
@@ -53,8 +58,6 @@ const Dashboard = () => {
           <span>{vendorsForProduct[0]?.name}</span>
         );
 
-        
-
         return (
           <Tr key={product.id}>
             <Td>{product.name}</Td>
@@ -72,20 +75,13 @@ const Dashboard = () => {
   }
 
   const tableBody = renderProduct(products);
-
-  const handleAddProduct = (newProduct) => {
-    setDataDashboard((prevDataDashboard) => ({
-      products: [...prevDataDashboard.products, newProduct],
-      revenues: prevDataDashboard.revenues
-    }));
-  };
   
   
   return (
     <Container justifyContent="center">
       <Stack>
-        <Box maxW="300px" bg="teal" display='flex' justifyContent="center" textAlign="center" borderRadius={15}  w='100%' p={4} >
-          ${revenues.totalRevenue}
+        <Box bg="teal" display="flex">
+          {revenuesData.totalRevenue}
         </Box>
         <Container maxW="700px" maxH="400px" overflowY="scroll">
           <Table>
@@ -102,8 +98,10 @@ const Dashboard = () => {
           </Table>
         </Container>
         <HStack>
-        <AddProductForm onAddProduct={handleAddProduct} />
+        <AddProductForm/>
         <AddVendorForm/>
+        <AddCategoryForm/>
+        <AddCustomerForm/>
         </HStack>
       </Stack>
     </Container>

@@ -163,4 +163,26 @@ export async function postStock(
   return data;
 };
 
+export async function postCustomer(
+  first_name, last_name, email, address, company, accessToken
+) {
+  const response = await fetch(`${baseUrl}customers/create`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken}`
+    },
+    body: JSON.stringify({
+      first_name, last_name, email, address, company, accessToken
+    })
+  });
+  
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  
+  const data = await response.json();
+  return data;
+};
+
 

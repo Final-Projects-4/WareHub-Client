@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { postProduct } from '@/fetching/postData';
-import { allData } from './dataComponents/allData';
+import { allCategories, allData } from './allData';
 import { Button, Collapse } from '@chakra-ui/react';
 
 
-export const AddProductForm = ({setDataDashboard}) => {
-  const { data, setData } = allData();
+export const AddProductForm = () => {
+  const { data, setData } = allCategories();
   const [details, setDetails] = useState({
     name: '',
     price: 0,
@@ -48,7 +48,6 @@ export const AddProductForm = ({setDataDashboard}) => {
             category_id: 1,
           });
           setData(allData());
-          setDataDashboard(allData());
         } catch (err) {
         }
       };
