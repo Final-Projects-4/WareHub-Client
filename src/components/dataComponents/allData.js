@@ -146,13 +146,13 @@ export const allOrders = () => {
 };
 
 export const allExpenses = () => {
-  const [data, setData] = useState({ expense: [] });
+  const [expenses, setExpenses] = useState({ expenses: [] });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const expenseData = await fetchExpenses();
-        setData({ expense: expenseData });
+        const expensesData = await fetchExpenses();
+        setExpenses({ expenses: expensesData });
       } catch (err) {
         
       }
@@ -161,7 +161,7 @@ export const allExpenses = () => {
     fetchData();
   }, []);
 
-  return { data, setData };
+  return { expenses, setExpenses };
 };
 
 export const allRevenues = () => {

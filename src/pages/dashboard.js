@@ -1,17 +1,35 @@
 import { HStack, Stack, Box, Table, Thead, Tbody, Tr, Th, Td, Select, Container } from "@chakra-ui/react";
-import { allProducts, allRevenues } from '@/components/dataComponents/allData';
+import { allExpenses, allProducts, allRevenues } from '@/components/dataComponents/allData';
 import { AddProductForm } from "@/components/dataComponents/products";
 import { AddVendorForm } from "@/components/dataComponents/vendor";
 import { AddCategoryForm } from "@/components/dataComponents/category";
 import { AddCustomerForm } from "@/components/dataComponents/customers";
-import { useState, useEffect } from "react";
 import { AddStockForm } from "@/components/dataComponents/stocks";
 
-const Dashboard = () => {
-  const {data} = allProducts();
-  const {revenues} = allRevenues();
+//Compile needed Data here
+const useProducts = () => {
+  const { data } = allProducts();
   const products = data.products;
-  const revenuesData = revenues.revenues
+  return products;
+};
+
+const useRevenues = () => {
+  const { revenues } = allRevenues();
+  const revenuesData = revenues.revenues;
+  return revenuesData;
+};
+
+const useExpenses = () => {
+  const { expenses } = allExpenses();
+  const expensesData = expenses.expenses;
+  return expensesData;
+};
+
+
+const Dashboard = () => {
+  const products = useProducts();
+  const revenuesData = useRevenues();
+  const expensesData = useExpenses();
   
   function renderProduct(products) {
     return products.map((product) => {
@@ -78,6 +96,9 @@ const Dashboard = () => {
       <Stack>
         <Box bg="teal" display="flex">
           {revenuesData.totalRevenue}
+        </Box>
+        <Box bg="red" display="flex">
+          {expensesData.totalExpense}
         </Box>
         <Container maxW="700px" maxH="400px" overflowY="scroll">
           <Table>
