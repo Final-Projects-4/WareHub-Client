@@ -35,7 +35,6 @@ export const AddOrderForm = () => {
             }
         ],
     });
-  
     const handleChange = (e, index) => {
         const { name, value } = e.target;
         if (name === "quantity" || name === "price") {
@@ -43,7 +42,7 @@ export const AddOrderForm = () => {
             const orderProducts = [...prev.order_products];
             orderProducts[index] = {
               ...orderProducts[index],
-              [name]: name === "quantity" ? parseInt(value) : parseFloat(value),
+              [name]: name === "quantity" ? parseInt(value) : parseInt(value),
             };
             return { ...prev, order_products: orderProducts };
           });
@@ -52,24 +51,42 @@ export const AddOrderForm = () => {
             return { ...prev, [name]: value };
           });
         }
-      };
+    };
 
     const handleProductChange = (e, index) => {
-        const { name, value } = e.target;
-        const product = products.find((p) => p.id === parseInt(value));
-        if (product) {
-          setDetails((prev) => {
-            const orderProducts = [...prev.order_products];
-            const warehouses = product.Warehouses || [];
-            orderProducts[index] = {
-              ...orderProducts[index],
-              [name]: name === "quantity" ? parseInt(value) : name === "price" ? parseInt(value) : value,
-            warehouse_id: warehouses.length ? warehouses[0].id : null,
+      const { name, value } = e.target;
+      const product = products.find((p) => p.id === parseInt(value));
+      console.log(product,'<<<<<<<<<<<<<<<<<<<<<')
+      if (product) {
+        const warehouses = product.Warehouses || [];
+        console.log(warehouses)
+        const warehouseId = warehouses.length ? warehouses[0].id : null;
+        console.log(warehouseId)
+        setDetails((prev) => {
+          const orderProducts = [...prev.order_products];
+          orderProducts[index] = {
+            ...orderProducts[index],
+            [name]: value,
+            warehouse_id: warehouseId,
+          };
+          if (index === 0) {
+            return {
+              ...prev,
+              order_products: orderProducts,
+              warehouse_id: warehouseId,
             };
-            return { ...prev, order_products: orderProducts };
-          });
-        }
+          } else {
+            return {
+              ...prev,
+              order_products: orderProducts,
+            };
+          }
+        });
+      }
     };
+
+      
+      
 
     const handleAddProduct = () => {
         setDetails((prev) => {
@@ -111,7 +128,7 @@ export const AddOrderForm = () => {
         orderProducts,
         accessToken
       );
-      console.log(orderProducts)
+      
       setDetails({
         name: '',
         customer_id: 1,
@@ -120,8 +137,6 @@ export const AddOrderForm = () => {
       });
       setIsOpen(false);
     } catch (err) {
-        console.log(err)
-        
     }
     };
   
@@ -159,11 +174,15 @@ export const AddOrderForm = () => {
                 <Select>
                 {product.product_id &&
                     (products.find((p) => p.id === product.product_id)?.Warehouses?.length ? (
-                        products.find((p) => p.id === product.product_id)?.Warehouses?.map((warehouse) => (
-                        <option key={warehouse.id} value={`${product.product_id},${warehouse.id}`}>
-                        {warehouse.name} - {warehouse.WarehouseStock.quantity}
-                        </option>
-                    ))
+                        products.find((p) => p.id === product.product_id)?.Warehouses?.map((warehouse) => {
+                          console.log(warehouse.WarehouseStock,'<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
+                          return(
+                            <option key={warehouse.id} value={`${product.product_id},${warehouse.id}`}>
+                            {warehouse.name} - {warehouse.WarehouseStock.quantity}
+                            </option>
+
+                          )
+                        })
                     ) : (
                     <option>No Stocks</option>
                     ))}

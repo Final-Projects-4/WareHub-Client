@@ -1,4 +1,4 @@
-import { HStack, Stack, Box, Table, Thead, Tbody, Tr, Th, Td, Select, Container } from "@chakra-ui/react";
+import { HStack, Stack, Box, Table, Thead, Tbody, Tr, Th, Td, Select,} from "@chakra-ui/react";
 import { allExpenses, allProducts, allRevenues } from '@/components/dataComponents/allData';
 import { AddProductForm } from "@/components/dataComponents/products";
 import { AddVendorForm } from "@/components/dataComponents/vendor";
@@ -6,6 +6,7 @@ import { AddCategoryForm } from "@/components/dataComponents/category";
 import { AddCustomerForm } from "@/components/dataComponents/customers";
 import { AddStockForm } from "@/components/dataComponents/stocks";
 import { AddOrderForm } from "@/components/dataComponents/orders";
+import { AddWarehouseForm } from "@/components/dataComponents/warehouse";
 
 //Compile needed Data here
 const useProducts = () => {
@@ -31,7 +32,7 @@ const Dashboard = () => {
   const products = useProducts();
   const revenuesData = useRevenues();
   const expensesData = useExpenses();
-  
+
   function renderProduct(products) {
     return products.map((product) => {
       const warehousesForProduct = product.Warehouses.map((warehouse) => ({
@@ -95,7 +96,11 @@ const Dashboard = () => {
   return (
     
       <Stack>
-      <AddOrderForm/>
+        <HStack>
+        <AddOrderForm/>
+        <AddWarehouseForm/>
+        </HStack>
+      
         <Box bg="teal" display="flex">
           {revenuesData.totalRevenue}
         </Box>
