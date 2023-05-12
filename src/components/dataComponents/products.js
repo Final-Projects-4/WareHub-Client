@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { postProduct } from '@/fetching/postData';
-import { allCategories, allData } from './allData';
+import { allCategories } from './allData';
 import { Button, Collapse } from '@chakra-ui/react';
 
 
@@ -24,8 +24,9 @@ export const AddProductForm = () => {
     });
   };
 
-    const accessToken = sessionStorage.getItem('accessToken');
+    
     const handleSubmit = async (e) => {
+      const accessToken = sessionStorage.getItem('accessToken');
         e.preventDefault();
         try {
           await postProduct(
@@ -47,7 +48,7 @@ export const AddProductForm = () => {
             SKU: '',
             category_id: 1,
           });
-          setData(allData());
+          
         } catch (err) {
         }
       };

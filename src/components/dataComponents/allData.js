@@ -222,13 +222,13 @@ export const allStocks = () => {
 };
 
 export const allCustomers = () => {
-  const [data, setData] = useState({ customers: [] });
+  const [customers, setCustomers] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const customersData = await fetchCustomers();
-        setData({ customers: customersData });
+        setCustomers(customersData)
       } catch (err) {
         
       }
@@ -237,6 +237,6 @@ export const allCustomers = () => {
     fetchData();
   }, []);
 
-  return { data, setData };
+  return { customers, setCustomers };
 };
 

@@ -17,8 +17,9 @@ export const AddCategoryForm = () => {
     });
   };
 
-    const accessToken = sessionStorage.getItem('accessToken');
+    
     const handleSubmit = async (e) => {
+      const accessToken = sessionStorage.getItem('accessToken');
         e.preventDefault();
         try {
           await postCategory(

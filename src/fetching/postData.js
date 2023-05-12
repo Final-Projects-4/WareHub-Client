@@ -107,7 +107,7 @@ export async function postWarehouse(
       'Authorization': `Bearer ${accessToken}`
     },
     body: JSON.stringify({
-      name, city, address, accessToken
+      name, city, address
     })
   });
   
@@ -129,7 +129,7 @@ export async function postOrder(
       'Authorization': `Bearer ${accessToken}`
     },
     body: JSON.stringify({
-      name, customer_id, warehouse_id, order_products, accessToken
+      name, customer_id, warehouse_id, order_products
     })
   });
   
