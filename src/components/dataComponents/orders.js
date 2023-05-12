@@ -1,221 +1,175 @@
 import { useState, useEffect } from 'react';
-import { Button, Collapse, Input, Container, Select, FormControl, FormLabel, Optgroup, Option } from '@chakra-ui/react';
-import { allCustomers, allProducts } from './allData';
+import {
+  Container,
+  FormControl,
+  FormLabel,
+  Input,
+  Select,
+  Button
+} from '@chakra-ui/react';
+import { allCustomers, allWarehouses } from './allData';
 import { postOrder } from '@/fetching/postData';
 
-const useProducts = () => {
-    const { data } = allProducts();
-    const products = data.products;
-    return products;
-};
-  
 const useCustomers = () => {
-    const { customers } = allCustomers();
-    const customersData = customers;
-    return customersData;
+  const { customers } = allCustomers();
+  const customer = customers;
+  return customer;
 };
-  
+
+const useWarehouses = () => {
+  const { warehouses } = allWarehouses();
+  const warehouse = warehouses;
+  return warehouse;
+};
+
 
 export const AddOrderForm = () => {
-// Data Needed: customers, products
-  const products = useProducts();
   const customers = useCustomers();
-  // let warehouses = products.map
-
-  //state variables
-  const [isOpen, setIsOpen] = useState(false);
-  const [currentProduct, setCurrentProduct] = useState({})
-  const [currentWarehouses, setCurrentWarehouses] = useState([])
+  const warehouses = useWarehouses();
+  const [selectedWarehouse, setSelectedWarehouse] = useState(0);
+  const [products, setProducts] = useState([]);
   const [details, setDetails] = useState({
     name: '',
-    customer_id: 1,
-    warehouse_id: 1,
-    order_products: [
-      {   
-        product_id: 1,
-        quantity: 1,
-        price: 1
-      }
-    ],
-  });
+    warehouse_id: 0,
+    customer_id: 0,
+    order_products: [{}]
+  })
+  console.log(details)
+  const addProduct = () => {
+    setProducts([...products, {
+      product_id: '',
+      price: '',
+      quantity: ''
+    }]);
+  };
+
+  const removeProduct = (index) => {
+    const newProducts = [...products];
+    newProducts.splice(index, 1);
+    setProducts(newProducts);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setDetails((prev) => {
+      return { ...prev, [name]: value };
+    });
     
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-      try {
-
-        const orderProducts = details.order_products.map((product) => ({
-            product_id: product.product_id,
-            price: product.price,
-            quantity: product.quantity
-        }));
-      const accessToken = sessionStorage.getItem('accessToken');
-        
-      await postOrder(
-        details.name,
-        details.customer_id,
-        details.warehouse_id,
-        orderProducts,
-        accessToken
-      );
-        
-      setDetails({
-        name: '',
-        customer_id: 1,
-        warehouse_id: 1,
-        order_products: [{product_id: 1, quantity: 1, price: 1}]
+    if (name === "customer_id") {
+      setDetails((prev) => {
+        return { ...prev, customer_id: parseInt(value) };
       });
-      setIsOpen(false);
-    } catch (err) {
     }
   };
   
-  const HandleSelectProduct = () => {
-    let array = products.map((product, index) => {
-      return (
-        <option key={index} value={product.id}>{product.name} ${product.price}</option>
-        )
-      })
-    return array
-  }
 
-  const HandleSelectWarehouse = () => {
-    if(!(JSON.stringify(currentProduct) === "{}")) {
-      let warehouses = currentProduct.Warehouses
-      let array = warehouses.map((w, index) => (
-        <option key={index} value={w.id}>Available Stock:{w.WarehouseStock.quantity} @ {w.name}</option>
-      ))
-      return array
-    } else {
-      return
-    }
-  }
+  const handleSubmit = async (e) => {
+    const accessToken = sessionStorage.getItem('accessToken');
+      e.preventDefault();
+      try {
+        await postOrder(
+          details.name,
+          details.customer_id,
+          details.warehouse_id,
+          details.order_products,
+          accessToken
+        );
+        setDetails({
+          name: '',
+          customer_id: 0,
+          warehouse_id: 0,
+          order_products: [{}]
+        });
+      } catch (err) {
+      }
+    };
 
-  const handleOptionProduct = (e) => {
-    let selectProduct = products.find((element) => element.id === +(e.target.value))
-    setCurrentProduct(selectProduct)
-    setCurrentWarehouses(selectProduct.Warehouses)
-  }
 
-  const handleOptionWarehouse = (e) => {
-    let selectWarehouse = currentProduct.Warehouses.find(
-      (element) => element.id === +e.target.value
-    );
-    setCurrentWarehouses(selectWarehouse);
-  };
-
-  const handleQuantityChange = (e) => {
-    setDetails((prevDetails) => ({
-      ...prevDetails,
-      order_products: [
-        {
-          product_id: currentProduct.id,
-          quantity: +e.target.value,
-          price: currentWarehouses.price,
-        },
-      ],
-      warehouse_id: currentWarehouses.id,
-    }));
-  };
-  
   return (
-    <Container textAlign="center">
-      <Button onClick={() => setIsOpen(!isOpen)}>
-        {isOpen ? 'Cancel' : '+ Order'}
-      </Button>
-      <Collapse in={isOpen} animateOpacity>
-        <form onSubmit={handleSubmit}>
-          <h3>Name:</h3>{' '}
-          <Input
-            type='text'
-            name='name'
-            value={details.name}
-            onChange={(e) =>
-              setDetails((prevState) => ({
-                ...prevState,
-                name: e.target.value
-              }))
-            }
-          ></Input>
-          <h3>Products:</h3>
-          <Select
-            onChange={handleOptionProduct}
-            value={currentProduct.id}
-          >
-            {HandleSelectProduct()}
-          </Select>
-          {currentProduct.id && (
-            <>
-              <h3>Stocks</h3>
-              <Select
-                onChange={(e) => {
-                  const warehouseId = Number(e.target.value);
-                  const warehouse = currentProduct.Warehouses.find(
-                    (w) => w.id === warehouseId
-                  );
-                  const product = {
-                    ...currentProduct,
-                    price: warehouse.price,
-                    warehouse_id: warehouseId
-                  };
-                  setCurrentProduct(product);
-                  setDetails((prevState) => ({
-                    ...prevState,
-                    order_products: [
-                      {
-                        product_id: product.id,
-                        quantity: 1,
-                        price: product.price,
-                        warehouse_id: product.warehouse_id
-                      }
-                    ]
-                  }));
-                }}
-                value={currentProduct.warehouse_id}
-              >
-                {HandleSelectWarehouse()}
-              </Select>
-              <h3>Quantity:</h3>
-              <Input
-                type='number'
-                name='quantity'
-                value={details.order_products[0].quantity}
-                onChange={(e) => {
-                  const quantity = Number(e.target.value);
-                  setDetails((prevState) => ({
-                    ...prevState,
-                    order_products: [
-                      {
-                        ...prevState.order_products[0],
-                        quantity
-                      }
-                    ]
-                  }));
-                }}
-              />
-              <h3>Customer</h3>
-              <Select
-                name='customer_id'
-                value={details.customer_id}
-                onChange={(e) =>
-                  setDetails((prevState) => ({
-                    ...prevState,
-                    customer_id: e.target.value
-                  }))
-                }
-              >
-                {customers.map((customer) => (
-                  
-                  <option key={customer.id} value={customer.id}>
-                    {customer.first_name} {customer.last_name}
-                  </option>
-                ))}
-              </Select>
+    <Container>
+      <FormControl>
+        <FormLabel>Name:</FormLabel>
+        <Input name="name" value={details.name} onChange={handleChange} />
 
-              <Button type='submit'>Add Order</Button>
-            </>
-          )}
-        </form>
-      </Collapse>
+        <FormLabel>Warehouse:</FormLabel>
+        <Select 
+          value={selectedWarehouse} 
+          placeholder='select source warehouse'
+          onChange={(e) => {
+            setSelectedWarehouse(+ e.target.value);
+            setDetails((prev) => {
+              return { ...prev, warehouse_id: +e.target.value };
+            });
+          }}
+        >
+          {warehouses.map((w) => (
+            <option key={w.id} value={w.id}>
+              {w.name}
+            </option>
+          ))}
+        </Select>
+
+
+        <FormLabel>Customer:</FormLabel>
+        <Select
+          placeholder='Choose Customer'
+          name="customer_id"
+          value={details.customer_id}
+          onChange={handleChange}
+        >
+          {customers.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.first_name} {c.last_name}
+            </option>
+          ))}
+        </Select>
+
+        {products.map((p, index) => (
+          <FormControl key={index}>
+            <FormLabel>Product:</FormLabel>
+            <Select
+              placeholder='Select a product to sell'
+              value={p.product_id}
+              onChange={(e) => {
+                const newProducts = [...products];
+                newProducts[index].product_id = e.target.value;
+                setProducts(newProducts);
+              }}
+            >
+              {selectedWarehouse && warehouses.find((w) => w.id === selectedWarehouse)?.Products.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}  ${p.price} Available: {p.WarehouseStock.quantity}
+                </option>
+              ))}
+            </Select>
+
+
+            <FormLabel>Price:</FormLabel>
+            <Input
+              value={products.price}
+              onChange={(e) => {
+                const newProducts = [...products];
+                newProducts[index].price = e.target.value;
+                setProducts(newProducts);
+              }}
+            />
+
+            <FormLabel>Quantity:</FormLabel>
+            <Input
+              value={products.quantity}
+              onChange={(e) => {
+                const newProducts = [...products];
+                newProducts[index].quantity = e.target.value;
+                setProducts(newProducts);
+              }}
+            />
+
+            <Button onClick={() => removeProduct(index)}>Remove Product</Button>
+          </FormControl>
+        ))}
+
+        <Button onClick={addProduct}>Add Product</Button>
+      </FormControl>
     </Container>
   );
   

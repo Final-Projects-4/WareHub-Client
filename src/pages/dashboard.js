@@ -115,7 +115,6 @@ const Dashboard = () => {
       <Stack>
         
         <HStack>
-        <AddCobaForm/>
         <AddOrderForm/>
         <AddWarehouseForm/>
         </HStack>
