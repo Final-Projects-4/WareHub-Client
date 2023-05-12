@@ -30,7 +30,7 @@ const Sidebar = () => {
             }}
           />
           <SideItem navSize={navSize} icon={FiHome} title="Dashboard" active />
-          <SideItem navSize={navSize} icon={FiDollarSign} title="Order" />
+          <SideItem navSize={navSize} icon={FiDollarSign} title="Order"/>
           <SideItem navSize={navSize} icon={FiFolder} title="Warehouse" />
           <SideItem navSize={navSize} icon={FiShoppingCart} title="Product" />
           <SideItem navSize={navSize} icon={FiSmile} title="Users" />
