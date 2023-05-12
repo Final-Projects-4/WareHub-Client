@@ -32,22 +32,35 @@ export const AddOrderForm = () => {
     name: '',
     warehouse_id: 0,
     customer_id: 0,
-    order_products: [{}]
+    order_products: []
   })
-  console.log(details)
+  
+  console.log(products)
+  console.log(details, '<<<<<<<<<<<<<')
   const addProduct = () => {
-    setProducts([...products, {
+    const newProduct = {
       product_id: '',
       price: '',
       quantity: ''
-    }]);
+    };
+    setProducts([...products, newProduct]);
+    setDetails(prevDetails => ({
+      ...prevDetails,
+      order_products: [...prevDetails.order_products, newProduct]
+    }));    
   };
+  
 
   const removeProduct = (index) => {
     const newProducts = [...products];
     newProducts.splice(index, 1);
     setProducts(newProducts);
+    setDetails(prevDetails => ({
+      ...prevDetails,
+      order_products: prevDetails.order_products.filter((_, i) => i !== index)
+    }));
   };
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -64,25 +77,33 @@ export const AddOrderForm = () => {
   
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
     const accessToken = sessionStorage.getItem('accessToken');
-      e.preventDefault();
-      try {
-        await postOrder(
-          details.name,
-          details.customer_id,
-          details.warehouse_id,
-          details.order_products,
-          accessToken
-        );
-        setDetails({
-          name: '',
-          customer_id: 0,
-          warehouse_id: 0,
-          order_products: [{}]
-        });
-      } catch (err) {
-      }
-    };
+    try {
+      const formattedProducts = products.map(product => ({
+        product_id: product.product_id,
+        price: product.price,
+        quantity: product.quantity
+      }));
+      await postOrder(
+        details.name,
+        details.customer_id,
+        details.warehouse_id,
+        formattedProducts,
+        accessToken
+      );
+      setDetails({
+        name: '',
+        customer_id: 0,
+        warehouse_id: 0,
+        order_products: []
+      });
+      setProducts([]);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
 
 
   return (
@@ -90,7 +111,7 @@ export const AddOrderForm = () => {
       <FormControl>
         <FormLabel>Name:</FormLabel>
         <Input name="name" value={details.name} onChange={handleChange} />
-
+  
         <FormLabel>Warehouse:</FormLabel>
         <Select 
           value={selectedWarehouse} 
@@ -108,8 +129,8 @@ export const AddOrderForm = () => {
             </option>
           ))}
         </Select>
-
-
+  
+  
         <FormLabel>Customer:</FormLabel>
         <Select
           placeholder='Choose Customer'
@@ -123,7 +144,7 @@ export const AddOrderForm = () => {
             </option>
           ))}
         </Select>
-
+  
         {products.map((p, index) => (
           <FormControl key={index}>
             <FormLabel>Product:</FormLabel>
@@ -134,6 +155,7 @@ export const AddOrderForm = () => {
                 const newProducts = [...products];
                 newProducts[index].product_id = e.target.value;
                 setProducts(newProducts);
+                
               }}
             >
               {selectedWarehouse && warehouses.find((w) => w.id === selectedWarehouse)?.Products.map((p) => (
@@ -142,35 +164,37 @@ export const AddOrderForm = () => {
                 </option>
               ))}
             </Select>
-
-
+  
+  
             <FormLabel>Price:</FormLabel>
             <Input
-              value={products.price}
+              value={p.price}
               onChange={(e) => {
                 const newProducts = [...products];
                 newProducts[index].price = e.target.value;
                 setProducts(newProducts);
               }}
             />
-
+  
             <FormLabel>Quantity:</FormLabel>
             <Input
-              value={products.quantity}
+              value={p.quantity}
               onChange={(e) => {
                 const newProducts = [...products];
                 newProducts[index].quantity = e.target.value;
                 setProducts(newProducts);
               }}
             />
-
+  
             <Button onClick={() => removeProduct(index)}>Remove Product</Button>
           </FormControl>
         ))}
-
+  
         <Button onClick={addProduct}>Add Product</Button>
+        <Button onClick={handleSubmit}>Submit</Button>
       </FormControl>
     </Container>
   );
+  
   
 }
