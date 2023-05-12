@@ -24,8 +24,9 @@ export const AddProductForm = () => {
     });
   };
 
-    const accessToken = sessionStorage.getItem('accessToken');
+    
     const handleSubmit = async (e) => {
+      const accessToken = sessionStorage.getItem('accessToken');
         e.preventDefault();
         try {
           await postProduct(

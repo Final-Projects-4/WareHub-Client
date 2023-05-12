@@ -7,6 +7,8 @@ import { AddCustomerForm } from "@/components/dataComponents/customers";
 import { AddStockForm } from "@/components/dataComponents/stocks";
 import { AddOrderForm } from "@/components/dataComponents/orders";
 import { AddWarehouseForm } from "@/components/dataComponents/warehouse";
+import { PieChartExample } from "@/components/Charts";
+import { AddCobaForm } from "@/components/dataComponents/coba";
 
 //Compile needed Data here
 const useProducts = () => {
@@ -32,6 +34,21 @@ const Dashboard = () => {
   const products = useProducts();
   const revenuesData = useRevenues();
   const expensesData = useExpenses();
+
+
+  const ProfitLoss = ({ revenuesData, expensesData }) => {
+    const profit = revenuesData.totalRevenue - expensesData.totalExpense;
+    const color = profit > 0 ? "teal" : "red";
+    const message = profit > 0 ? "Profit Gains: " : "Profit Loss: "
+  
+    return (
+      <Box bg={color} display="flex" minH="65px" borderRadius={10} maxW="250px" textAlign='center'>
+        {message}{profit}
+      </Box>
+    );
+  };
+
+
 
   function renderProduct(products) {
     return products.map((product) => {
@@ -96,17 +113,13 @@ const Dashboard = () => {
   return (
     
       <Stack>
+        
         <HStack>
+        <AddCobaForm/>
         <AddOrderForm/>
         <AddWarehouseForm/>
         </HStack>
-      
-        <Box bg="teal" display="flex">
-          {revenuesData.totalRevenue}
-        </Box>
-        <Box bg="red" display="flex">
-          {expensesData.totalExpense}
-        </Box>
+        <ProfitLoss revenuesData={revenuesData} expensesData={expensesData}/>
         
           <Table>
             <Thead style={{ position: 'sticky', top: 0}}>

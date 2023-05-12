@@ -16,11 +16,13 @@ const useCustomers = () => {
 };
   
 
-export const AddOrderForm = () => {
+export const AddCobaForm = () => {
 // Data Needed: customers, products
   const products = useProducts();
   const customers = useCustomers();
-  // let warehouses = products.map
+  
+  
+  console.log(products)
 
   //state variables
   const [isOpen, setIsOpen] = useState(false);
@@ -120,7 +122,7 @@ export const AddOrderForm = () => {
   return (
     <Container textAlign="center">
       <Button onClick={() => setIsOpen(!isOpen)}>
-        {isOpen ? 'Cancel' : '+ Order'}
+        {isOpen ? 'Cancel' : 'Coba'}
       </Button>
       <Collapse in={isOpen} animateOpacity>
         <form onSubmit={handleSubmit}>
