@@ -525,6 +525,7 @@ const Landing = () => {
       </Box>
     </Box>
   );
+
 };
 
 export default Landing;

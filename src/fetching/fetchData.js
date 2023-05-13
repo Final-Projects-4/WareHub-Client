@@ -1,17 +1,16 @@
-export const baseUrl = 'http://localhost:3001/'
-
+export const baseUrl = "http://localhost:3001/";
 
 //Data Fetching function, just change the url parameters when calling fetchData('example')
 const fetchData = async (url) => {
-    const response = await fetch(`${baseUrl}${url}`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`,
-        }
-    });
-    const data = await response.json();
-    return data;
-}
+  const response = await fetch(`${baseUrl}${url}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+    },
+  });
+  const data = await response.json();
+  return data;
+};
 /*
 The current json res from backend would output 3 different objects
 products = [{}]
@@ -33,52 +32,56 @@ categories = [{}] id name description
 productvendors = [{}] product_id vendor_id
 */
 
-export const fetchStocks= async () => {
-    const data = await fetchData('warehousestocks');
-    return data;
+export const fetchStocks = async () => {
+  const data = await fetchData("warehousestocks");
+  return data;
 };
 
 export const fetchOrderDetails = async () => {
-    const data = await fetchData('orderproducts');
-    return data;
+  const data = await fetchData("orderproducts");
+  return data;
 };
 
 export const fetchVendors = async () => {
-    const data = await fetchData('vendors');
-    return data;
+  const data = await fetchData("vendors");
+  return data;
 };
 
 export const fetchWarehouses = async () => {
-    const data = await fetchData('warehouses');
-    return data;
+  const data = await fetchData("warehouses");
+  return data;
 };
 
 export const fetchRevenues = async () => {
-    const data = await fetchData('revenues');
-    return data;
+  const data = await fetchData("revenues");
+  return data;
 };
 
 export const fetchExpenses = async () => {
-    const data = await fetchData('expenses');
-    return data;
+  const data = await fetchData("expenses");
+  return data;
 };
 
-export const fetchProducts = async () => {
-    const data = await fetchData('products');
-    return data.products;
+export const fetchProducts = async (filters = {}) => {
+  const nonEmptyFilters = Object.fromEntries(
+    Object.entries(filters).filter(([_, value]) => value !== "")
+  );
+  const params = new URLSearchParams(nonEmptyFilters).toString();
+  const data = await fetchData(`products?${params}`);
+  return data.products;
 };
 
 export const fetchOrders = async () => {
-    const data = await fetchData('orders');
-    return data.data;
+  const data = await fetchData("orders");
+  return data.data;
 };
 
 export const fetchCustomers = async () => {
-    const data = await fetchData('customers');
-    return data;
+  const data = await fetchData("customers");
+  return data;
 };
 
 export const fetchCategories = async () => {
-    const data = await fetchData('categories');
-    return data;
+  const data = await fetchData("categories");
+  return data;
 };

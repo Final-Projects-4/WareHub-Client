@@ -1,50 +1,26 @@
-import { useState, useEffect } from 'react';
-import { fetchProducts, fetchOrders, fetchCustomers, fetchExpenses, fetchRevenues, fetchOrderDetails, fetchStocks, fetchVendors, fetchWarehouses, fetchCategories } from '@/fetching/fetchData';
-import { Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
+import { Flex, Box } from "@chakra-ui/react";
+import Orders from "@/components/Orders";
+import Charts from "@/components/Chart";
+import { useState, useEffect } from "react";
+import { ProfitLoss } from "@/components/dataComponents/profitLoss";
 
 const Dashboard = () => {
-  const [data, setData] = useState(
-    { products: [], 
-      orders: [], 
-      customers: [],
-      expenses: [],
-      revenues: [],
-      orderDetails: [],
-      stocks: [],
-      vendors: [],
-      warehouses: [],
-      categories:[]
-    });
+  const [chartsSize, setChartsSize] = useState("100%");
 
+  const handleResize = () => {
+    if (window.innerWidth > 768) {
+      setChartsSize("100%");
+    } else {
+      setChartsSize("50%");
+    }
+  };
+  
   useEffect(() => {
-    Promise.all(
-      [
-        fetchProducts(), fetchOrders(), fetchCustomers(),
-        fetchCategories(),fetchExpenses(),fetchRevenues(),
-        fetchOrderDetails(),fetchStocks(),fetchVendors(),
-        fetchWarehouses()
-      ]
-      )
-      .then((
-        [
-          productsData, ordersData, customersData, expensesData, revenuesData,
-          orderDetailsData, stocksData, vendorsData, warehousesData, categoriesData
-        ]
-      ) => {
-        setData({
-          products: productsData, 
-          orders: ordersData, 
-          customers: customersData,
-          expenses: expensesData,
-          revenues: revenuesData,
-          orderDetails: orderDetailsData,
-          stocks: stocksData,
-          vendors: vendorsData,
-          warehouses: warehousesData,
-          categories: categoriesData 
-        });
-      })      
-      .catch(err => console.log(err));
+    handleResize(); // set the initial size when the component mounts
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
   
   const products = data.products;
@@ -82,21 +58,19 @@ const Dashboard = () => {
 
 
   return (
-    <Table>
-    <Thead>
-      <Tr>
-        <Th>Products List</Th>
-        <Th>Category</Th>
-        <Th>Warehouse</Th>
-        <Th>Vendor</Th>
-        <Th>Quantity</Th>
-      </Tr>
-    </Thead>
-    <Tbody>{renderProduct(products)}</Tbody>
-  </Table>
+    <>
+      <Flex>
+        <Flex flex="1" w="100%" p="3%" flexDir="column" overflow="auto" minH="100vh">
+          <Charts w={chartsSize} />
+          <ProfitLoss/>
+        </Flex>
+      </Flex>
+    </>
   );
-  
-  
 };
 
-export default Dashboard;
+
+
+export default Dashboard;    
+
+  
