@@ -1,13 +1,7 @@
 import { Box } from "@chakra-ui/react";
 
 const Landing = () => {
-
-    return (
-        <Box background="yellow">
-            contents goes here
-
-        </Box>
-    )
+  return;
 };
 
 export default Landing;

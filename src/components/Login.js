@@ -1,38 +1,124 @@
-import { Flex, Heading, Input, Button } from "@chakra-ui/react";
+import {
+  Flex,
+  Heading,
+  Input,
+  Button,
+  Text,
+  FormControl,
+  FormLabel,
+  InputGroup,
+  InputRightElement,
+  Stack,
+  useColorModeValue,
+  Box,
+  Link,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { postLoginData } from "@/fetching/postData";
 import { useRouter } from "next/router";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+// import Link from "next/link";
 
 const LoginPage = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const router = useRouter()
-
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     postLoginData(username, password)
-      .then(data => {
-        const {token} = data;
-        sessionStorage.setItem("accessToken", token)
-        router.push("/dashboard")
+      .then((data) => {
+        const { token } = data;
+        sessionStorage.setItem("accessToken", token);
+        router.push("/dashboard");
       })
-      .catch(err => {
-        console.log(err)
-      })
-
-  }
-
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
-    <Flex height="100vh" alignItems="center" justifyContent="center" >
-      <Flex direction="column" background="gray" p={12} rounded={6}>
-        <Heading mb={6}>Log in</Heading>
-        <Input placeholder="username" variant="filled" mb={3} type="username" onChange={(e) => setUsername(e.target.value)}/>
-        <Input placeholder="********" variant="filled" mb={6} type="password" onChange={(e) => setPassword(e.target.value)}/>
-        <Button onClick={handleSubmit} mb={6} colorScheme="teal">Log in</Button>
-      </Flex>
+    <Flex
+      minH={"80vh"}
+      align={"center"}
+      justify={"center"}
+      bg={useColorModeValue("white", "gray.800")}
+    >
+      <Stack spacing={8} mx={"auto"} maxW={"lg"}>
+        <Box
+          rounded={"lg"}
+          bg={useColorModeValue("white", "gray.700")}
+          boxShadow={"lg"}
+          p={8}
+        >
+          <Box rounded={"lg"} bg={"orange"} boxShadow={"lg"} p={4}>
+            <Stack align={"center"}>
+              <Heading fontSize={"4xl"}>Welcome Back...</Heading>
+              <Text
+                fontSize={"lg"}
+                color={useColorModeValue("gray.700", "white")}
+              >
+                Please Login with your personal information
+              </Text>
+            </Stack>
+          </Box>
+
+          <Stack spacing={4} pt={6}>
+            <FormControl>
+              <InputGroup>
+                <Input
+                  variant="flushed"
+                  placeholder="Username"
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </InputGroup>
+            </FormControl>
+
+            <FormControl>
+              <InputGroup>
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  variant="flushed"
+                  placeholder="Password"
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <InputRightElement>
+                  <Button
+                    variant={"ghost"}
+                    onClick={() =>
+                      setShowPassword((showPassword) => !showPassword)
+                    }
+                  >
+                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+            </FormControl>
+
+            <Stack spacing={10}>
+              <Button
+                onClick={handleSubmit}
+                mb={6}
+                bg={"blue.400"}
+                color={"white"}
+                _hover={{ bg: "blue.500" }}
+              >
+                Login
+              </Button>
+            </Stack>
+          </Stack>
+          <Stack>
+            <Text align={"center"}>
+              Doesn't have an account?{" "}
+              <Link href="/register" color="blue.400">
+                Register
+              </Link>
+            </Text>
+          </Stack>
+        </Box>
+      </Stack>
     </Flex>
   );
 };
