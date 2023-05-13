@@ -3,15 +3,15 @@ import Landing from '../components/Landing'
 import { Container, HStack } from '@chakra-ui/react'
 
 const Home = () => {
-
-  return(
-    <Container>
-      <HStack>    
-        <Landing/>
-        <LoginPage/>
-      </HStack>  
-    </Container>
-  )
+  return (
+    <Landing>
+      <Container>
+        <HStack>
+          <LoginPage/>
+        </HStack>
+      </Container>
+    </Landing>
+  );
 };
 
 export default Home;
