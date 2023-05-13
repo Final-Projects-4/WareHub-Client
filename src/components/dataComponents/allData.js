@@ -51,13 +51,13 @@ export const allData = () => {
 };
 
 export const allCategories = () => {
-  const [data, setData] = useState({ categories: [] });
+  const [category, setCategory] = useState({ categories: [] });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const categoriesData = await fetchCategories();
-        setData({ categories: categoriesData });
+        setCategory({ categories: categoriesData });
       } catch (err) {
         
       }
@@ -66,7 +66,7 @@ export const allCategories = () => {
     fetchData();
   }, []);
 
-  return { data, setData };
+  return { category, setCategory };
 };
 
 export const allWarehouses = () => {
@@ -107,7 +107,7 @@ export const allVendors = () => {
   return { vendors, setVendors };
 };
 
-export const allProducts = ({ filters = {} }) => {
+export const allProducts = ({ filters = {}, dummyState }) => {
   const [data, setData] = useState({ products: [] });
 
   useEffect(() => {
@@ -121,7 +121,7 @@ export const allProducts = ({ filters = {} }) => {
     };
   
     fetchData();
-  }, [filters]); 
+  }, [dummyState]); // Add dummyState as a dependency
 
   return { data, setData };
 };
