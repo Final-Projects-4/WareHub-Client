@@ -62,10 +62,16 @@ export const fetchExpenses = async () => {
   return data;
 };
 
-export const fetchProducts = async () => {
-  const data = await fetchData("products");
+export const fetchProducts = async (filters = {}) => {
+  const nonEmptyFilters = Object.fromEntries(
+    Object.entries(filters).filter(([_, value]) => value !== "")
+  );
+  const params = new URLSearchParams(nonEmptyFilters).toString();
+  const data = await fetchData(`products?${params}`);
   return data.products;
 };
+
+
 
 export const fetchOrders = async () => {
   const data = await fetchData("orders");
