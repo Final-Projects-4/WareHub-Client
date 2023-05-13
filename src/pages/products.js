@@ -1,4 +1,4 @@
-import { RenderProducts, AddProductForm, AddStockForm } from "@/components/dataComponents/products";
+import { RenderProducts} from "@/components/dataComponents/products";
 import { HStack } from "@chakra-ui/react";
 
 const Products = () => {
@@ -6,8 +6,8 @@ const Products = () => {
     return(
         <>
         <HStack>
-         <AddStockForm/>
-         <AddProductForm/>
+         {/* <AddStockForm/>
+         <AddProductForm/> */}
         </HStack>
         
         <RenderProducts/>
