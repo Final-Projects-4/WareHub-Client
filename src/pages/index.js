@@ -4,7 +4,6 @@ import { Container, SimpleGrid, Box } from "@chakra-ui/react";
 
 
 const Home = () => {
-
   return (
     <Container>
       <LoginPage position="absolute" top={0} left={0} zIndex={1} />
@@ -13,7 +12,6 @@ const Home = () => {
           </SimpleGrid>
         </Box>
     </Container>
-
   );
 };
 

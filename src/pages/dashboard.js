@@ -23,6 +23,39 @@ const Dashboard = () => {
     };
   }, []);
   
+  const products = data.products;
+  const totalWarehouses = [];
+  let totalQuantity = 0;
+
+  if (products.length > 0) {
+    products.forEach((product) => {
+      product.Warehouses.forEach((warehouse) => {
+        totalWarehouses.push(warehouse.name)
+      });
+    });
+  }
+  
+  
+  
+
+
+  function renderProduct(products) {
+    
+
+    
+
+    return products.map((product) => (
+          <Tr key={product.id}>
+            <Td>{product.name}</Td>
+            <Td>{product.Categories.map((category) => (<span key={category.id}>{category.name}</span>))}</Td>
+            <Td></Td>
+          </Tr>
+    ));
+    
+    
+
+  }
+
 
   return (
     <>
