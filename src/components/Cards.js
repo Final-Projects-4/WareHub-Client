@@ -1,158 +1,95 @@
-import { Card,Text,Image,Stack,Heading,Divider,Button,ButtonGroup, CardHeader, CardBody, CardFooter } from '@chakra-ui/react'
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Button,
+  Divider,
+  Flex,
+  Heading,
+  Stack,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
+import { fetchOrderById } from "@/fetching/fetchById";
+import { allCustomers, allWarehouses } from "./dataComponents/allData";
 
-function Product({ product}) {
-    const {name,price,weight,size, description,SKU,image} = product;
-    return(
-        <>
-<Card maxW='sm'>
-<Heading>Product</Heading>
-  <CardBody>
-    <Image
-      src={image}
-      alt={name}
-      borderRadius='lg'
-    />
-    <Stack mt='6' spacing='3'>
-      <Heading size='md'>{name}</Heading>
-      <Text>
-        {description}
-      </Text>
-      <Text>
-        Berat : {weight}
-      </Text>
-      <Text>
-        Ukuran : {size}
-      </Text>
-      <Text>
-        SKU : {SKU}
-      </Text>
-      <Text color='blue.600' fontSize='2xl'>
-        Harga : {price}
-      </Text>
-    </Stack>
-  </CardBody>
-  <Divider />
-  <CardFooter>
-    <ButtonGroup spacing='2'>
-      <Button variant='solid' colorScheme='blue'>
-        Sunting
-      </Button>
-      <Button variant='ghost' colorScheme='blue'>
-        Add to Inv
-      </Button>
-    </ButtonGroup>
-  </CardFooter>
-</Card>
-</>
-    )
-  }
-
-function Warehouse({ warehouse}) {
-    const {name,city,address,image} = warehouse;
-    return(
-        <>
-<Card maxW='sm'>
-<Heading>Warehouse</Heading>
-  <CardBody>
-    <Image
-      src={image}
-      alt={name}
-      borderRadius='lg'
-    />
-    <Stack mt='6' spacing='3'>
-      <Heading size='md'>{name}</Heading>
-      <Text>
-        alamat : {address}
-      </Text>
-      <Text>
-        Kota : {city}
-      </Text>
-    </Stack>
-  </CardBody>
-  <Divider />
-  <CardFooter>
-    <ButtonGroup spacing='2'>
-      <Button variant='solid' colorScheme='blue'>
-        Sunting
-      </Button>
-      <Button variant='ghost' colorScheme='blue'>
-        Add to Inv
-      </Button>
-    </ButtonGroup>
-  </CardFooter>
-</Card>
-</>
-    )
-  }
-
-function Categori({ categori}) {
-    const {name,description,image} = categori;
-    return(
-        <>
-<Card maxW='sm'>
-<Heading>Categori</Heading>
-  <CardBody>
-    <Image
-      src={image}
-      alt={name}
-      borderRadius='lg'
-    />
-    <Stack mt='6' spacing='3'>
-      <Heading size='md'>{name}</Heading>
-      <Text>
-        {description}
-      </Text>
-    </Stack>
-  </CardBody>
-  <Divider />
-  <CardFooter>
-    <ButtonGroup spacing='2'>
-      <Button variant='solid' colorScheme='blue'>
-        Sunting
-      </Button>
-      <Button variant='ghost' colorScheme='blue'>
-        Add to Inv
-      </Button>
-    </ButtonGroup>
-  </CardFooter>
-</Card>
-</>
-    )
-  }
-
-const Cards = ({props,type}) => {
-    switch (type) {
-        case "product":
-            return(
-                <>
-                <Product product={props} />
-                </>
-            )
-            break;
-        case "warehouse":
-            return(
-                <>
-                <Warehouse warehouse={props}/>
-                </>
-            )
-            break;
-        case "categori":
-            return(
-                <>
-                <Categori categori={props}/>
-                </>
-            )
-            break;
-    
-        default:
-            break;
-    }
-
-
-return( 
-<>
-</>
-    )
+const useCustomers = () => {
+  const { customers } = allCustomers();
+  const customer = customers;
+  return customer;
 };
 
-export default Cards;
+const useWarehouses = () => {
+  const { warehouses } = allWarehouses();
+  const warehouse = warehouses;
+  return warehouse;
+};
+
+
+function OrderCard({ orderId }) {
+  const [orderData, setOrderData] = useState(null);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const customers = useCustomers();
+  const warehouses = useWarehouses();
+  useEffect(() => {
+    const fetchOrderData = async () => {
+      const data = await fetchOrderById(orderId);
+      setOrderData(data);
+    };
+    fetchOrderData();
+  }, [orderId]);
+
+  if (!orderData) {
+    return null;
+  }
+  console.log(orderData)
+
+  const customer = customers.find((c) => c.id === orderData.customer_id);
+  const warehouse = warehouses.find((w) => w.id === orderData.warehouse_id);
+  return (
+    <>
+      <Button onClick={onOpen}>View Order Details</Button>
+      {isOpen && (
+        <Box
+          p={5}
+          borderWidth="1px"
+          borderRadius="lg"
+          maxWidth="600px"
+          mx="auto"
+          mt={5}
+        >
+          <Flex justifyContent="space-between" alignItems="flex-start">
+            <Box>
+              <Heading size="lg">{`Order No. ${orderData.name}`}</Heading>
+              <Text fontWeight="light" color="gray.400">
+                {orderData.createdAt}
+              </Text>
+            </Box>
+            <Button variant="outline" onClick={onClose}>
+              Close
+            </Button>
+          </Flex>
+          <Divider my={5} />
+          <Stack spacing={5}>
+            <Flex justifyContent="space-between">
+              <Text fontWeight="medium">Customer:</Text>
+              <Text>
+                {customer.first_name} {customer.last_name}
+              </Text>
+            </Flex>
+            <Flex justifyContent="space-between">
+              <Text fontWeight="medium">Warehouse:</Text>
+              <Text>{warehouse.name}</Text>
+            </Flex>
+            <Flex justifyContent="space-between">
+              <Text fontWeight="medium">Total Price:</Text>
+              <Text>{orderData.total_price}</Text>
+            </Flex>
+            <Divider />
+          </Stack>
+        </Box>
+      )}
+    </>
+  );
+}
+
+export default OrderCard;

@@ -107,21 +107,21 @@ export const allVendors = () => {
   return { vendors, setVendors };
 };
 
-export const allProducts = () => {
+export const allProducts = ({ filters = {} }) => {
   const [data, setData] = useState({ products: [] });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const productsData = await fetchProducts();
+        const productsData = await fetchProducts(filters);
         setData({ products: productsData });
       } catch (err) {
-        
+        // Handle error
       }
     };
-
+  
     fetchData();
-  }, []);
+  }, [filters]); 
 
   return { data, setData };
 };
