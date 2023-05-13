@@ -1,38 +1,43 @@
-import { useState, useEffect } from 'react';
-import { fetchProducts, fetchOrders, fetchCustomers } from '@/fetching/fetchData';
+import { Flex, Box } from "@chakra-ui/react";
+import Orders from "@/components/Orders";
+import Charts from "@/components/Chart";
+import { useState, useEffect } from "react";
+import { ProfitLoss } from "@/components/dataComponents/profitLoss";
 
 const Dashboard = () => {
-  const [data, setData] = useState({ products: [], orders: [], customers: [] });
+  const [chartsSize, setChartsSize] = useState("100%");
 
+  const handleResize = () => {
+    if (window.innerWidth > 768) {
+      setChartsSize("100%");
+    } else {
+      setChartsSize("50%");
+    }
+  };
+  
   useEffect(() => {
-    Promise.all([fetchProducts(), fetchOrders(), fetchCustomers()])
-      .then(([productsData, ordersData, customersData]) => {
-        setData({ products: productsData, orders: ordersData, customers: customersData });
-        console.log(customersData);
-      })
-      .catch(err => console.log(err));
+    handleResize(); // set the initial size when the component mounts
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
   
 
   return (
     <>
-      <h1>Dashboard</h1>
-      <ul>
-        {data.products.map((product) => (
-          <li key={product.id}>{product.name}</li>
-        ))}
-        {data.orders.map((order) => (
-            <li key={order.id}>{order.name} price: {order.total_price}</li>
-        ))}
-        {data.customers.map((customer) => (
-            <li key={customer.id}>{customer.first_name}</li>
-        ))}
-
-      </ul>
+      <Flex>
+        <Flex flex="1" w="100%" p="3%" flexDir="column" overflow="auto" minH="100vh">
+          <Charts w={chartsSize} />
+          <ProfitLoss/>
+        </Flex>
+      </Flex>
     </>
   );
-  
-  
 };
 
-export default Dashboard;
+
+
+export default Dashboard;    
+
+  
