@@ -1,15 +1,28 @@
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { postProduct, postStock } from '@/fetching/postData';
-import { InputGroup, useToast, Button, Card, Collapse, Box, InputRightElement,Input, Container, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading} from "@chakra-ui/react";
+import { InputGroup, HStack, useToast, Link, Stack, FormControl, FormLabel, Text, Button, Card, Collapse, Box, InputRightElement, Input, InputLeftElement, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, VStack, Spacer} from "@chakra-ui/react";
 import { allProducts, allVendors, allWarehouses, allCategories} from './allData';
-import { FiSearch } from 'react-icons/fi';
+import { FiSearch, FiEdit, FiPlus, FiMaximize, FiDelete, FiDivideCircle } from 'react-icons/fi';
 import { deleteProduct } from '@/fetching/deleteData';
 
 //Parent
 function Product() {
   const [dummyState, setDummyState] = useState(0); // Create dummy state
-  const { data, setData } = allProducts({ filters: {}, dummyState });
-
+  
+  const [filters, setFilters] = useState({
+    warehouse_id: '',
+    category_id: '',
+    vendor_id: '',
+    page: 1,
+    limit: 10,
+    q: '',
+    sort: ''
+  });
+  const { data, setData, isLoading, error } = allProducts({ filters, dummyState });
+  const { products, totalItems, totalPages, currentPage } = data;
+  const { warehouses } = allWarehouses();
+  console.log(data)
   function handleAddProduct(details) {
     setData(prevData => ({
       ...prevData,
@@ -17,20 +30,56 @@ function Product() {
     }));
     setDummyState(prevState => prevState + 1); // Update dummy state
   }
+  function handleApplyFilters() {
+    setDummyState(prevState => prevState + 1);
+  }
+  const { vendors } = allVendors();
+  const { category, setCategory } = allCategories();
   
 
   return(
     <>
-      <AddProductForm handleAddProduct={handleAddProduct} />
-      <RenderProducts data={data} setData={setData} />
-      <AddStockForm data={data} setData={setData} handleAddProduct={handleAddProduct}/>
+    <Flex>
+      <VStack>
+      <FilterForm 
+      filters={filters} 
+      setFilters={setFilters} 
+      handleApplyFilters={handleApplyFilters}
+      warehouses={warehouses}
+      vendors={vendors} 
+      category={category}
+      pageOptions={Array.from({length: totalPages}, (_, i) => i + 1)}
+      totalItems={totalItems}/>
+        {isLoading ? (
+        <div>Loading...</div>
+      ) : error ? (
+        <div>Error: {error.message}</div>
+      ) : (
+        <RenderProducts data={data} setData={setData} filters={filters}/>
+      )}
+   
+      </VStack>
+      <Box pb={8}>
+      <Stack>
+      <AddProductForm category={category} handleAddProduct={handleAddProduct} />
+      <Spacer/>
+      <AddStockForm 
+      data={data} 
+      setData={setData} 
+      handleAddProduct={handleAddProduct}
+      warehouses={warehouses}
+      vendors={vendors}/>
+      </Stack>
+      </Box>
+      </Flex>
     </>
   )
+  
 }
 export default Product;
 
 //Add Product
-export const AddProductForm = ({ handleAddProduct }) => {
+export const AddProductForm = ({ handleAddProduct, category }) => {
   const [details, setDetails] = useState({
     name: '',
     price: 0,
@@ -40,7 +89,7 @@ export const AddProductForm = ({ handleAddProduct }) => {
     SKU: '',
     category_id: 0,
   })
-  const { category, setCategory } = allCategories();
+  
   const [isOpen, setIsOpen] = useState(false);
   const toast = useToast();
   
@@ -93,9 +142,9 @@ export const AddProductForm = ({ handleAddProduct }) => {
   };
 
   return (
-    <Box w="30%" maxW="md" mx="auto" >
+    <Box >
       <Card mt={4} bgColor="transparent" borderRadius={10}>
-        <Button onClick={() => setIsOpen(!isOpen)}>
+        <Button as={FiPlus} onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? 'Cancel' : '+ Product'}
         </Button>
         <Collapse in={isOpen} animateOpacity>
@@ -166,43 +215,25 @@ export const AddProductForm = ({ handleAddProduct }) => {
 };
 
 //Render products with details
-// const { category, setCategory } = allCategories();
-  //warehouses.map
-  // const { warehouses, setWarehouses } = allWarehouses();
-  //category.categories
-  //Data fetching and state variables
-  // const [filters, setFilters] = useState({
-  //   warehouse_id: '',
-  //   category_id: '',
-  //   vendor_id: '',
-  //   page: 1,
-  //   limit: 10,
-  //   q: '',
-  //   sort: ''
-  // });
-  // //data.products
-export const RenderProducts = ({ data, setData}) => {
+export const RenderProducts = ({ data, setData , filters}) => {
   const toast = useToast();
+  const router = useRouter();
+  const tableBody = renderProduct(data.products);
   function renderProduct(data) {
+    
     return data.map((p) => {
-      if (!p.Warehouses) {
-        return null; 
-      } else if (!p.Vendors) {
-        return null;
-      } 
-  
-      const warehousesForProduct = p.Warehouses.map((w) => ({
+      const warehousesForProduct = p.Warehouses ? p.Warehouses.map((w) => ({
         id: p.id,
         name: w.name,
         WarehouseStock: w.WarehouseStock,
-      }));
+      })) : [];
 
       const totalQuantity = warehousesForProduct.reduce((acc, w) => acc + w.WarehouseStock.quantity, 0);
 
-      const vendorsForProduct = p.Vendors.map((v) => ({
+      const vendorsForProduct = p.Vendors ? p.Vendors.map((v) => ({
         id: p.id,
         name: v.name,
-      }));
+      })) : [];
 
       const warehouseSelect =
         warehousesForProduct.length > 1 ? (
@@ -253,77 +284,51 @@ export const RenderProducts = ({ data, setData}) => {
               });
             });
         }
+
+        const handleProductDetails = (productId) => {
+          router.push(`/products/${productId}`)
+        }
         return (
           <Tr key={p.id}>
-            <Td>{p.name}</Td>
             <Td>
-              {p.Categories.map((c) => (
+            <HStack>
+            <Link
+              onClick={() => handleProductDetails(p.id)}
+              _hover={{
+                textDecoration: 'glow',
+                textShadow: '0 0 8px #fff, 0 0 12px #fff, 0 0 16px #fff',
+              }}
+            >
+              {p.name}
+              <Text fontSize="sm" color="gray.500" ml={1} display="inline">
+              <FiEdit />
+              </Text>
+            </Link>
+            </HStack>
+              </Td>
+              <Td>
+              {p.Categories && p.Categories.map((c) => (
                 <span key={c.id}>{c.name}</span>
               ))}
-            </Td>
+            </Td> 
+
             <Td>{warehouseSelect}</Td>
             <Td>{vendorSelect}</Td>
             <Td>{totalQuantity}</Td>
             <Td>
-              <Button onClick={() => handleDelete(p.id)}>Delete</Button>
+              <Button leftIcon={<FiDivideCircle />} onClick={() => handleDelete(p.id)}>Delete</Button>
             </Td>
           </Tr>
         );
     });
   }
 
-  const tableBody = renderProduct(data.products);
   
   return (
       <Flex align="center" justify="center" direction="column" top="0"
       bottom="0"
       left="0"
       right="0">
-        {/* <form>
-          <InputGroup mb="4" w="full" maxW="lg">
-            <Input
-              type="text"
-              name="q"
-              value={filters.q}
-              onChange={handleFilterChange}
-              placeholder="Search products"
-              rounded="full"
-              bg="white"
-              boxShadow="md"
-              _focus={{ boxShadow: 'outline' }}
-            />
-            <InputRightElement>
-              <Box 
-                as={FiSearch}
-                aria-label="Search"
-                type="submit"  
-                rounded="full"
-                boxShadow="md"
-                _hover={{ bg: 'gray.100' }}
-                _active={{ bg: 'gray.200' }}
-              />
-            </InputRightElement>
-            <Select
-              mb="4"
-              w="full"
-              maxW="lg"
-              name="category_id"
-              value={filters.category_id}
-              onChange={handleFilterChange}
-              rounded="full"
-              bg="white"
-              boxShadow="md"
-              _focus={{ boxShadow: 'outline' }}
-            >
-              <option value="">All categories</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </Select>
-          </InputGroup>
-        </form> */}
         <Heading as="h2" size="lg" mb="4">
           Product List
         </Heading>
@@ -344,20 +349,19 @@ export const RenderProducts = ({ data, setData}) => {
 };
 
 //Add Stock Form
-export const AddStockForm = ({ data, setData, handleAddProduct }) => {
+export const AddStockForm = ({ data, setData, warehouses, vendors, handleAddProduct }) => {
   //data needed: products , vendors, warehouses
-    const { vendors } = allVendors();
-    const { warehouses } = allWarehouses();
+    
     const toast = useToast();
     const [isOpen, setIsOpen] = useState(false);
+    
     const [details, setDetails] = useState({
-      product_id: data.products[0].id,
+      product_id: 0,
       quantity: 0,
       vendor_id: 1,
       warehouse_id: 1
     })
     
-  
     const handleChange = (e) => {
       const { name, value } = e.target;
       if (value === '') {
@@ -367,6 +371,7 @@ export const AddStockForm = ({ data, setData, handleAddProduct }) => {
         setDetails((prev) => ({ ...prev, [name]: quantity }));
       }
     };
+    
     const handleSubmit = async (e) => {
         const accessToken = sessionStorage.getItem('accessToken');
           e.preventDefault();
@@ -380,10 +385,10 @@ export const AddStockForm = ({ data, setData, handleAddProduct }) => {
               accessToken
             );
             setDetails({
-              product_id: data.products[0].id,
+              product_id: 0,
               quantity: 1,
-              vendor_id: vendors[0].id,
-              warehouse_id: warehouses[0].id
+              vendor_id: 0,
+              warehouse_id: 0
             });
             setData(prevData => ({
               ...prevData,
@@ -406,8 +411,8 @@ export const AddStockForm = ({ data, setData, handleAddProduct }) => {
           }
     };
     return (
-          <>
-            <Button onClick={() => setIsOpen(!isOpen)}>
+          <Box>
+            <Button as={FiMaximize} onClick={() => setIsOpen(!isOpen)}>
               {isOpen ? 'Cancel' : '+ Stocks'}
             </Button>
             <Collapse in={isOpen} animateOpacity>
@@ -459,9 +464,168 @@ export const AddStockForm = ({ data, setData, handleAddProduct }) => {
                 <Button type='submit'>Submit</Button>
               </form>
             </Collapse>
-          </>
+          </Box>
     );
 };
+
+//filter component
+function FilterForm({ filters, setFilters, warehouses, vendors, category, totalItems,handleApplyFilters, pageOptions}) {
+  //category.categories
+  const limitOptions = [
+    { label: "5", value: 5 },
+    { label: "10", value: 10 },
+    { label: "15", value: 15 },
+    { label: "20", value: 20 },
+  ];
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      [name]: value
+    }));
+  }
+  //warehouses[]
+  function handleSubmit(e) {
+    e.preventDefault();
+    handleApplyFilters();
+  }
+
+  const handleClearFilters = () => {
+    setFilters({ q: "", warehouse: "", vendor: "", page: 1, category:"",sort:'' });
+  };
+  
+  return (
+    <form onSubmit={handleSubmit}>
+    <Flex alignItems="center"  p={4}>
+  <Box flex="1">
+    <Flex alignItems="center">
+    <InputGroup mr={2}>
+      <InputLeftElement pointerEvents="none" />
+      <Select
+        type="text"
+        name="warehouse_id"
+        value={filters.warehouse_id}
+        onChange={handleChange}
+        placeholder='Select Warehouse'
+      >
+        {warehouses.map((w) => {
+          return (
+            <option key={w.id} value={w.id}>
+              {w.name}
+            </option>
+          );
+        })}
+      </Select>
+
+    </InputGroup>
+    <InputGroup mr={2}>
+      <InputLeftElement pointerEvents="none"/>
+      <Select
+        type="text"
+        name="category_id"
+        value={filters.category_id}
+        onChange={handleChange}
+        placeholder='Select Category'
+      >
+        {category.categories.map((c) => {
+          return (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          );
+        })}
+      </Select>
+    </InputGroup>
+    <InputGroup mr={2}>
+      <InputLeftElement pointerEvents="none"/>
+      <Select
+        type="text"
+        name="vendor_id"
+        value={filters.vendor_id}
+        onChange={handleChange}
+        placeholder='Select Vendor'
+      >
+        {vendors.map((v) => {
+          return (
+            <option key={v.id} value={v.id}>
+              {v.name}
+            </option>
+          );
+        })}
+      </Select>
+    </InputGroup>
+    </Flex>
+    <Stack direction={{ base: 'column', md: 'row' }} spacing="4">
+      <FormControl>
+        <FormLabel htmlFor="q">Search</FormLabel>
+        <Input
+          type="text"
+          id="q"
+          name="q"
+          value={filters.q}
+          onChange={handleChange}
+          placeholder="Search products"
+        />
+      </FormControl>
+      <FormControl>
+        <FormLabel htmlFor="limit">Limit</FormLabel>
+        <Select id="limit" name="limit" value={filters.limit} onChange={handleChange}>
+        {limitOptions.map(option => (
+          <option key={option.value} value={option.value}>
+            {option.label} ({totalItems > 0 ? Math.min(totalItems, option.value) : 0} items)
+          </option>
+        ))}
+      </Select>
+      </FormControl>
+      <FormControl>
+        <FormLabel htmlFor="page">Page</FormLabel>
+        <Select
+          id="page"
+          name="page"
+          value={filters.page}
+          onChange={handleChange}
+        >
+          {pageOptions.map((page) => (
+            <option key={page} value={page}>
+              {page}
+            </option>
+          ))}
+        </Select>
+      </FormControl>
+      <FormControl>
+        <FormLabel htmlFor="sort">Sort</FormLabel>
+        <Select
+          id="sort"
+          name="sort"
+          value={filters.sort}
+          onChange={handleChange}
+        >
+          <option value="">None</option>
+          <option value="name:ASC">Name (A-Z)</option>
+          <option value="name:DESC">Name (Z-A)</option>
+        </Select>
+      </FormControl>
+    </Stack>
+  </Box>
+    <VStack>
+    <Button type="submit" leftIcon={<FiSearch />}>
+      Apply filters
+    </Button>
+    
+    <Button 
+    onClick={handleClearFilters}
+    leftIcon={<FiDelete />}
+    >
+      Clear Filters
+      </Button>
+    </VStack>
+    
+    </Flex>
+    </form>
+
+  );
+}
+
 
 
 

@@ -68,9 +68,13 @@ export const fetchProducts = async (filters = {}) => {
   );
   const params = new URLSearchParams(nonEmptyFilters).toString();
   const data = await fetchData(`products?${params}`);
-  return data.products;
+  return {
+    products: data.products,
+    totalItems: data.totalItems,
+    totalPages: data.totalPages,
+    currentPage: data.currentPage
+  };
 };
-
 
 
 export const fetchOrders = async () => {
