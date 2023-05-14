@@ -108,7 +108,7 @@ export const allVendors = () => {
 };
 
 export const allProducts = ({ filters = {}, dummyState }) => {
-  const [data, setData] = useState({ products: [] });
+  const [data, setData] = useState({ products: [], totalItems: 0, totalPages: 0, currentPage: 1 });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -116,20 +116,23 @@ export const allProducts = ({ filters = {}, dummyState }) => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const productsData = await fetchProducts(filters);
-        setData(prevData => ({ ...prevData, products: productsData }));
+        const response = await fetchProducts(filters);
+        const { products, totalItems, totalPages, currentPage } = response;
+        setData({ products, totalItems, totalPages, currentPage });
         setIsLoading(false);
       } catch (err) {
         setError(err);
         setIsLoading(false);
       }
     };
-  
+
     fetchData();
-  }, [dummyState],[filters]); // Add dummyState as a dependency
+  }, [dummyState, filters]);
 
   return { data, setData, isLoading, error };
 };
+
+
 
 export const allOrders = () => {
   const [data, setData] = useState({ orders: [] });

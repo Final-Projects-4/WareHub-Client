@@ -20,6 +20,7 @@ function Product() {
     sort: ''
   });
   const { data, setData, isLoading, error } = allProducts({ filters, dummyState });
+  const { products, totalItems, totalPages, currentPage } = data;
   const { warehouses } = allWarehouses();
   console.log(data)
   function handleAddProduct(details) {
@@ -29,7 +30,6 @@ function Product() {
     }));
     setDummyState(prevState => prevState + 1); // Update dummy state
   }
-
   function handleApplyFilters() {
     setDummyState(prevState => prevState + 1);
   }
@@ -47,7 +47,9 @@ function Product() {
       handleApplyFilters={handleApplyFilters}
       warehouses={warehouses}
       vendors={vendors} 
-      category={category}/>
+      category={category}
+      pageOptions={Array.from({length: totalPages}, (_, i) => i + 1)}
+      totalItems={totalItems}/>
         {isLoading ? (
         <div>Loading...</div>
       ) : error ? (
@@ -72,6 +74,7 @@ function Product() {
       </Flex>
     </>
   )
+  
 }
 export default Product;
 
@@ -217,7 +220,7 @@ export const RenderProducts = ({ data, setData , filters}) => {
   const router = useRouter();
   const tableBody = renderProduct(data.products);
   function renderProduct(data) {
-    console.log(data)
+    
     return data.map((p) => {
       const warehousesForProduct = p.Warehouses ? p.Warehouses.map((w) => ({
         id: p.id,
@@ -466,9 +469,15 @@ export const AddStockForm = ({ data, setData, warehouses, vendors, handleAddProd
 };
 
 //filter component
-function FilterForm({ filters, setFilters, warehouses, vendors,handleApplyFilters }) {
+function FilterForm({ filters, setFilters, warehouses, vendors, totalItems,handleApplyFilters, pageOptions}) {
   //category.categories
   const { category } = allCategories();
+  const limitOptions = [
+    { label: "5", value: 5 },
+    { label: "10", value: 10 },
+    { label: "15", value: 15 },
+    { label: "20", value: 20 },
+  ];
   function handleChange(e) {
     const { name, value } = e.target;
     setFilters(prevFilters => ({
@@ -481,6 +490,10 @@ function FilterForm({ filters, setFilters, warehouses, vendors,handleApplyFilter
     e.preventDefault();
     handleApplyFilters();
   }
+
+  const handleClearFilters = () => {
+    setFilters({ q: "", warehouse: "", vendor: "", page: 1, category:"",sort:'' });
+  };
   
   return (
     <form onSubmit={handleSubmit}>
@@ -555,15 +568,10 @@ function FilterForm({ filters, setFilters, warehouses, vendors,handleApplyFilter
           placeholder="Search products"
         />
       </FormControl>
-      <FormControl>
+      {/* <FormControl>
         <FormLabel htmlFor="page">Page</FormLabel>
-        <Select
-          id="page"
-          name="page"
-          value={filters.page}
-          onChange={handleChange}
-        >
-          {[1, 2, 3].map((page) => (
+        <Select id="page" name="page" value={filters.page} onChange={handleChange}>
+          {pageOptions.map(page => (
             <option key={page} value={page}>
               {page}
             </option>
@@ -572,15 +580,35 @@ function FilterForm({ filters, setFilters, warehouses, vendors,handleApplyFilter
       </FormControl>
       <FormControl>
         <FormLabel htmlFor="limit">Limit</FormLabel>
+        <Select id="limit" name="limit" value={filters.limit} onChange={handleChange}>
+        {limitOptions.map(option => (
+          <option key={option.value} value={option.value}>
+            {option.label} ({totalItems > 0 ? Math.min(totalItems, option.value) : 0} items)
+          </option>
+        ))}
+      </Select>
+      </FormControl> */}
+      <FormControl>
+        <FormLabel htmlFor="limit">Limit</FormLabel>
+        <Select id="limit" name="limit" value={filters.limit} onChange={handleChange}>
+        {limitOptions.map(option => (
+          <option key={option.value} value={option.value}>
+            {option.label} ({totalItems > 0 ? Math.min(totalItems, option.value) : 0} items)
+          </option>
+        ))}
+      </Select>
+      </FormControl>
+      <FormControl>
+        <FormLabel htmlFor="page">Page</FormLabel>
         <Select
-          id="limit"
-          name="limit"
-          value={filters.limit}
+          id="page"
+          name="page"
+          value={filters.page}
           onChange={handleChange}
         >
-          {[10, 20, 50].map((limit) => (
-            <option key={limit} value={limit}>
-              {limit}
+          {pageOptions.map((page) => (
+            <option key={page} value={page}>
+              {page}
             </option>
           ))}
         </Select>
@@ -603,6 +631,10 @@ function FilterForm({ filters, setFilters, warehouses, vendors,handleApplyFilter
   <Button type="submit" leftIcon={<FiSearch />} ml={4}>
     Apply filters
   </Button>
+  
+  <Button onClick={handleClearFilters}>
+    Clear Filters
+    </Button>
     </Flex>
     </form>
 
