@@ -2,10 +2,10 @@ import * as React from 'react'
 import { ChakraProvider, ColorModeScript, useColorMode } from '@chakra-ui/react'
 import theme from '../styles/theme'
 import { Flex,Box } from '@chakra-ui/react'
-import Navbar from '../components/Navbar'
-import Sidebar from '@/components/Sidebar'
+import Navbar from '../components/styleComponents/Navbar'
+import Sidebar from '@/components/styleComponents/Sidebar'
 import { useRouter } from 'next/router'
-import Footer from '@/components/Footer'
+import Footer from '@/components/styleComponents/Footer'
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();

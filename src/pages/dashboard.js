@@ -1,5 +1,5 @@
 import { Flex, Box } from "@chakra-ui/react";
-import Charts from "@/components/Chart";
+import Charts from "@/components/styleComponents/Chart";
 import { useState, useEffect } from "react";
 import { ProfitLoss } from "@/components/dataComponents/profitLoss";
 

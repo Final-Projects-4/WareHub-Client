@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { postProduct, postStock } from '@/fetching/postData';
-import { InputGroup, HStack, useToast, Link, Stack, FormControl, FormLabel, Text, Button, Card, Collapse, Box, InputRightElement, Input, InputLeftElement, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, VStack, Spacer} from "@chakra-ui/react";
+import { InputGroup, HStack, useToast, Link, Stack, FormControl, FormLabel, Text, Button, Card, Collapse, Box, Input, InputLeftElement, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, VStack, Spacer} from "@chakra-ui/react";
 import { allProducts, allVendors, allWarehouses, allCategories} from './allData';
 import { FiSearch, FiEdit, FiPlus, FiMaximize, FiDelete, FiDivideCircle } from 'react-icons/fi';
 import { deleteProduct } from '@/fetching/deleteData';
@@ -22,7 +22,6 @@ function Product() {
   const { data, setData, isLoading, error } = allProducts({ filters, dummyState });
   const { products, totalItems, totalPages, currentPage } = data;
   const { warehouses } = allWarehouses();
-  console.log(data)
   function handleAddProduct(details) {
     setData(prevData => ({
       ...prevData,
@@ -35,7 +34,6 @@ function Product() {
   }
   const { vendors } = allVendors();
   const { category, setCategory } = allCategories();
-  
 
   return(
     <>

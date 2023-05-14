@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { fetchProducts, fetchOrders, fetchCustomers, fetchExpenses, fetchRevenues, fetchOrderDetails, fetchStocks, fetchVendors, fetchWarehouses, fetchCategories } from '@/fetching/fetchData';
+import { filter } from '@chakra-ui/react';
 
 export const allData = () => {
   const [data, setData] = useState(
@@ -132,25 +133,28 @@ export const allProducts = ({ filters = {}, dummyState }) => {
   return { data, setData, isLoading, error };
 };
 
-
-
-export const allOrders = () => {
-  const [data, setData] = useState({ orders: [] });
+export const allOrders = ({filters = {}, dummyState}) => {
+  const [data, setData] = useState({ orders: [], totalData:0, totalPages: 0, currentPage: 1 });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const ordersData = await fetchOrders();
-        setData({ orders: ordersData });
+        setIsLoading(true)
+        const response = await fetchOrders(filters);
+        const { orders, totalData, totalPages, currentPage } = response;
+        setData({ orders, totalData, totalPages, currentPage});
       } catch (err) {
-        
+        setError(err)
+        setIsLoading(false)
       }
     };
 
     fetchData();
-  }, []);
+  }, [dummyState, filters]);
 
-  return { data, setData };
+  return { data, setData, isLoading, error };
 };
 
 export const allExpenses = () => {
@@ -230,21 +234,24 @@ export const allStocks = () => {
 };
 
 export const allCustomers = () => {
+  const [loading, setLoading] = useState(true);
   const [customers, setCustomers] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const customersData = await fetchCustomers();
-        setCustomers(customersData)
+        setCustomers(customersData);
+        setLoading(false);
       } catch (err) {
-        
+        setLoading(false);
       }
     };
 
     fetchData();
   }, []);
 
-  return { customers, setCustomers };
+  return { loading, customers, setCustomers };
 };
+
 
