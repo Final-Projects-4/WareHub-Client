@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { postProduct, postStock } from '@/fetching/postData';
-import { InputGroup, useToast, Link, Stack, FormControl, FormLabel, Button, Card, Collapse, Box, InputRightElement, Input, InputLeftElement, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, VStack} from "@chakra-ui/react";
+import { InputGroup, HStack, useToast, Link, Stack, FormControl, FormLabel, Text, Button, Card, Collapse, Box, InputRightElement, Input, InputLeftElement, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, VStack, Spacer} from "@chakra-ui/react";
 import { allProducts, allVendors, allWarehouses, allCategories} from './allData';
-import { FiSearch } from 'react-icons/fi';
+import { FiSearch, FiEdit, FiPlus, FiMaximize } from 'react-icons/fi';
 import { deleteProduct } from '@/fetching/deleteData';
 
 //Parent
@@ -21,7 +21,7 @@ function Product() {
   });
   const { data, setData, isLoading, error } = allProducts({ filters, dummyState });
   const { warehouses } = allWarehouses();
-  
+  console.log(data)
   function handleAddProduct(details) {
     setData(prevData => ({
       ...prevData,
@@ -39,16 +39,7 @@ function Product() {
 
   return(
     <>
-      <VStack>
-      <AddProductForm category={category} handleAddProduct={handleAddProduct} />
-      <AddStockForm 
-      data={data} 
-      setData={setData} 
-      handleAddProduct={handleAddProduct}
-      warehouses={warehouses}
-      vendors={vendors}/>
-      
-      </VStack>
+    <Flex>
       <VStack>
       <FilterForm 
       filters={filters} 
@@ -64,7 +55,21 @@ function Product() {
       ) : (
         <RenderProducts data={data} setData={setData} filters={filters}/>
       )}
+   
       </VStack>
+      <Box pb={8}>
+      <Stack>
+      <AddProductForm category={category} handleAddProduct={handleAddProduct} />
+      <Spacer/>
+      <AddStockForm 
+      data={data} 
+      setData={setData} 
+      handleAddProduct={handleAddProduct}
+      warehouses={warehouses}
+      vendors={vendors}/>
+      </Stack>
+      </Box>
+      </Flex>
     </>
   )
 }
@@ -134,9 +139,9 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
   };
 
   return (
-    <Box w="30%" maxW="md" mx="auto" >
+    <Box >
       <Card mt={4} bgColor="transparent" borderRadius={10}>
-        <Button onClick={() => setIsOpen(!isOpen)}>
+        <Button as={FiPlus} onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? 'Cancel' : '+ Product'}
         </Button>
         <Collapse in={isOpen} animateOpacity>
@@ -210,36 +215,22 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
 export const RenderProducts = ({ data, setData , filters}) => {
   const toast = useToast();
   const router = useRouter();
+  const tableBody = renderProduct(data.products);
   function renderProduct(data) {
-    return data
-    .filter((p) => {
-      if (filters.warehouse_id && filters.warehouse_id !== "") {
-        const warehouseIds = p.Warehouses.map((w) => w.id);
-        return warehouseIds.includes(parseInt(filters.warehouse_id));
-      }
-      if (filters.vendor_id && filters.vendor_id !== "") {
-        const vendorIds = p.Vendors.map((v) => v.id);
-        return vendorIds.includes(parseInt(filters.vendor_id));
-      }
-      if (filters.category_id && filters.category_id !== "") {
-        const categoryIds = p.Categories.map((c) => c.id);
-        return categoryIds.includes(parseInt(filters.category_id));
-      }
-      return true;
-    })
-    .map((p) => {
-      const warehousesForProduct = p.Warehouses.map((w) => ({
+    console.log(data)
+    return data.map((p) => {
+      const warehousesForProduct = p.Warehouses ? p.Warehouses.map((w) => ({
         id: p.id,
         name: w.name,
         WarehouseStock: w.WarehouseStock,
-      }));
+      })) : [];
 
       const totalQuantity = warehousesForProduct.reduce((acc, w) => acc + w.WarehouseStock.quantity, 0);
 
-      const vendorsForProduct = p.Vendors.map((v) => ({
+      const vendorsForProduct = p.Vendors ? p.Vendors.map((v) => ({
         id: p.id,
         name: v.name,
-      }));
+      })) : [];
 
       const warehouseSelect =
         warehousesForProduct.length > 1 ? (
@@ -297,15 +288,27 @@ export const RenderProducts = ({ data, setData , filters}) => {
         return (
           <Tr key={p.id}>
             <Td>
-              <Link onClick={() => handleProductDetails(p.id)}>
+            <HStack>
+            <Link
+              onClick={() => handleProductDetails(p.id)}
+              _hover={{
+                textDecoration: 'glow',
+                textShadow: '0 0 8px #fff, 0 0 12px #fff, 0 0 16px #fff',
+              }}
+            >
               {p.name}
-              </Link>
+              <Text fontSize="sm" color="gray.500" ml={1} display="inline">
+              <FiEdit />
+              </Text>
+            </Link>
+            </HStack>
               </Td>
-            <Td>
-              {p.Categories.map((c) => (
+              <Td>
+              {p.Categories && p.Categories.map((c) => (
                 <span key={c.id}>{c.name}</span>
               ))}
-            </Td>
+            </Td> 
+
             <Td>{warehouseSelect}</Td>
             <Td>{vendorSelect}</Td>
             <Td>{totalQuantity}</Td>
@@ -317,7 +320,7 @@ export const RenderProducts = ({ data, setData , filters}) => {
     });
   }
 
-  const tableBody = renderProduct(data.products);
+  
   return (
       <Flex align="center" justify="center" direction="column" top="0"
       bottom="0"
@@ -405,8 +408,8 @@ export const AddStockForm = ({ data, setData, warehouses, vendors, handleAddProd
           }
     };
     return (
-          <>
-            <Button onClick={() => setIsOpen(!isOpen)}>
+          <Box>
+            <Button as={FiMaximize} onClick={() => setIsOpen(!isOpen)}>
               {isOpen ? 'Cancel' : '+ Stocks'}
             </Button>
             <Collapse in={isOpen} animateOpacity>
@@ -458,7 +461,7 @@ export const AddStockForm = ({ data, setData, warehouses, vendors, handleAddProd
                 <Button type='submit'>Submit</Button>
               </form>
             </Collapse>
-          </>
+          </Box>
     );
 };
 

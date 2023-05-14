@@ -6,9 +6,7 @@ const Products = () => {
         <>
         <HStack>
         <Product/>
-        </HStack>
-        
-        
+        </HStack>  
         </>
     )
 }

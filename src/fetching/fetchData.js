@@ -71,8 +71,6 @@ export const fetchProducts = async (filters = {}) => {
   return data.products;
 };
 
-
-
 export const fetchOrders = async () => {
   const data = await fetchData("orders");
   return data.data;
