@@ -14,6 +14,7 @@ import {
   Link,
   HStack,
   useToast,
+  Spacer,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
@@ -49,19 +50,15 @@ const Register = () => {
   const toast = useToast();
 
   return (
-    <Flex
-      align={"center"}
-      justify={"center"}
-      bg={useColorModeValue("white", "gray.800")}
-    >
-      <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
+    <Flex align={"center"} justify={"center"}>
+      <Stack spacing={8} mx={"auto"} maxW={"lg"} px={6}>
         <Box
           rounded={"lg"}
-          bg={useColorModeValue("white", "gray.700")}
+          bg={useColorModeValue("white", "#1A202C")}
           boxShadow={"lg"}
           p={8}
         >
-          <Box rounded={"lg"} bg={"orange"} boxShadow={"lg"} p={4}>
+          <Box rounded={"lg"} boxShadow={"lg"} p={2}>
             <Stack align={"center"}>
               <Heading fontSize={"4xl"} textAlign={"center"}>
                 Registrasi
@@ -74,8 +71,8 @@ const Register = () => {
               </Text>
             </Stack>
           </Box>
-          <Stack spacing={4} pt={6}>
-            <HStack>
+          <Stack spacing={2} pt={6}>
+            <Flex>
               <Box>
                 <FormControl id="firstName" isRequired>
                   <Input
@@ -86,6 +83,7 @@ const Register = () => {
                   />
                 </FormControl>
               </Box>
+              <Spacer />
               <Box>
                 <FormControl id="lastName">
                   <Input
@@ -96,7 +94,7 @@ const Register = () => {
                   />
                 </FormControl>
               </Box>
-            </HStack>
+            </Flex>
             <FormControl id="email" isRequired>
               <Input
                 type="email"
@@ -190,10 +188,10 @@ const Register = () => {
                 onClick={handleSubmit}
                 loadingText="Submitting"
                 size="lg"
-                bg={"blue.400"}
+                bg={"teal.400"}
                 color={"white"}
                 _hover={{
-                  bg: "blue.500",
+                  bg: "teal.900",
                 }}
               >
                 Submit

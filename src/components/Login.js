@@ -40,20 +40,15 @@ const LoginPage = () => {
   };
 
   return (
-    <Flex
-      minH={"80vh"}
-      align={"center"}
-      justify={"center"}
-      bg={useColorModeValue("white", "gray.800")}
-    >
+    <Flex minH={"80vh"} top="100px" left="35%" position={"fixed"}>
       <Stack spacing={8} mx={"auto"} maxW={"lg"}>
         <Box
           rounded={"lg"}
-          bg={useColorModeValue("white", "gray.700")}
+          bg={useColorModeValue("white", "#1A202C")}
           boxShadow={"lg"}
           p={8}
         >
-          <Box rounded={"lg"} bg={"orange"} boxShadow={"lg"} p={4}>
+          <Box rounded={"lg"} boxShadow={"lg"} p={4}>
             <Stack align={"center"}>
               <Heading fontSize={"4xl"}>Welcome Back...</Heading>
               <Text
@@ -101,9 +96,9 @@ const LoginPage = () => {
               <Button
                 onClick={handleSubmit}
                 mb={6}
-                bg={"blue.400"}
+                bg={"teal.400"}
                 color={"white"}
-                _hover={{ bg: "blue.500" }}
+                _hover={{ bg: "teal.900" }}
               >
                 Login
               </Button>
