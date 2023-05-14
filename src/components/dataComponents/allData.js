@@ -109,21 +109,26 @@ export const allVendors = () => {
 
 export const allProducts = ({ filters = {}, dummyState }) => {
   const [data, setData] = useState({ products: [] });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         const productsData = await fetchProducts(filters);
-        setData({ products: productsData });
+        setData(prevData => ({ ...prevData, products: productsData }));
+        setIsLoading(false);
       } catch (err) {
-        // Handle error
+        setError(err);
+        setIsLoading(false);
       }
     };
   
     fetchData();
-  }, [dummyState]); // Add dummyState as a dependency
+  }, [dummyState],[filters]); // Add dummyState as a dependency
 
-  return { data, setData };
+  return { data, setData, isLoading, error };
 };
 
 export const allOrders = () => {

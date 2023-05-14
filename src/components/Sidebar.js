@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Flex, Text, IconButton, Divider, Avatar, Heading } from "@chakra-ui/react";
-import { FiMenu, FiHome, FiFolder, FiDollarSign, FiSmile, FiShoppingCart, } from "react-icons/fi";
+import { FiMenu, FiCodesandbox, FiUser,FiDatabase,FiHome, FiFolder, FiDollarSign, FiSmile, FiShoppingCart, } from "react-icons/fi";
 import SideItem from "../components/SideItem";
 
 const Sidebar = () => {
@@ -37,9 +37,9 @@ const Sidebar = () => {
           />
           <SideItem navSize={navSize} icon={FiHome} title="Dashboard" active={activeItem === "dashboard"} to="/dashboard" onClick={() => handleItemClick("dashboard")} />
           <SideItem navSize={navSize} icon={FiDollarSign} title="Order" active={activeItem === "order"} to="/orders" onClick={() => handleItemClick("dashboard")} />
-          <SideItem navSize={navSize} icon={FiFolder} title="Warehouse" active={activeItem === "warehouse"} onClick={handleItemClick} />
-          <SideItem navSize={navSize} icon={FiShoppingCart} title="Product" active={activeItem === "product"} to="/products" onClick={handleItemClick} />
-          <SideItem navSize={navSize} icon={FiSmile} title="Users" active={activeItem === "users"} onClick={handleItemClick} />
+          <SideItem navSize={navSize} icon={FiDatabase} title="Warehouse" active={activeItem === "warehouse"} onClick={handleItemClick} />
+          <SideItem navSize={navSize} icon={FiCodesandbox} title="Product" active={activeItem === "product"} to="/products" onClick={handleItemClick} />
+          <SideItem navSize={navSize} icon={FiUser} title="Users" active={activeItem === "users"} onClick={handleItemClick} />
         </Flex>
 
 
