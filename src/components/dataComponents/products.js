@@ -469,9 +469,8 @@ export const AddStockForm = ({ data, setData, warehouses, vendors, handleAddProd
 };
 
 //filter component
-function FilterForm({ filters, setFilters, warehouses, vendors, totalItems,handleApplyFilters, pageOptions}) {
+function FilterForm({ filters, setFilters, warehouses, vendors, category, totalItems,handleApplyFilters, pageOptions}) {
   //category.categories
-  const { category } = allCategories();
   const limitOptions = [
     { label: "5", value: 5 },
     { label: "10", value: 10 },
@@ -568,26 +567,6 @@ function FilterForm({ filters, setFilters, warehouses, vendors, totalItems,handl
           placeholder="Search products"
         />
       </FormControl>
-      {/* <FormControl>
-        <FormLabel htmlFor="page">Page</FormLabel>
-        <Select id="page" name="page" value={filters.page} onChange={handleChange}>
-          {pageOptions.map(page => (
-            <option key={page} value={page}>
-              {page}
-            </option>
-          ))}
-        </Select>
-      </FormControl>
-      <FormControl>
-        <FormLabel htmlFor="limit">Limit</FormLabel>
-        <Select id="limit" name="limit" value={filters.limit} onChange={handleChange}>
-        {limitOptions.map(option => (
-          <option key={option.value} value={option.value}>
-            {option.label} ({totalItems > 0 ? Math.min(totalItems, option.value) : 0} items)
-          </option>
-        ))}
-      </Select>
-      </FormControl> */}
       <FormControl>
         <FormLabel htmlFor="limit">Limit</FormLabel>
         <Select id="limit" name="limit" value={filters.limit} onChange={handleChange}>
