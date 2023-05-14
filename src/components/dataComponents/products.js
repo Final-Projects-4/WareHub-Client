@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { postProduct, postStock } from '@/fetching/postData';
 import { InputGroup, HStack, useToast, Link, Stack, FormControl, FormLabel, Text, Button, Card, Collapse, Box, InputRightElement, Input, InputLeftElement, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, VStack, Spacer} from "@chakra-ui/react";
 import { allProducts, allVendors, allWarehouses, allCategories} from './allData';
-import { FiSearch, FiEdit, FiPlus, FiMaximize } from 'react-icons/fi';
+import { FiSearch, FiEdit, FiPlus, FiMaximize, FiDelete, FiDivideCircle } from 'react-icons/fi';
 import { deleteProduct } from '@/fetching/deleteData';
 
 //Parent
@@ -316,7 +316,7 @@ export const RenderProducts = ({ data, setData , filters}) => {
             <Td>{vendorSelect}</Td>
             <Td>{totalQuantity}</Td>
             <Td>
-              <Button onClick={() => handleDelete(p.id)}>Delete</Button>
+              <Button leftIcon={<FiDivideCircle />} onClick={() => handleDelete(p.id)}>Delete</Button>
             </Td>
           </Tr>
         );
@@ -607,13 +607,19 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
       </FormControl>
     </Stack>
   </Box>
-  <Button type="submit" leftIcon={<FiSearch />} ml={4}>
-    Apply filters
-  </Button>
-  
-  <Button onClick={handleClearFilters}>
-    Clear Filters
+    <VStack>
+    <Button type="submit" leftIcon={<FiSearch />}>
+      Apply filters
     </Button>
+    
+    <Button 
+    onClick={handleClearFilters}
+    leftIcon={<FiDelete />}
+    >
+      Clear Filters
+      </Button>
+    </VStack>
+    
     </Flex>
     </form>
 
