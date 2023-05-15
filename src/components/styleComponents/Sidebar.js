@@ -3,6 +3,7 @@ import { Flex, Text, IconButton, Divider, Avatar, Heading } from "@chakra-ui/rea
 import { FiMenu, FiCodesandbox, FiUser,FiDatabase,FiHome, FiFolder, FiDollarSign, FiSmile, FiShoppingCart, } from "react-icons/fi";
 import SideItem from "./SideItem";
 
+
 const Sidebar = () => {
   const [navSize, changeNavSize] = useState("large");
   const [activeItem, setActiveItem] = useState();

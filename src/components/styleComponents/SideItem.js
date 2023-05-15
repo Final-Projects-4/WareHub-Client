@@ -4,7 +4,7 @@ import { Flex, Text, Icon, Link, Menu, MenuButton } from "@chakra-ui/react";
 const SideItem = ({ icon, title, active, navSize, to, onClick }) => {
   return (
     <Link
-      backgroundColor={active && "#ff99c8"}
+      backgroundColor={active ? "#ff99c8" : "none"} // change background color if active
       p={3}
       borderRadius={8}
       _hover={{ textDecor: "none", backgroundColor: "#ff99c8" }}
@@ -25,6 +25,5 @@ const SideItem = ({ icon, title, active, navSize, to, onClick }) => {
     </Link>
   );
 };
-
 
 export default SideItem;
