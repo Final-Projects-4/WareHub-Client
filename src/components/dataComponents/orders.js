@@ -4,10 +4,10 @@ import {
   Container,
   FormControl,
   FormLabel,
-  Input, InputGroup, InputLeftElement, ButtonGroup,
+  Input, ButtonGroup,
   Select,
   Button,
-  Box, Spinner,
+  Box,
   Card,
   Collapse, HStack, Link , Text, Thead, Th, Tbody, Heading, Table, useToast, VStack, Tr, Td, Flex
 } from '@chakra-ui/react';
@@ -52,14 +52,14 @@ function Order() {
     <>
       <VStack>
       <FilterForm
-      filters={filters}
-      setFilters={setFilters}
-      handleApplyFilters={handleApplyFilters}
-      warehouses={warehouses}
-      customers={customers}
-      pageOptions={Array.from({length: totalPages}, (_, i) => i + 1)}
-      totalData={totalData}
-      />
+        filters={filters}
+        setFilters={setFilters}
+        handleApplyFilters={handleApplyFilters}
+        warehouses={warehouses}
+        customers={customers}
+        pageOptions={Array.from({length: totalPages}, (_, i) => i + 1)}
+        totalData={totalData}
+        />
       <HStack>
         <RenderOrders 
         data={data} 
@@ -73,9 +73,6 @@ function Order() {
         handleAddOrder={handleAddOrder}
         />
       </HStack>
-      
-      
-        
       </VStack>
     </>
   );
@@ -446,11 +443,11 @@ function FilterForm({ filters, setFilters, warehouses, customers,totalData,handl
     <FormControl>
     <FormLabel htmlFor="page">Page</FormLabel>
     <Select
-               id="page"
-               name="page"
-               value={filters.page}
-               onChange={handleChange}
-             >
+    id="page"
+    name="page"
+    value={filters.page}
+    onChange={handleChange}
+    >
     {pageOptions.map((page) => (
     <option key={page} value={page}>
     {page}
@@ -461,11 +458,11 @@ function FilterForm({ filters, setFilters, warehouses, customers,totalData,handl
     <FormControl>
     <FormLabel htmlFor="sort">Sort</FormLabel>
     <Select
-               id="sort"
-               name="sort"
-               value={filters.sort}
-               onChange={handleChange}
-             >
+    id="sort"
+    name="sort"
+    value={filters.sort}
+    onChange={handleChange}
+    >
     <option value="">None</option>
     <option value="name:ASC">Name (A-Z)</option>
     <option value="name:DESC">Name (Z-A)</option>

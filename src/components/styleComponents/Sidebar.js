@@ -1,6 +1,15 @@
 import React, { useState } from "react";
-import { Flex, Text, IconButton, Divider, Avatar, Heading } from "@chakra-ui/react";
-import { FiMenu, FiCodesandbox, FiUser,FiDatabase,FiHome, FiFolder, FiDollarSign, FiSmile, FiShoppingCart, } from "react-icons/fi";
+import { Flex, IconButton } from "@chakra-ui/react";
+import {
+FiBarChart2, 
+FiMenu, 
+FiCodesandbox, 
+FiUsers,
+FiPackage,
+FiUser, 
+FiHome, 
+FiDollarSign, 
+FiLayout} from "react-icons/fi";
 import SideItem from "./SideItem";
 
 
@@ -36,14 +45,15 @@ const Sidebar = () => {
               else changeNavSize("small");
             }}
           />
-          <SideItem navSize={navSize} icon={FiHome} title="Dashboard" active={activeItem === "dashboard"} to="/dashboard" onClick={() => handleItemClick("dashboard")} />
-          <SideItem navSize={navSize} icon={FiDollarSign} title="Order" active={activeItem === "order"} to="/orders" onClick={() => handleItemClick("dashboard")} />
-          <SideItem navSize={navSize} icon={FiDatabase} title="Warehouse" active={activeItem === "warehouse"} onClick={handleItemClick} />
-          <SideItem navSize={navSize} icon={FiCodesandbox} title="Product" active={activeItem === "product"} to="/products" onClick={handleItemClick} />
+          <SideItem navSize={navSize} icon={FiBarChart2} title="Dashboard" active={activeItem === "dashboard"} to="/dashboard" onClick={() => handleItemClick("dashboard")} />
+          <SideItem navSize={navSize} icon={FiHome} title="Warehouse" active={activeItem === "warehouse"} onClick={handleItemClick} />
+          <SideItem navSize={navSize} icon={FiPackage} title="Product" active={activeItem === "product"} to="/products" onClick={handleItemClick} />
+          <SideItem navSize={navSize} icon={FiLayout} title="Order" active={activeItem === "order"} to="/orders" onClick={() => handleItemClick("dashboard")} /> 
+          <SideItem navSize={navSize} icon={FiDollarSign} title="ExpenseRevenues" active={activeItem === "expenserevenues"} onClick={handleItemClick} />
+          <SideItem navSize={navSize} icon={FiCodesandbox} title="Category" active={activeItem === "category"} onClick={handleItemClick} />
+          <SideItem navSize={navSize} icon={FiUsers} title="Vendors" active={activeItem === "vendors"} onClick={handleItemClick} />
           <SideItem navSize={navSize} icon={FiUser} title="Users" active={activeItem === "users"} onClick={handleItemClick} />
         </Flex>
-
-
       </Flex>
     </>
   );
