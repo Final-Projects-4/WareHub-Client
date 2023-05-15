@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { postProduct, postStock } from '@/fetching/postData';
-import { InputGroup, HStack, useToast, Link, Stack, FormControl, FormLabel, Text, Button, Card, Collapse, Box, InputRightElement, Input, InputLeftElement, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, VStack, Spacer} from "@chakra-ui/react";
+import { InputGroup, HStack, useToast, Link, Stack, FormControl, FormLabel, Text, Button, Card, Collapse, Box, Input, InputLeftElement, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, VStack, Spacer} from "@chakra-ui/react";
 import { allProducts, allVendors, allWarehouses, allCategories} from './allData';
 import { FiSearch, FiEdit, FiPlus, FiMaximize, FiDelete, FiDivideCircle } from 'react-icons/fi';
 import { deleteProduct } from '@/fetching/deleteData';
@@ -22,7 +22,7 @@ function Product() {
   const { data, setData, isLoading, error } = allProducts({ filters, dummyState });
   const { products, totalItems, totalPages, currentPage } = data;
   const { warehouses } = allWarehouses();
-  console.log(data)
+
   function handleAddProduct(details) {
     setData(prevData => ({
       ...prevData,
@@ -35,7 +35,6 @@ function Product() {
   }
   const { vendors } = allVendors();
   const { category, setCategory } = allCategories();
-  
 
   return(
     <>
@@ -219,6 +218,7 @@ export const RenderProducts = ({ data, setData , filters}) => {
   const toast = useToast();
   const router = useRouter();
   const tableBody = renderProduct(data.products);
+
   function renderProduct(data) {
     
     return data.map((p) => {
@@ -570,12 +570,12 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
       <FormControl>
         <FormLabel htmlFor="limit">Limit</FormLabel>
         <Select id="limit" name="limit" value={filters.limit} onChange={handleChange}>
-        {limitOptions.map(option => (
-          <option key={option.value} value={option.value}>
-            {option.label} ({totalItems > 0 ? Math.min(totalItems, option.value) : 0} items)
-          </option>
-        ))}
-      </Select>
+          {limitOptions.map(option => (
+            <option key={option.value} value={option.value}>
+              {option.label} ({totalItems > 0 ? Math.min(totalItems, option.value) : 0} items)
+            </option>
+          ))}
+        </Select>
       </FormControl>
       <FormControl>
         <FormLabel htmlFor="page">Page</FormLabel>
