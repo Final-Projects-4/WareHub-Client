@@ -22,6 +22,7 @@ function Product() {
   const { data, setData, isLoading, error } = allProducts({ filters, dummyState });
   const { products, totalItems, totalPages, currentPage } = data;
   const { warehouses } = allWarehouses();
+
   function handleAddProduct(details) {
     setData(prevData => ({
       ...prevData,
@@ -217,6 +218,7 @@ export const RenderProducts = ({ data, setData , filters}) => {
   const toast = useToast();
   const router = useRouter();
   const tableBody = renderProduct(data.products);
+
   function renderProduct(data) {
     
     return data.map((p) => {
@@ -568,12 +570,12 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
       <FormControl>
         <FormLabel htmlFor="limit">Limit</FormLabel>
         <Select id="limit" name="limit" value={filters.limit} onChange={handleChange}>
-        {limitOptions.map(option => (
-          <option key={option.value} value={option.value}>
-            {option.label} ({totalItems > 0 ? Math.min(totalItems, option.value) : 0} items)
-          </option>
-        ))}
-      </Select>
+          {limitOptions.map(option => (
+            <option key={option.value} value={option.value}>
+              {option.label} ({totalItems > 0 ? Math.min(totalItems, option.value) : 0} items)
+            </option>
+          ))}
+        </Select>
       </FormControl>
       <FormControl>
         <FormLabel htmlFor="page">Page</FormLabel>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { fetchProducts, fetchOrders, fetchCustomers, fetchExpenses, fetchRevenues, fetchOrderDetails, fetchStocks, fetchVendors, fetchWarehouses, fetchCategories } from '@/fetching/fetchData';
-import { filter } from '@chakra-ui/react';
+
 
 export const allData = () => {
   const [data, setData] = useState(
@@ -154,7 +154,7 @@ export const allOrders = ({filters = {}, dummyState}) => {
     fetchData();
   }, [dummyState, filters]);
 
-  return { data, setData, isLoading, error };
+  return { data, setData, isLoading, setIsLoading,error };
 };
 
 export const allExpenses = () => {
