@@ -216,7 +216,6 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
       </Card>
     </Box>
   );
-   
 };
 
 //Add Stock Form

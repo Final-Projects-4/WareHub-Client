@@ -8,6 +8,7 @@ import {
   Select,
   Button,
   Box,
+
   Card,
   Collapse, HStack, Link , Text, Thead, Th, Tbody, Heading, Table, useToast, VStack, Tr, Td, Flex
 } from '@chakra-ui/react';
@@ -31,7 +32,6 @@ function Order() {
   const { orders, totalData , totalPages, currentPage } = data;
   const { customers } = allCustomers();
   const { warehouses } = allWarehouses()
-  console.log(customers)
   
   function handleAddOrder(details) {
     setData(prevData => ({

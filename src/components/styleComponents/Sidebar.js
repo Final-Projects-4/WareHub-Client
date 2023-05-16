@@ -45,6 +45,7 @@ const Sidebar = () => {
               else changeNavSize("small");
             }}
           />
+
           <SideItem navSize={navSize} icon={FiBarChart2} title="Dashboard" active={activeItem === "dashboard"} to="/dashboard" onClick={() => handleItemClick("dashboard")} />
           <SideItem navSize={navSize} icon={FiHome} title="Warehouse" active={activeItem === "warehouse"} to="/warehouse"onClick={handleItemClick} />
           <SideItem navSize={navSize} icon={FiPackage} title="Product" active={activeItem === "product"} to="/products" onClick={handleItemClick} />
@@ -54,6 +55,7 @@ const Sidebar = () => {
           <SideItem navSize={navSize} icon={FiUsers} title="Vendors" active={activeItem === "vendors"} to="vendor"onClick={handleItemClick} />
           <SideItem navSize={navSize} icon={FiUser} title="Customers" active={activeItem === "customers"} to="/customers" onClick={handleItemClick} />
         </Flex>
+
       </Flex>
     </>
   );
