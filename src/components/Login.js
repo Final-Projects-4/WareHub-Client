@@ -12,6 +12,8 @@ import {
   useColorModeValue,
   Box,
   Link,
+  useToast,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { postLoginData } from "@/fetching/postData";
@@ -20,10 +22,12 @@ import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 // import Link from "next/link";
 
 const LoginPage = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const toast = useToast();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -33,14 +37,34 @@ const LoginPage = () => {
         const { token } = data;
         sessionStorage.setItem("accessToken", token);
         router.push("/dashboard");
+        toast({
+          title: "Login",
+          description: "You have successfully Login.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       })
       .catch((err) => {
-        console.log(err);
+        const error = new Error(e);
+        toast({
+          title: "An error occurred.",
+          description: error?.message || "An error occurred. Please try again.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
       });
   };
 
   return (
-    <Flex minH={"80vh"} top="100px" left="35%" position={"fixed"}>
+    <Flex
+      minH={"80vh"}
+      top="100px"
+      left="35%"
+      position={"fixed"}
+      onClose={onClose}
+    >
       <Stack spacing={8} mx={"auto"} maxW={"lg"}>
         <Box
           rounded={"lg"}

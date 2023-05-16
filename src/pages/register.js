@@ -18,36 +18,90 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { postRegisterData } from "@/fetching/postData";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [first_name, setFirst_Name] = useState("");
+  const [last_name, setLast_Name] = useState("");
   const [email, setEmail] = useState("");
-  const [userName, setUserName] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [address, setAddres] = useState("");
   const [company, setCompany] = useState("");
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    console.log(
-      postRegisterData(
-        firstName,
-        lastName,
-        email,
-        userName,
-        password,
-        address,
-        company
-      )
-    );
-  };
-
   const toast = useToast();
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      return;
+    }
+
+    postRegisterData(
+      first_name,
+      last_name,
+      email,
+      username,
+      password,
+      address,
+      company
+    )
+      .then(() => {
+        router.push("/");
+        toast({
+          title: "Registered",
+          description: "You have successfully registered.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      })
+      .catch((err) => {
+        const error = new Error(e);
+        toast({
+          title: "An error occurred.",
+          description: error?.message || "An error occurred. Please try again.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      });
+    //   if (password !== confirmPassword) {
+    //     return;
+    //   }
+    //   try {
+    //     await postRegisterData(
+    //       first_name,
+    //       last_name,
+    //       email,
+    //       username,
+    //       password,
+    //       address,
+    //       company
+    //     );
+    //     toast({
+    //       title: "Registered",
+    //       description: "You have successfully registered.",
+    //       status: "success",
+    //       duration: 3000,
+    //       isClosable: true,
+    //     });
+    //     router.push("/");
+    //   } catch (e) {
+    //     const error = new Error(e);
+    //     toast({
+    //       title: "An error occurred.",
+    //       description: error?.message || "An error occurred. Please try again.",
+    //       status: "error",
+    //       duration: 3000,
+    //       isClosable: true,
+    //     });
+    //   }
+    //   setError(error?.message || "An error occurred");
+  };
 
   return (
     <Flex align={"center"} justify={"center"}>
@@ -78,8 +132,8 @@ const Register = () => {
                   <Input
                     type="text"
                     variant="flushed"
-                    placeHolder="First Name"
-                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="First Name"
+                    onChange={(e) => setFirst_Name(e.target.value)}
                   />
                 </FormControl>
               </Box>
@@ -89,8 +143,8 @@ const Register = () => {
                   <Input
                     type="text"
                     variant="flushed"
-                    placeHolder="Last Name"
-                    onChange={(e) => setLastName(e.target.value)}
+                    placeholder="Last Name"
+                    onChange={(e) => setLast_Name(e.target.value)}
                   />
                 </FormControl>
               </Box>
@@ -99,7 +153,7 @@ const Register = () => {
               <Input
                 type="email"
                 variant="flushed"
-                placeHolder="Email address"
+                placeholder="Email address"
                 onChange={(e) => setEmail(e.target.value)}
               />
             </FormControl>
@@ -107,8 +161,8 @@ const Register = () => {
               <Input
                 type="text"
                 variant="flushed"
-                placeHolder="User Name"
-                onChange={(e) => setUserName(e.target.value)}
+                placeholder="User Name"
+                onChange={(e) => setUsername(e.target.value)}
               />
             </FormControl>
 
@@ -118,7 +172,7 @@ const Register = () => {
                   <Input
                     type={showPassword ? "text" : "password"}
                     variant="flushed"
-                    placeHolder="Password"
+                    placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
@@ -140,7 +194,7 @@ const Register = () => {
                   <Input
                     type={showConfirmPassword ? "text" : "password"}
                     variant="flushed"
-                    placeHolder="Confirm Password"
+                    placeholder="Confirm Password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                   />
@@ -170,7 +224,7 @@ const Register = () => {
               <Input
                 type="text"
                 variant="flushed"
-                placeHolder="Address"
+                placeholder="Address"
                 onChange={(e) => setAddres(e.target.value)}
               />
             </FormControl>
@@ -178,7 +232,7 @@ const Register = () => {
               <Input
                 type="text"
                 variant="flushed"
-                placeHolder="Company"
+                placeholder="Company"
                 onChange={(e) => setCompany(e.target.value)}
               />
             </FormControl>

@@ -1,35 +1,42 @@
 import { baseUrl } from "./fetchData";
+
 //Login
 export async function postLoginData(username, password) {
-    const response = await fetch(`${baseUrl}users/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        
-      },
-      body: JSON.stringify({
-        username,
-        password
-      })
-    });
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    return data;
+  const response = await fetch(`${baseUrl}users/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      username,
+      password,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data;
 }
 
 //Create
 export async function postProduct(
-  name, price, weight, size, description, SKU, category_id, accessToken
+  name,
+  price,
+  weight,
+  size,
+  description,
+  SKU,
+  category_id,
+  accessToken
 ) {
   const response = await fetch(`${baseUrl}products/create`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
       name,
@@ -39,150 +46,198 @@ export async function postProduct(
       description,
       SKU,
       category_id,
-    })
+    }),
   });
-  
+
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-  
+
   const data = await response.json();
   return data;
-};
+}
 
-export async function postCategory(
-  name, description, accessToken
-) {
+export async function postCategory(name, description, accessToken) {
   const response = await fetch(`${baseUrl}categories/create`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
       name,
-      description
-    })
+      description,
+    }),
   });
-  
+
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-  
+
   const data = await response.json();
   return data;
-};
+}
 
-export async function postVendor(
-  name, country, accessToken
-) {
+export async function postVendor(name, country, accessToken) {
   const response = await fetch(`${baseUrl}vendors/create`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
       name,
       country,
-
-    })
+    }),
   });
-  
+
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-  
+
   const data = await response.json();
   return data;
-};
+}
 
-export async function postWarehouse(
-  name, city, address, accessToken
-) {
+export async function postWarehouse(name, city, address, accessToken) {
   const response = await fetch(`${baseUrl}warehouses/create`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
-      name, city, address
-    })
+      name,
+      city,
+      address,
+    }),
   });
-  
+
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-  
+
   const data = await response.json();
   return data;
-};
+}
 
 export async function postOrder(
-  name, customer_id, warehouse_id, order_products, accessToken
+  name,
+  customer_id,
+  warehouse_id,
+  order_products,
+  accessToken
 ) {
   const response = await fetch(`${baseUrl}orders/create`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
-      name, customer_id, warehouse_id, order_products
-    })
+      name,
+      customer_id,
+      warehouse_id,
+      order_products,
+    }),
   });
-  
+
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-  
+
   const data = await response.json();
   return data;
-};
+}
 
 export async function postStock(
-  product_id, quantity, vendor_id, warehouse_id, accessToken
+  product_id,
+  quantity,
+  vendor_id,
+  warehouse_id,
+  accessToken
 ) {
   const response = await fetch(`${baseUrl}products/stocks`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
-      product_id, quantity, vendor_id, warehouse_id, accessToken
-    })
+      product_id,
+      quantity,
+      vendor_id,
+      warehouse_id,
+      accessToken,
+    }),
   });
-  
+
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-  
+
   const data = await response.json();
   return data;
-};
+}
 
 export async function postCustomer(
-  first_name, last_name, email, address, company, accessToken
+  first_name,
+  last_name,
+  email,
+  address,
+  company,
+  accessToken
 ) {
   const response = await fetch(`${baseUrl}customers/create`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
-      first_name, last_name, email, address, company, accessToken
-    })
+      first_name,
+      last_name,
+      email,
+      address,
+      company,
+      accessToken,
+    }),
   });
-  
+
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-  
+
   const data = await response.json();
   return data;
-};
+}
 
+export async function postRegisterData(
+  first_name,
+  last_name,
+  email,
+  username,
+  password,
+  address,
+  company
+) {
+  const response = await fetch(`${baseUrl}users/register`, {
+    method: "POST",
+    body: JSON.stringify({
+      first_name,
+      last_name,
+      email,
+      username,
+      password,
+      address,
+      company,
+    }),
+  });
 
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data;
+}

@@ -6,7 +6,7 @@ const Home = () => {
   return (
     <Flex>
       <Landing />
-      <LoginPage />
+      {/* <LoginPage /> */}
     </Flex>
   );
 };

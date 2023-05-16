@@ -51,7 +51,7 @@ const Landing = () => {
   };
 
   return (
-    <Box bg="#202626" color="white" py={16} px={0} position={"absolute"}>
+    <Box bg="#202626" color="white" py={16} px={0}>
       {/* Header */}
       <Flex justify="space-between" align="center" p={4}>
         <motion.div
