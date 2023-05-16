@@ -32,75 +32,42 @@ const Register = () => {
   const [address, setAddres] = useState("");
   const [company, setCompany] = useState("");
   const toast = useToast();
-  const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (password !== confirmPassword) {
       return;
     }
-
-    postRegisterData(
-      first_name,
-      last_name,
-      email,
-      username,
-      password,
-      address,
-      company
-    )
-      .then(() => {
-        router.push("/");
-        toast({
-          title: "Registered",
-          description: "You have successfully registered.",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
-      })
-      .catch((err) => {
-        const error = new Error(e);
-        toast({
-          title: "An error occurred.",
-          description: error?.message || "An error occurred. Please try again.",
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-        });
+    try {
+      await postRegisterData(
+        first_name,
+        last_name,
+        email,
+        username,
+        password,
+        address,
+        company
+      );
+      toast({
+        title: "Registered",
+        description: "You have successfully registered.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
       });
-    //   if (password !== confirmPassword) {
-    //     return;
-    //   }
-    //   try {
-    //     await postRegisterData(
-    //       first_name,
-    //       last_name,
-    //       email,
-    //       username,
-    //       password,
-    //       address,
-    //       company
-    //     );
-    //     toast({
-    //       title: "Registered",
-    //       description: "You have successfully registered.",
-    //       status: "success",
-    //       duration: 3000,
-    //       isClosable: true,
-    //     });
-    //     router.push("/");
-    //   } catch (e) {
-    //     const error = new Error(e);
-    //     toast({
-    //       title: "An error occurred.",
-    //       description: error?.message || "An error occurred. Please try again.",
-    //       status: "error",
-    //       duration: 3000,
-    //       isClosable: true,
-    //     });
-    //   }
-    //   setError(error?.message || "An error occurred");
+      router.push("/");
+    } catch (e) {
+      const error = new Error(e);
+      toast({
+        title: "An error occurred.",
+        description: error?.message || "An error occurred. Please try again.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+    setError(error?.message || "An error occurred");
   };
 
   return (
