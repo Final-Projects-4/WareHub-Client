@@ -30,6 +30,7 @@ vendors = [{}] id user_id name country
 warehouses = [{}] id user_id name city address
 categories = [{}] id name description
 productvendors = [{}] product_id vendor_id
+customers
 */
 
 export const fetchStocks = async () => {

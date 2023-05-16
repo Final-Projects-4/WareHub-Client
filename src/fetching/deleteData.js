@@ -85,6 +85,23 @@ export async function deleteRevenue(revenueId, accessToken) {
   return data;
 };
 
+export async function deleteExpense(expenseId, accessToken) {
+  const response = await fetch(`${baseUrl}expenses/${expenseId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken}`
+    },
+  });
+  
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  
+  const data = await response.json();
+  return data;
+};
+
 export async function deleteCustomer(customerId, accessToken) {
   const response = await fetch(`${baseUrl}customers/${customerId}`, {
     method: 'DELETE',
