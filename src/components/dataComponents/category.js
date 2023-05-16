@@ -66,14 +66,14 @@ export const AddCategoryForm = ({handleAddCategory}) => {
         description: ''
       });
       toast({
-        title: 'Product created.',
+        title: 'Category created.',
         status: 'success',
         duration: 5000,
         isClosable: true,
       });
       } catch (err) {
         toast({
-          title: 'Failed to create product.',
+          title: 'Failed to create Category.',
           description: err.message,
           status: 'error',
           duration: 5000,
@@ -120,7 +120,7 @@ export const RenderCategory = ({category, setCategory}) => {
     return data.categories.map((c) => {
 
       const handleCategoryDetails = (categoryId) => {
-        router.push(`/categories/${categoryId}`)
+        router.push(`/category/${categoryId}`)
       }
 
 
