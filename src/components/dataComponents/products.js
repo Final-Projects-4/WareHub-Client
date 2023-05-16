@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { postProduct, postStock } from '@/fetching/postData';
-import { InputGroup, HStack, useToast, Link, Stack, FormControl, FormLabel, Text, Button, Card, Collapse, Box, Input, InputLeftElement, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, VStack, Spacer} from "@chakra-ui/react";
+import { InputGroup, IconButton,HStack, useToast, Link, Stack, FormControl, FormLabel, Text, Button, Card, Collapse, Box, Input, InputLeftElement, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, VStack, Spacer, Image} from "@chakra-ui/react";
 import { allProducts, allVendors, allWarehouses, allCategories} from './allData';
-import { FiSearch, FiEdit, FiPlus, FiMaximize, FiDelete, FiDivideCircle } from 'react-icons/fi';
+import { FiSearch, FiEdit, FiPlus, FiArrowLeft, FiArrowRight, FiMaximize, FiDelete, FiDivideCircle } from 'react-icons/fi';
 import { deleteProduct } from '@/fetching/deleteData';
 
 //Parent
@@ -39,7 +39,6 @@ function Product() {
   return(
     <>
     <Flex>
-      <VStack>
       <FilterForm 
       filters={filters} 
       setFilters={setFilters} 
@@ -48,20 +47,12 @@ function Product() {
       vendors={vendors} 
       category={category}
       pageOptions={Array.from({length: totalPages}, (_, i) => i + 1)}
-      totalItems={totalItems}/>
-        {isLoading ? (
-        <div>Loading...</div>
-      ) : error ? (
-        <div>Error: {error.message}</div>
-      ) : (
-        <RenderProducts data={data} setData={setData} filters={filters}/>
-      )}
-   
-      </VStack>
-      <Box pb={8}>
+      totalItems={totalItems}
+      data={data}
+      setData={setData}
+      />
       <Stack>
       <AddProductForm category={category} handleAddProduct={handleAddProduct} />
-      <Spacer/>
       <AddStockForm 
       data={data} 
       setData={setData} 
@@ -69,7 +60,6 @@ function Product() {
       warehouses={warehouses}
       vendors={vendors}/>
       </Stack>
-      </Box>
       </Flex>
     </>
   )
@@ -87,6 +77,7 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
     description: '',
     SKU: '',
     category_id: 0,
+    image: ''
   })
   
   const [isOpen, setIsOpen] = useState(false);
@@ -105,6 +96,7 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
           details.description,
           details.SKU,
           details.category_id,
+          details.image,
           accessToken
         );
         setDetails({
@@ -115,6 +107,7 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
           description: '',
           SKU: '',
           category_id: 0,
+          image: ''
         });
         toast({
           title: 'Product created.',
@@ -140,8 +133,14 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
     });
   };
 
+  const handleImageChange = (e) => {
+    setDetails((prev) => {
+      return { ...prev, image: e.target.files[0] };
+    });
+  };
+
   return (
-    <Box >
+    <Box>
       <Card mt={4} bgColor="transparent" borderRadius={10}>
         <Button as={FiPlus} onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? 'Cancel' : '+ Product'}
@@ -203,6 +202,12 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
                 </option>
               ))}
             </Select>
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              mb={4}
+            />
             <Button type="submit" colorScheme="green">
               Submit
             </Button>
@@ -210,141 +215,6 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
         </Collapse>
       </Card>
     </Box>
-  );  
-};
-
-//Render products with details
-export const RenderProducts = ({ data, setData , filters}) => {
-  const toast = useToast();
-  const router = useRouter();
-  const tableBody = renderProduct(data.products);
-
-  function renderProduct(data) {
-    
-    return data.map((p) => {
-      const warehousesForProduct = p.Warehouses ? p.Warehouses.map((w) => ({
-        id: p.id,
-        name: w.name,
-        WarehouseStock: w.WarehouseStock,
-      })) : [];
-
-      const totalQuantity = warehousesForProduct.reduce((acc, w) => acc + w.WarehouseStock.quantity, 0);
-
-      const vendorsForProduct = p.Vendors ? p.Vendors.map((v) => ({
-        id: p.id,
-        name: v.name,
-      })) : [];
-
-      const warehouseSelect =
-        warehousesForProduct.length > 1 ? (
-          <Select variant="unstyled">
-            {warehousesForProduct.map((w) => (
-              <option key={w.name}>
-                {w.name} Q({w.WarehouseStock.quantity})
-              </option>
-            ))}
-          </Select>
-        ) : (
-          <span>
-            {warehousesForProduct[0]?.name} ({warehousesForProduct[0]?.WarehouseStock.quantity})
-          </span>
-        );
-
-      const vendorSelect =
-        vendorsForProduct.length > 1 ? (
-          <Select variant="unstyled">
-            {vendorsForProduct.map((v) => (
-              <option key={v.name}>{v.name}</option>
-            ))}
-          </Select>
-        ) : (
-          <span>{vendorsForProduct[0]?.name}</span>
-        );
-
-
-        function handleDelete(productId) {
-          const accessToken = sessionStorage.getItem('accessToken');
-          deleteProduct(productId, accessToken)
-            .then(() => {
-              toast({
-                title: 'Product deleted',
-                status: 'success',
-                duration: 3000,
-                isClosable: true,
-              });
-              setData((prevData) => ({ ...prevData, products: prevData.products.filter((p) => p.id !== productId) }));
-            })
-            .catch((error) => {
-              toast({
-                title: 'Error deleting product',
-                description: error.message,
-                status: 'error',
-                duration: 3000,
-                isClosable: true,
-              });
-            });
-        }
-
-        const handleProductDetails = (productId) => {
-          router.push(`/products/${productId}`)
-        }
-        return (
-          <Tr key={p.id}>
-            <Td>
-            <HStack>
-            <Link
-              onClick={() => handleProductDetails(p.id)}
-              _hover={{
-                textDecoration: 'glow',
-                textShadow: '0 0 8px #fff, 0 0 12px #fff, 0 0 16px #fff',
-              }}
-            >
-              {p.name}
-              <Text fontSize="sm" color="gray.500" ml={1} display="inline">
-              <FiEdit />
-              </Text>
-            </Link>
-            </HStack>
-              </Td>
-              <Td>
-              {p.Categories && p.Categories.map((c) => (
-                <span key={c.id}>{c.name}</span>
-              ))}
-            </Td> 
-
-            <Td>{warehouseSelect}</Td>
-            <Td>{vendorSelect}</Td>
-            <Td>{totalQuantity}</Td>
-            <Td>
-              <Button leftIcon={<FiDivideCircle />} onClick={() => handleDelete(p.id)}>Delete</Button>
-            </Td>
-          </Tr>
-        );
-    });
-  }
-
-  
-  return (
-      <Flex align="center" justify="center" direction="column" top="0"
-      bottom="0"
-      left="0"
-      right="0">
-        <Heading as="h2" size="lg" mb="4">
-          Product List
-        </Heading>
-        <Table>
-          <Thead style={{ position: "sticky", top: 0 }}>
-            <Tr>
-              <Th>Lists</Th>
-              <Th>Category</Th>
-              <Th>Warehouse</Th>
-              <Th>Vendor</Th>
-              <Th>Quantity</Th>
-            </Tr>
-          </Thead>
-          <Tbody>{tableBody}</Tbody>
-        </Table>
-      </Flex>
   );
 };
 
@@ -468,36 +338,201 @@ export const AddStockForm = ({ data, setData, warehouses, vendors, handleAddProd
     );
 };
 
-//filter component
-function FilterForm({ filters, setFilters, warehouses, vendors, category, totalItems,handleApplyFilters, pageOptions}) {
+//filter and render component
+function FilterForm({ filters, setFilters, warehouses, vendors, category, totalItems, handleApplyFilters, pageOptions, data, setData}) {
   //category.categories
+  const toast = useToast();
+  const router = useRouter();
   const limitOptions = [
     { label: "5", value: 5 },
     { label: "10", value: 10 },
     { label: "15", value: 15 },
     { label: "20", value: 20 },
   ];
+
   function handleChange(e) {
     const { name, value } = e.target;
-    setFilters(prevFilters => ({
-      ...prevFilters,
-      [name]: value
-    }));
-  }
+    if (name === 'page') {
+      onPageChange({ ...filters, [name]: value });
+    } else {
+      setFilters(prevFilters => ({
+        ...prevFilters,
+        [name]: value
+      }));
+    }
+  };
   //warehouses[]
   function handleSubmit(e) {
     e.preventDefault();
     handleApplyFilters();
-  }
+  };
 
   const handleClearFilters = () => {
     setFilters({ q: "", warehouse: "", vendor: "", page: 1, category:"",sort:'' });
   };
+
+  function renderProduct(data) {
+    return data.map((p) => {
+      const warehousesForProduct = p.Warehouses ? p.Warehouses.map((w) => ({
+        id: p.id,
+        name: w.name,
+        WarehouseStock: w.WarehouseStock,
+      })) : [];
+
+      const totalQuantity = warehousesForProduct.reduce((acc, w) => acc + w.WarehouseStock.quantity, 0);
+
+      const vendorsForProduct = p.Vendors ? p.Vendors.map((v) => ({
+        id: p.id,
+        name: v.name,
+      })) : [];
+
+      const warehouseSelect =
+        warehousesForProduct.length > 1 ? (
+          <Select variant="unstyled">
+            {warehousesForProduct.map((w) => (
+              <option key={w.name}>
+                {w.name} Q({w.WarehouseStock.quantity})
+              </option>
+            ))}
+          </Select>
+        ) : (
+          <span>
+            {warehousesForProduct[0]?.name} ({warehousesForProduct[0]?.WarehouseStock.quantity})
+          </span>
+        );
+
+      const vendorSelect =
+        vendorsForProduct.length > 1 ? (
+          <Select variant="unstyled">
+            {vendorsForProduct.map((v) => (
+              <option key={v.name}>{v.name}</option>
+            ))}
+          </Select>
+        ) : (
+          <span>{vendorsForProduct[0]?.name}</span>
+        );
+
+
+        function handleDelete(productId) {
+          const accessToken = sessionStorage.getItem('accessToken');
+          deleteProduct(productId, accessToken)
+            .then(() => {
+              toast({
+                title: 'Product deleted',
+                status: 'success',
+                duration: 3000,
+                isClosable: true,
+              });
+              setData((prevData) => ({ ...prevData, products: prevData.products.filter((p) => p.id !== productId) }));
+            })
+            .catch((error) => {
+              toast({
+                title: 'Error deleting product',
+                description: error.message,
+                status: 'error',
+                duration: 3000,
+                isClosable: true,
+              });
+            });
+        }
+
+        const handleProductDetails = (productId) => {
+          router.push(`/products/${productId}`)
+        }
+        return (
+          <Tr key={p.id}>
+            <Td>
+            <HStack>
+            <Link
+              onClick={() => handleProductDetails(p.id)}
+              _hover={{
+                textDecoration: 'glow',
+                textShadow: '0 0 8px #fff, 0 0 12px #fff, 0 0 16px #fff',
+              }}
+            >
+              {p.name}
+              <Text fontSize="sm" color="gray.500" ml={1} display="inline">
+              <FiEdit />
+              </Text>
+            </Link>
+            </HStack>
+              </Td>
+              <Td>
+              {p.Categories && p.Categories.map((c) => (
+                <span key={c.id}>{c.name}</span>
+              ))}
+            </Td> 
+
+            <Td>{warehouseSelect}</Td>
+            <Td>{vendorSelect}</Td>
+            <Td>{totalQuantity}</Td>
+            <Td>
+            <Image src={p.image}boxSize="50px" objectFit="cover" />
+            </Td>
+            <Td>
+              <Button leftIcon={<FiDivideCircle />} onClick={() => handleDelete(p.id)}>Delete</Button>
+            </Td>
+          </Tr>
+        );
+    });
+  };
+  
+  function PageSelect({ filters, pageOptions, onPageChange }) {
+    function handleChange(event) {
+      const { name, value } = event.target;
+      onPageChange({ ...filters, [name]: value });
+    }
+    function handlePrevPage() {
+      if (filters.page > 1) {
+        onPageChange({ ...filters, page: filters.page - 1 });
+      }
+    }
+  
+    function handleNextPage() {
+      if (filters.page < pageOptions.length) {
+        onPageChange({ ...filters, page: filters.page + 1 });
+      }
+    }
+    
+    return (
+      <Flex alignItems="center">
+        <IconButton
+          icon={<FiArrowLeft />}
+          aria-label="Previous page"
+          onClick={handlePrevPage}
+          mr={2}
+        />
+        <Select
+          id="page"
+          name="page"
+          value={filters.page}
+          onChange={handleChange}
+          flex={1}
+        >
+          {pageOptions.map((page) => (
+            <option key={page} value={page}>
+              {page}
+            </option>
+          ))}
+        </Select>
+        <IconButton
+          icon={<FiArrowRight />}
+          aria-label="Next page"
+          onClick={handleNextPage}
+          ml={2}
+        />
+      </Flex>
+    );
+  }
+  
+    
+  
+  const tableBody = renderProduct(data.products);
   
   return (
     <form onSubmit={handleSubmit}>
-    <Flex alignItems="center"  p={4}>
-  <Box flex="1">
+    <HStack spacing={4} alignItems="flex-end">
+    <Box flex="1">
     <Flex alignItems="center">
     <InputGroup mr={2}>
       <InputLeftElement pointerEvents="none" />
@@ -567,6 +602,29 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
           placeholder="Search products"
         />
       </FormControl>
+      
+    </Stack>
+    <Flex align="center" justify="center" direction="column" top="0"
+      bottom="0"
+      left="0"
+      right="0">
+        <Heading as="h2" size="lg" mb="4">
+          Product List
+        </Heading>
+        <Table>
+          <Thead style={{ position: "sticky", top: 0 }}>
+            <Tr>
+              <Th>Lists</Th>
+              <Th>Category</Th>
+              <Th>Warehouse</Th>
+              <Th>Vendor</Th>
+              <Th>Quantity</Th>
+            </Tr>
+          </Thead>
+          <Tbody>{tableBody}</Tbody>
+        </Table>
+      </Flex>
+      <HStack>
       <FormControl>
         <FormLabel htmlFor="limit">Limit</FormLabel>
         <Select id="limit" name="limit" value={filters.limit} onChange={handleChange}>
@@ -578,19 +636,8 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
         </Select>
       </FormControl>
       <FormControl>
-        <FormLabel htmlFor="page">Page</FormLabel>
-        <Select
-          id="page"
-          name="page"
-          value={filters.page}
-          onChange={handleChange}
-        >
-          {pageOptions.map((page) => (
-            <option key={page} value={page}>
-              {page}
-            </option>
-          ))}
-        </Select>
+      <FormLabel htmlFor="page">Page</FormLabel>
+      <PageSelect filters={filters} pageOptions={pageOptions} onPageChange={setFilters} />
       </FormControl>
       <FormControl>
         <FormLabel htmlFor="sort">Sort</FormLabel>
@@ -605,7 +652,7 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
           <option value="name:DESC">Name (Z-A)</option>
         </Select>
       </FormControl>
-    </Stack>
+      </HStack>
   </Box>
     <VStack>
     <Button type="submit" leftIcon={<FiSearch />}>
@@ -620,7 +667,7 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
       </Button>
     </VStack>
     
-    </Flex>
+    </HStack>
     </form>
 
   );

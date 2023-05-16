@@ -15,8 +15,42 @@ const updateData = async (url, id, body) => {
   
 
 export const updateProduct = async (id, updatedData) => {
-const data = await updateData("products", id, updatedData);
-return data;
+  const data = await updateData("products", id, updatedData);
+  return data;
 };
-  
+
+export const updateOrder = async (id, updatedData) => {
+  const data = await updateData("orders", id, updatedData);
+  return data;
+};
+
+export const updateExpense = async (id, updatedData) => {
+  const data = await updateData("expenses", id, updatedData);
+  return data;
+};
+
+export const updateRevenue = async (id, updatedData) => {
+  const data = await updateData("revenues", id, updatedData);
+  return data;
+};
+
+export const updateVendor = async (id, updatedData) => {
+  const data = await updateData("vendors", id, updatedData);
+  return data;
+};
+
+export const updateWarehouse = async (id, updatedData) => {
+  const data = await updateData("warehouses", id, updatedData);
+  return data;
+};
+
+export const updateCategory = async (id, updatedData) => {
+  const data = await updateData("categories", id, updatedData);
+  return data;
+};
+
+export const updateCustomer = async (id, updatedData) => {
+  const data = await updateData("customers", id, updatedData);
+  return data;
+};
   
