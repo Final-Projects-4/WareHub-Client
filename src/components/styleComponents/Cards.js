@@ -10,7 +10,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { fetchOrderById } from "@/fetching/fetchById";
-import { allCustomers, allWarehouses } from "./dataComponents/allData";
+import { allCustomers, allWarehouses } from "../dataComponents/allData";
 
 const useCustomers = () => {
   const { customers } = allCustomers();

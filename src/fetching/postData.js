@@ -30,23 +30,25 @@ export async function postProduct(
   description,
   SKU,
   category_id,
+  image,
   accessToken
 ) {
+  const formData = new FormData();
+  formData.append("name", name);
+  formData.append("price", price);
+  formData.append("weight", weight);
+  formData.append("size", size);
+  formData.append("description", description);
+  formData.append("SKU", SKU);
+  formData.append("category_id", category_id);
+  formData.append("image", image);
+
   const response = await fetch(`${baseUrl}products/create`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     },
-    body: JSON.stringify({
-      name,
-      price,
-      weight,
-      size,
-      description,
-      SKU,
-      category_id,
-    }),
+    body: formData,
   });
 
   if (!response.ok) {

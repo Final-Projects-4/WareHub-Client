@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { fetchProducts, fetchOrders, fetchCustomers, fetchExpenses, fetchRevenues, fetchOrderDetails, fetchStocks, fetchVendors, fetchWarehouses, fetchCategories } from '@/fetching/fetchData';
 
+
 export const allData = () => {
   const [data, setData] = useState(
     { 
@@ -51,136 +52,172 @@ export const allData = () => {
 };
 
 export const allCategories = () => {
-  const [category, setCategory] = useState({ categories: [] });
+  const [category, setCategory] = useState({ categories: []});
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const categoriesData = await fetchCategories();
-        setCategory({ categories: categoriesData });
+        setIsLoading(true);
+        const response = await fetchCategories();
+        setCategory({ categories: response });
+        setIsLoading(false);
       } catch (err) {
-        
+        setError(err)
+        setIsLoading(false)
       }
     };
 
     fetchData();
   }, []);
 
-  return { category, setCategory };
+  return { category, setCategory, isLoading, error };
 };
 
 export const allWarehouses = () => {
   const [warehouses, setWarehouses] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const warehousesData = await fetchWarehouses();
-        setWarehouses(warehousesData)
+        setIsLoading(true);
+        const response = await fetchWarehouses();
+        setWarehouses(response)
+        setIsLoading(false);
       } catch (err) {
-        
+        setError(err)
+        setIsLoading(false)
       }
     };
 
     fetchData();
   }, []);
 
-  return { warehouses, setWarehouses };
+  return { warehouses, setWarehouses, isLoading, error };
 };
 
 export const allVendors = () => {
   const [vendors, setVendors] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const vendorsData = await fetchVendors();
-        setVendors(vendorsData);
+        setIsLoading(true)
+        const response = await fetchVendors();
+        setVendors(response);
+        setIsLoading(false)
       } catch (err) {
-        
+        setError(err)
+        setIsLoading(false)
       }
     };
 
     fetchData();
   }, []);
 
-  return { vendors, setVendors };
+  return { vendors, setVendors, isLoading, error };
 };
 
 export const allProducts = ({ filters = {}, dummyState }) => {
-  const [data, setData] = useState({ products: [] });
+  const [data, setData] = useState({ products: [], totalItems: 0, totalPages: 0, currentPage: 1 });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const productsData = await fetchProducts(filters);
-        setData({ products: productsData });
+        setIsLoading(true);
+        const response = await fetchProducts(filters);
+        const { products, totalItems, totalPages, currentPage } = response;
+        setData({ products, totalItems, totalPages, currentPage });
+        setIsLoading(false);
       } catch (err) {
-        // Handle error
+        setError(err);
+        setIsLoading(false);
       }
     };
-  
-    fetchData();
-  }, [dummyState]); // Add dummyState as a dependency
 
-  return { data, setData };
+    fetchData();
+  }, [dummyState, filters]);
+
+  return { data, setData, isLoading, error };
 };
 
-export const allOrders = () => {
-  const [data, setData] = useState({ orders: [] });
+export const allOrders = ({filters = {}, dummyState}) => {
+  const [data, setData] = useState({ orders: [], totalData:0, totalPages: 0, currentPage: 1 });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const ordersData = await fetchOrders();
-        setData({ orders: ordersData });
+        setIsLoading(true)
+        const response = await fetchOrders(filters);
+        const { orders, totalData, totalPages, currentPage } = response;
+        setData({ orders, totalData, totalPages, currentPage});
       } catch (err) {
-        
+        setError(err)
+        setIsLoading(false)
       }
     };
 
     fetchData();
-  }, []);
+  }, [dummyState, filters]);
 
-  return { data, setData };
+  return { data, setData, isLoading, setIsLoading,error };
 };
 
 export const allExpenses = () => {
   const [expenses, setExpenses] = useState({ expenses: [] });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const expensesData = await fetchExpenses();
-        setExpenses({ expenses: expensesData });
+        setIsLoading(true);
+        const response = await fetchExpenses();
+        setExpenses({ expenses: response });
+        setIsLoading(false)
       } catch (err) {
-        
+        setError(err)
+        setIsLoading(false)
       }
     };
 
     fetchData();
   }, []);
 
-  return { expenses, setExpenses };
+  return { expenses, setExpenses, isLoading, error };
 };
 
 export const allRevenues = () => {
   const [revenues, setRevenues] = useState({ revenues: [] });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const revenuesData = await fetchRevenues();
-        setRevenues({ revenues: revenuesData });
+        setIsLoading(true)
+        const response = await fetchRevenues();
+        setRevenues({ revenues: response });
+        setIsLoading(false)
       } catch (err) {
-        
+        setError(err)
+        setIsLoading(false)
       }
     };
 
     fetchData();
   }, []);
 
-  return { revenues, setRevenues };
+  return { revenues, setRevenues, isLoading, error };
 };
 
 export const allOrderDetails = () => {
@@ -204,14 +241,19 @@ export const allOrderDetails = () => {
 
 export const allStocks = () => {
   const [data, setData] = useState({ stocks: [] });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const stocksData = await fetchStocks();
-        setData({ stocks: stocksData });
+        setIsLoading(true);
+        const reponse = await fetchStocks();
+        setData({ stocks: reponse });
+        setIsLoading(false);
       } catch (err) {
-        
+        setError(err)
+        setIsLoading(false)
       }
     };
 
@@ -222,21 +264,23 @@ export const allStocks = () => {
 };
 
 export const allCustomers = () => {
-  const [customers, setCustomers] = useState([]);
 
+    const [customers, setCustomers] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const customersData = await fetchCustomers();
-        setCustomers(customersData)
-      } catch (err) {
+        const response = await fetchCustomers();
+        setCustomers(response);
         
+      } catch (err) {
+       
       }
     };
 
     fetchData();
   }, []);
 
-  return { customers, setCustomers };
+  return {  customers, setCustomers };
 };
+
 

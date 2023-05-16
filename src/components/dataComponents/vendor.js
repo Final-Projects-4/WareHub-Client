@@ -1,14 +1,38 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { postVendor } from '@/fetching/postData';
-import { Button, Collapse } from '@chakra-ui/react';
+import { Button, Collapse, Flex, useToast, Table, Tr, Text,  Td, Thead, Heading, Th, Tbody, HStack, Link, Spinner } from '@chakra-ui/react';
+import { allVendors } from './allData';
+import { useRouter } from 'next/router';
+import { FiEdit, FiDivideCircle } from 'react-icons/fi';
+import { deleteVendor } from '@/fetching/deleteData';
+
+//parent
+const Vendors = () => {
+  const {vendors, setVendors, isLoading} = allVendors();
+
+  function handleAddVendor(details) {
+    setVendors(prevData => [...prevData, details]);
+  }
+  
 
 
-export const AddVendorForm = () => {
+  return(
+    <>
+    <AddVendorForm handleAddVendor={handleAddVendor}/>
+    <RenderVendors vendors={vendors} setVendors={setVendors} isLoading={isLoading}/>
+    </>
+  )
+}
+
+export default Vendors
+
+export const AddVendorForm = ({handleAddVendor}) => {
   const [details, setDetails] = useState({
     name: '',
     country: ''
   })
   const [isOpen, setIsOpen] = useState(false);
+  const toast = useToast();
 
   const handleChange = (e) => {
     const {name, value} = e.target;
@@ -21,6 +45,7 @@ export const AddVendorForm = () => {
     const handleSubmit = async (e) => {
       const accessToken = sessionStorage.getItem('accessToken');
         e.preventDefault();
+        handleAddVendor(details)
         try {
           await postVendor(
             details.name,
@@ -31,7 +56,20 @@ export const AddVendorForm = () => {
             name: '',
             country: ''
           });
+          toast({
+            title: 'Vendor created.',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
         } catch (err) {
+          toast({
+            title: 'Failed to create Vendor.',
+            description: err.message,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
         }
       };
 
@@ -62,3 +100,116 @@ export const AddVendorForm = () => {
         </>
       );
 };
+
+export const RenderVendors = ({vendors, setVendors, isLoading}) => {
+  const router = useRouter();
+  const toast = useToast();
+  const [showLoading, setShowLoading] = useState(false);
+  const [isDataLoaded, setIsDataLoaded] = useState(false)
+
+  useEffect(() => {
+    let timeoutId;
+    if (isLoading) {
+      timeoutId = setTimeout(() => {
+        setShowLoading(true);
+      }, 500);
+    }
+    return () => clearTimeout(timeoutId);
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      setIsDataLoaded(true);
+    }
+  }, [isLoading]);
+
+
+
+
+  function renderData(data) {
+
+    return data.map((v) => {
+
+      const handleVendorDetails = (vendorsId) => {
+        router.push(`/vendor/${vendorsId}`)
+      }
+
+
+      function handleDelete(vendorsId) {
+        const accessToken = sessionStorage.getItem('accessToken');
+        deleteVendor(vendorsId, accessToken)
+          .then(() => {
+            toast({
+              title: 'Vendors deleted',
+              status: 'success',
+              duration: 3000,
+              isClosable: true,
+            });
+            setVendors(prevData => prevData.filter(v => v.id !== vendorsId));
+          })
+          .catch((error) => {
+            toast({
+              title: 'Error deleting Vendors',
+              description: error.message,
+              status: 'error',
+              duration: 3000,
+              isClosable: true,
+            });
+          });
+      }
+
+      return(
+        <Tr key={v.id}>
+            <Td>
+            <HStack>
+            <Link
+              onClick={() => handleVendorDetails(v.id)}
+              _hover={{
+                textDecoration: 'glow',
+                textShadow: '0 0 8px #fff, 0 0 12px #fff, 0 0 16px #fff',
+              }}
+            >
+              {v.name}
+              <Text fontSize="sm" color="gray.500" ml={1} display="inline">
+              <FiEdit />
+              </Text>
+            </Link>
+            </HStack>
+            </Td>
+            <Td>
+              {v.country}
+            </Td> 
+
+            <Td>
+              <Button leftIcon={<FiDivideCircle />} onClick={() => handleDelete(v.id)}>Delete</Button>
+            </Td>
+          </Tr>
+        );
+    })
+  }
+
+  const tableBody = isDataLoaded ? renderData(vendors) : null;
+  const showSpinner = isLoading && !isDataLoaded;
+
+  return(
+    <>
+      {showSpinner && (
+        <Flex justify="center" mt={8}>
+          <Spinner size="xl" />
+        </Flex>
+      )}
+      <Heading as="h2" size="lg" mb="4">
+          Vendors List
+        </Heading>
+        <Table>
+          <Thead style={{ position: "sticky", top: 0 }}>
+            <Tr>
+              <Th>Name</Th>
+              <Th>Country</Th>
+            </Tr>
+          </Thead>
+          <Tbody>{tableBody}</Tbody>
+        </Table>
+    </>
+  )
+}

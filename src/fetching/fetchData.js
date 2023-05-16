@@ -30,6 +30,7 @@ vendors = [{}] id user_id name country
 warehouses = [{}] id user_id name city address
 categories = [{}] id name description
 productvendors = [{}] product_id vendor_id
+customers
 */
 
 export const fetchStocks = async () => {
@@ -68,12 +69,26 @@ export const fetchProducts = async (filters = {}) => {
   );
   const params = new URLSearchParams(nonEmptyFilters).toString();
   const data = await fetchData(`products?${params}`);
-  return data.products;
+  return {
+    products: data.products,
+    totalItems: data.totalItems,
+    totalPages: data.totalPages,
+    currentPage: data.currentPage,
+  };
 };
 
-export const fetchOrders = async () => {
-  const data = await fetchData("orders");
-  return data.data;
+export const fetchOrders = async (filters = {}) => {
+  const nonEmptyFilters = Object.fromEntries(
+    Object.entries(filters).filter(([_, value]) => value !== "")
+  );
+  const params = new URLSearchParams(nonEmptyFilters).toString();
+  const data = await fetchData(`orders?${params}`);
+  return {
+    orders: data.data,
+    totalData: data.totalData,
+    totalPages: data.totalPages,
+    currentPage: data.currentPage,
+  };
 };
 
 export const fetchCustomers = async () => {
