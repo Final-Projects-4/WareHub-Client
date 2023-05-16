@@ -46,13 +46,13 @@ const Sidebar = () => {
             }}
           />
           <SideItem navSize={navSize} icon={FiBarChart2} title="Dashboard" active={activeItem === "dashboard"} to="/dashboard" onClick={() => handleItemClick("dashboard")} />
-          <SideItem navSize={navSize} icon={FiHome} title="Warehouse" active={activeItem === "warehouse"} onClick={handleItemClick} />
+          <SideItem navSize={navSize} icon={FiHome} title="Warehouse" active={activeItem === "warehouse"} to="/warehouse"onClick={handleItemClick} />
           <SideItem navSize={navSize} icon={FiPackage} title="Product" active={activeItem === "product"} to="/products" onClick={handleItemClick} />
           <SideItem navSize={navSize} icon={FiLayout} title="Order" active={activeItem === "order"} to="/orders" onClick={() => handleItemClick("dashboard")} /> 
-          <SideItem navSize={navSize} icon={FiDollarSign} title="ExpenseRevenues" active={activeItem === "expenserevenues"} onClick={handleItemClick} />
-          <SideItem navSize={navSize} icon={FiCodesandbox} title="Category" active={activeItem === "category"} onClick={handleItemClick} />
-          <SideItem navSize={navSize} icon={FiUsers} title="Vendors" active={activeItem === "vendors"} onClick={handleItemClick} />
-          <SideItem navSize={navSize} icon={FiUser} title="Users" active={activeItem === "users"} onClick={handleItemClick} />
+          <SideItem navSize={navSize} icon={FiDollarSign} title="Finance" active={activeItem === "finance"} to="/finance"onClick={handleItemClick} />
+          <SideItem navSize={navSize} icon={FiCodesandbox} title="Category" active={activeItem === "category"} to="/category" onClick={handleItemClick} />
+          <SideItem navSize={navSize} icon={FiUsers} title="Vendors" active={activeItem === "vendors"} to="vendor"onClick={handleItemClick} />
+          <SideItem navSize={navSize} icon={FiUser} title="Customers" active={activeItem === "customers"} to="/customers" onClick={handleItemClick} />
         </Flex>
       </Flex>
     </>

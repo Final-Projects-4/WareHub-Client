@@ -1,7 +1,24 @@
 import { useState } from 'react';
 import { postVendor } from '@/fetching/postData';
 import { Button, Collapse } from '@chakra-ui/react';
+import { allVendors } from './allData';
 
+
+//parent
+const Vendors = () => {
+const {vendors} = allVendors();
+
+console.log(vendors)
+
+
+return(
+  <>
+  <AddVendorForm/>
+  </>
+)
+}
+
+export default Vendors
 
 export const AddVendorForm = () => {
   const [details, setDetails] = useState({

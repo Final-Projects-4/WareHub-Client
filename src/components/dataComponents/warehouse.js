@@ -1,6 +1,26 @@
 import { useState } from 'react';
 import { postWarehouse } from '@/fetching/postData';
 import { Button, Collapse } from '@chakra-ui/react';
+import { allWarehouses } from './allData';
+
+
+const Warehouses = () => {
+  const {warehouses} = allWarehouses();
+
+  console.log(warehouses)
+  
+
+  return(
+    <>
+      <AddWarehouseForm/>
+    </>
+  )
+}
+
+export default Warehouses;
+
+
+
 
 
 export const AddWarehouseForm = () => {

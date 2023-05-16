@@ -31,6 +31,7 @@ function Order() {
   const { orders, totalData , totalPages, currentPage } = data;
   const { customers } = allCustomers();
   const { warehouses } = allWarehouses()
+  console.log(customers)
   
   function handleAddOrder(details) {
     setData(prevData => ({
