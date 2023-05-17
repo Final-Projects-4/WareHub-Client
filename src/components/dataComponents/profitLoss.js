@@ -1,44 +1,78 @@
-import { allExpenses, allRevenues } from "./allData";
-import { Box } from "@chakra-ui/react";
+import React from 'react';
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend
+} from 'chart.js'
+import { Doughnut } from 'react-chartjs-2';
+import { allRevenues, allExpenses } from "./allData";
+import { useColorMode, Box, Text } from '@chakra-ui/react';
 
-const useRevenues = () => {
-    const { revenues } = allRevenues();
-    const revenuesData = revenues.revenues;
-    return revenuesData;
-  };
-  
-const useExpenses = () => {
-    const { expenses } = allExpenses();
-    const expensesData = expenses.expenses;
-    return expensesData;
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend
+);
+
+const ProfitLoss = () => {
+    //usage revenues.revenues / revenues.revenues.totalRevenue
+    //expenses.expenses.totalExpense
+    const {colorMode} = useColorMode();
+    const {revenues} = allRevenues();
+    const {expenses} = allExpenses();
+    const ratio = revenues.revenues.totalRevenue / expenses.expenses.totalExpense;
+    const percentageDifference = ((ratio - 1) * 100).toFixed(2);
+    const isPositive = percentageDifference >= 0;
+
+    const chartData = {
+      labels: ['Expenses', 'Revenue'],
+      datasets: [
+        {
+          data: [expenses.expenses.totalExpense, revenues.revenues.totalRevenue],
+          backgroundColor: colorMode === 'dark' ? ['#5e64f7', '#40c7a5'] : ['#fb997b', '#04c9d7'],
+          hoverBackgroundColor: colorMode === 'dark' ? ['rgba(255, 165, 0, 0.2)', 'rgba(114, 137, 218, 0.2)'] :  ['rgba(255, 99, 71, 0.2)', 'rgba(0, 128, 128, 0.2)'],
+          borderColor: 'transparent',
+        },
+      ],
+      options: {
+        plugins: {
+          legend: {
+            labels: {
+              font: {
+                size:5, 
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const PercentageMessage = () => {
+      return (
+        <Box mt={4} textAlign="center">
+          <Text fontSize="sm" color={isPositive ? "green.500" : "red.500"}>
+            {isPositive ? "+" : "-"}{percentageDifference}%
+          </Text>
+          <Text fontSize="sm" color={isPositive ? "green.500" : "red.500"}>
+            {isPositive ? "Profit Gained" : "Lost Suffered"}
+          </Text>
+        </Box>
+      );
+    };
+
+    const DoughnutChart = () => {
+      return <Doughnut data={chartData}/>
+    };
+    
+    
+    return(
+        <>
+        <DoughnutChart />  
+        <PercentageMessage />
+        </>
+    )
 };
 
-export const ProfitLoss = () => {
-    const revenuesData = useRevenues();
-    const expensesData = useExpenses();
-    const profit = revenuesData.totalRevenue - expensesData.totalExpense;
-    const color = profit > 0 ? "teal" : "red.500";
-    const message = profit > 0 ? "Profit Gains: " : "Profit Loss: "
-    
-    return (
-        <Box
-          bg={color}
-          display="flex"
-          minHeight="65px"
-          borderRadius={10}
-          maxWidth="250px"
-          textAlign="center"
-          justifyContent="center"
-          alignItems="center"
-          fontWeight="semibold"
-          fontSize="lg"
-          color="white"
-          p={4}
-          _hover={{ cursor: "pointer", transform: "scale(1.05)" }}
-          transition="transform 0.2s ease"
-        >
-          {message} {profit}
-        </Box>
-    );
 
-}
+export default ProfitLoss

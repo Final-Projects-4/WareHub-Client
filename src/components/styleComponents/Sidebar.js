@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Flex, IconButton, useColorMode, Fade, background} from "@chakra-ui/react";
+import { Flex, IconButton, useColorMode, Fade,Icon, background, Text} from "@chakra-ui/react";
 import {
-FiBarChart2, 
+FiBarChart, 
 FiMenu, 
 FiCodesandbox, 
 FiUsers,
@@ -9,7 +9,8 @@ FiPackage,
 FiUser, 
 FiHome, 
 FiDollarSign, 
-FiLayout} from "react-icons/fi";
+FiLayout,
+FiGitCommit} from "react-icons/fi";
 import SideItem from "./SideItem";
 import { useRouter } from "next/router";
 
@@ -70,19 +71,15 @@ const Sidebar = () => {
             icon={<FiMenu />}
             onClick={handleToggleNavSize}
           />
-
-          <SideItem navSize={navSize} icon={FiBarChart2} title="Dashboard" active={activeItem === "/dashboard"} to="/dashboard" onClick={() => handleItemClick("dashboard")} activeColor={activeColor}/>
-          <SideItem navSize={navSize} icon={FiHome} title="Warehouse" active={activeItem === "/warehouse"} to="/warehouse"onClick={() => handleItemClick("warehouse")} activeColor={activeColor}/>
-          <SideItem navSize={navSize} icon={FiPackage} title="Product" active={activeItem === "/products"} to="/products" onClick={() => handleItemClick("products")} activeColor={activeColor}/>
-          <SideItem navSize={navSize} icon={FiLayout} title="Order" active={activeItem === "/orders"} to="/orders" onClick={() => handleItemClick("orders")} activeColor={activeColor}/> 
-          <SideItem navSize={navSize} icon={FiDollarSign} title="Finance" active={activeItem === "/finance"} to="/finance"onClick={() => handleItemClick("finance")} activeColor={activeColor}/>
+          <SideItem navSize={navSize} icon={FiHome} title="Dashboard" active={activeItem === "/dashboard"} to="/dashboard" onClick={() => handleItemClick("dashboard")} activeColor={activeColor}/>
+          <SideItem navSize={navSize} icon={FiBarChart} title="Product" active={activeItem === "/products"} to="/products" onClick={() => handleItemClick("products")} activeColor={activeColor}/>
           <SideItem navSize={navSize} icon={FiCodesandbox} title="Category" active={activeItem === "/category"} to="/category" onClick={() => handleItemClick("category")} activeColor={activeColor}/>
+          <SideItem navSize={navSize} icon={FiPackage} title="Warehouse" active={activeItem === "/warehouse"} to="/warehouse"onClick={() => handleItemClick("warehouse")} activeColor={activeColor}/>
           <SideItem navSize={navSize} icon={FiUsers} title="Vendors" active={activeItem === "/vendor"} to="vendor"onClick={() => handleItemClick("vendor")} activeColor={activeColor}/>
+          <SideItem navSize={navSize} icon={FiDollarSign} title="Finance" active={activeItem === "/finance"} to="/finance"onClick={() => handleItemClick("finance")} activeColor={activeColor}/>
+          <SideItem navSize={navSize} icon={FiLayout} title="Order" active={activeItem === "/orders"} to="/orders" onClick={() => handleItemClick("orders")} activeColor={activeColor}/> 
           <SideItem navSize={navSize} icon={FiUser} title="Customers" active={activeItem === "/customers"} to="/customers" onClick={() => handleItemClick("customers")} activeColor={activeColor}/>
-          
         </Flex>
-      
-        
       </Flex>
       
     </>

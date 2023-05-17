@@ -1,17 +1,9 @@
-import Expenses from "@/components/dataComponents/expenses"
-import Revenues
- from "@/components/dataComponents/revenues"
-import { HStack , VStack} from "@chakra-ui/react"
+import ProfitLoss from "@/components/dataComponents/profitLoss"
+
 const Finance = () => {
-
-
-
     return(
         <>
-        <VStack>
-            <Expenses/>
-            <Revenues/>
-        </VStack>
+        <ProfitLoss/>
         
         </>
     )

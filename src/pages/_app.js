@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { ChakraProvider, 
-ColorModeScript, Container, HStack, VStack, Grid, Box } from '@chakra-ui/react'
+ColorModeScript, Grid, Box } from '@chakra-ui/react'
 import theme from '../styles/theme'
 import Navbar from '../components/styleComponents/Navbar'
 import Sidebar from '@/components/styleComponents/Sidebar'
@@ -22,17 +22,13 @@ export default function App({ Component, pageProps }) {
             </Box>
             <Grid templateColumns="auto 1fr" height="100%">
               <Box>
-              <Sidebar/>
+                <Sidebar/>
               </Box>
-              <Box >
-            <Component {...pageProps} />
-          </Box>
-
-
+              <Box p={5}>
+                <Component {...pageProps} />
+              </Box>
             </Grid>
-
           </Grid>
-      
     </ChakraProvider>
   );
 }
