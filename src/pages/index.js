@@ -1,5 +1,4 @@
 import LoginPage from "../components/styleComponents/Login";
-import Landing from "../components/styleComponents/Landing";
 import { Container, SimpleGrid, Box } from "@chakra-ui/react";
 
 

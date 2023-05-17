@@ -53,9 +53,9 @@ const options = {
 
 const MyChart = () => {
   return (
-    <Flex p="2%">
+    
       <Line data={data} options={options} />
-    </Flex>
+    
   );
 };
 

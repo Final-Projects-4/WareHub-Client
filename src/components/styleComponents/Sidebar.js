@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Flex, IconButton, useColorMode, useColorModeValue } from "@chakra-ui/react";
+import { Flex, IconButton, useColorMode, Fade, background} from "@chakra-ui/react";
 import {
 FiBarChart2, 
 FiMenu, 
@@ -19,7 +19,7 @@ const Sidebar = () => {
   const [activeItem, setActiveItem] = useState();
   const router = useRouter();
   const { colorMode } = useColorMode();
-  const activeColor = colorMode === 'dark' ? '#ff99c8' : '#3bd1c7';
+  const activeColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
   
 
   useEffect(() => {
@@ -29,6 +29,24 @@ const Sidebar = () => {
   const handleItemClick = (item) => {
     setActiveItem(item);
   };
+
+  const handleToggleNavSize = () => {
+    const newNavSize = navSize === "small" ? "large" : "small";
+    changeNavSize(newNavSize);
+  };
+
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setActiveItem(router.pathname);
+      changeNavSize("large"); 
+    };
+
+    router.events.on("routeChangeComplete", handleRouteChange);
+
+    return () => {
+      router.events.off("routeChangeComplete", handleRouteChange);
+    };
+  }, [router]);
   
   return (
     <>
@@ -38,7 +56,6 @@ const Sidebar = () => {
         bottom="0"
         left="0"
         right="0"
-        
         boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.01)"
         borderRadius={navSize == "small" ? "15px" : "30px"}
         w={navSize == "small" ? "75px" : "200px"}
@@ -49,12 +66,9 @@ const Sidebar = () => {
           <IconButton
             background="none"
             mt={5}
-            _hover={{ background: "none" }}
+            _hover={{ background: activeColor }}
             icon={<FiMenu />}
-            onClick={() => {
-              if (navSize == "small") changeNavSize("large");
-              else changeNavSize("small");
-            }}
+            onClick={handleToggleNavSize}
           />
 
           <SideItem navSize={navSize} icon={FiBarChart2} title="Dashboard" active={activeItem === "/dashboard"} to="/dashboard" onClick={() => handleItemClick("dashboard")} activeColor={activeColor}/>

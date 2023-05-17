@@ -37,8 +37,8 @@ function Product() {
   const { category, setCategory } = allCategories();
 
   return(
-    <>
-    <Flex>
+    <Box>
+    
       <FilterForm 
       filters={filters} 
       setFilters={setFilters} 
@@ -51,7 +51,7 @@ function Product() {
       data={data}
       setData={setData}
       />
-      <Stack>
+      {/* <Stack>
       <AddProductForm category={category} handleAddProduct={handleAddProduct} />
       <AddStockForm 
       data={data} 
@@ -59,9 +59,9 @@ function Product() {
       handleAddProduct={handleAddProduct}
       warehouses={warehouses}
       vendors={vendors}/>
-      </Stack>
-      </Flex>
-    </>
+      </Stack> */}
+      
+    </Box>
   )
   
 }
