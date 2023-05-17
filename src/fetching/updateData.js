@@ -14,10 +14,19 @@ const updateData = async (url, id, body) => {
   };
   
 
-export const updateProduct = async (id, updatedData) => {
-  const data = await updateData("products", id, updatedData);
-  return data;
-};
+  export const updateProduct = async (id, formData) => {
+    const response = await fetch(`${baseUrl}products/${id}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+      },
+      body: formData,
+    });
+  
+    const data = await response.json();
+    return data;
+  };
+  
 
 export const updateOrder = async (id, updatedData) => {
   const data = await updateData("orders", id, updatedData);

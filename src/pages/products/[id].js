@@ -3,7 +3,7 @@ import { fetchProductById } from "@/fetching/fetchById";
 import { FiSettings } from "react-icons/fi";
 import {
     Box,
-    Badge,
+    Badge, Image,
     Text,
     Stack,
     Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, FormControl, FormLabel, Input
@@ -57,6 +57,8 @@ const ProductDetailCard = ({ product }) => {
     return (
         <Stack spacing="2">
         <Box borderWidth="1px" borderRadius="lg" p="4">
+          <Image src={product.image} boxSize="100px"/>
+          
             <Text fontSize="lg" fontWeight="bold" mb="4">
             {product.name}
             </Text>
@@ -106,6 +108,8 @@ const ProductUpdateButton = ({ product, onUpdate }) => {
       description: product.description,
       SKU: product.SKU,
     });
+
+    const [imageFile, setImageFile] = useState(null)
   
     const handleInputChange = (event) => {
       setFormData({ ...formData, [event.target.name]: event.target.value });
@@ -114,11 +118,25 @@ const ProductUpdateButton = ({ product, onUpdate }) => {
     const handleUpdate = async (event) => {
       event.preventDefault();
       try {
-        const updatedData = await updateProduct(product.id, formData);
+        const updatedFormData = new FormData();
+        for (const key in formData) {
+          updatedFormData.append(key, formData[key]);
+        }
+        if (imageFile) {
+          updatedFormData.append("image", imageFile);
+        }
+  
+        const updatedData = await updateProduct(product.id, updatedFormData);
         onUpdate(updatedData);
         setIsModalOpen(false);
       } catch (err) {
+        // Handle error
       }
+    };
+
+    const handleImageChange = (e) => {
+      const file = e.target.files[0];
+      setImageFile(file);
     };
   
     return (
@@ -157,6 +175,16 @@ const ProductUpdateButton = ({ product, onUpdate }) => {
               <FormControl id="SKU" mb={3}>
                 <FormLabel>SKU</FormLabel>
                 <Input name="SKU" value={formData.SKU} onChange={handleInputChange} />
+              </FormControl>
+              <FormControl>
+              <FormLabel>Image</FormLabel>
+              <Input
+                name="image"
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                mb={4}
+              />
               </FormControl>
             </ModalBody>
             <ModalFooter>

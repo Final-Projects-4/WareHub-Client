@@ -5,7 +5,6 @@ import { Flex,Box } from '@chakra-ui/react'
 import Navbar from '../components/styleComponents/Navbar'
 import Sidebar from '@/components/styleComponents/Sidebar'
 import { useRouter } from 'next/router'
-import Footer from '@/components/styleComponents/Footer'
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
@@ -21,7 +20,6 @@ export default function App({ Component, pageProps }) {
           </Box>
         </Flex>
       </Flex>
-      <Footer/>
     </ChakraProvider>
   );
 }
