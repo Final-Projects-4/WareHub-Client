@@ -9,8 +9,7 @@ FiPackage,
 FiUser, 
 FiHome, 
 FiDollarSign, 
-FiLayout,
-FiGitCommit} from "react-icons/fi";
+FiLayout,} from "react-icons/fi";
 import SideItem from "./SideItem";
 import { useRouter } from "next/router";
 

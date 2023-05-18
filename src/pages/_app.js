@@ -32,28 +32,3 @@ export default function App({ Component, pageProps }) {
     </ChakraProvider>
   );
 }
-
-
-
-
-/*
-<VStack height="100vh" width="full" spacing={0} alignItems="flex-start">
-        <Box w="100%" p={4} pb={0}>
-          <Navbar />
-        </Box>
-        <HStack>
-          <Sidebar w="25%" alignItems="flex-start" flex="none" />
-          
-        </HStack>
-      </VStack>
-<Flex h="vh">
-        {router.pathname !== "/" && <Sidebar h="vh"/>}
-        <Flex flex="1" flexDirection="column">
-          <Box flex="1">
-            <Navbar pr={10} />
-            </Box>
-        </Flex>
-      </Flex>
-      
-
-*/ 

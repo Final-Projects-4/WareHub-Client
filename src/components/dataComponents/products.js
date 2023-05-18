@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { postProduct, postStock } from '@/fetching/postData';
-import { InputGroup, IconButton,HStack, useToast, Link, Stack, FormControl, FormLabel, Text, Button, Card, Collapse, Box, Input, InputLeftElement, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, VStack, Spacer, Image} from "@chakra-ui/react";
+import { InputGroup, IconButton,HStack, useToast, Link, Stack, FormControl, FormLabel, Text, Button, Card, Collapse, Box, Input, InputLeftElement, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, VStack, Badge, Image} from "@chakra-ui/react";
 import { allProducts, allVendors, allWarehouses, allCategories} from './allData';
 import { FiSearch, FiEdit, FiPlus, FiArrowLeft, FiArrowRight, FiMaximize, FiDelete, FiDivideCircle } from 'react-icons/fi';
 import { deleteProduct } from '@/fetching/deleteData';
@@ -30,11 +30,14 @@ function Product() {
     }));
     setDummyState(prevState => prevState + 1); // Update dummy state
   }
+
   function handleApplyFilters() {
     setDummyState(prevState => prevState + 1);
   }
+
   const { vendors } = allVendors();
-  const { category, setCategory } = allCategories();
+  const { category} = allCategories();
+
 
   return(
     <Box>
@@ -60,6 +63,8 @@ function Product() {
       warehouses={warehouses}
       vendors={vendors}/>
       </Stack> */}
+      <LowStockAlert
+      data={data.products}/>
       
     </Box>
   )
@@ -673,6 +678,34 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
   );
 }
 
+
+
+export const LowStockAlert = ({ data }) => {
+  const hasLowStock = (product) => {
+    return product.Warehouses.some((warehouse) => warehouse.WarehouseStock.quantity < 10);
+  };
+
+  return (
+    <Box p={4} shadow="md" borderWidth="1px" borderRadius="md" overflowY="auto">
+      <Text fontSize="lg" fontWeight="bold" mb={2}>
+        Low Stock Alert
+      </Text>
+      {data.map((product) => (
+        hasLowStock(product) && (
+          <Box key={product.id} mb={2}>
+            <Text>{product.name}</Text>
+            <Badge colorScheme="red" variant="subtle" ml={2}>
+              Low Stock
+            </Badge>
+            <Text size="sm" color="gray.400">
+              at {product.Warehouses.filter((warehouse) => warehouse.WarehouseStock.quantity < 10).map((warehouse) => warehouse.name).join(", ")}
+            </Text>
+          </Box>
+        )
+      ))}
+    </Box>
+  );
+};
 
 
 
