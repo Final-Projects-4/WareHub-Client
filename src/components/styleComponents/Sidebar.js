@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Flex, IconButton, useColorMode, Fade,Icon, background, Text} from "@chakra-ui/react";
+import { Flex, IconButton, useColorMode} from "@chakra-ui/react";
 import {
 FiBarChart, 
 FiMenu, 
@@ -8,7 +8,6 @@ FiUsers,
 FiPackage,
 FiUser, 
 FiHome, 
-FiDollarSign, 
 FiLayout,} from "react-icons/fi";
 import SideItem from "./SideItem";
 import { useRouter } from "next/router";
@@ -75,7 +74,6 @@ const Sidebar = () => {
           <SideItem navSize={navSize} icon={FiCodesandbox} title="Category" active={activeItem === "/category"} to="/category" onClick={() => handleItemClick("category")} activeColor={activeColor}/>
           <SideItem navSize={navSize} icon={FiPackage} title="Warehouse" active={activeItem === "/warehouse"} to="/warehouse"onClick={() => handleItemClick("warehouse")} activeColor={activeColor}/>
           <SideItem navSize={navSize} icon={FiUsers} title="Vendors" active={activeItem === "/vendor"} to="vendor"onClick={() => handleItemClick("vendor")} activeColor={activeColor}/>
-          <SideItem navSize={navSize} icon={FiDollarSign} title="Finance" active={activeItem === "/finance"} to="/finance"onClick={() => handleItemClick("finance")} activeColor={activeColor}/>
           <SideItem navSize={navSize} icon={FiLayout} title="Order" active={activeItem === "/orders"} to="/orders" onClick={() => handleItemClick("orders")} activeColor={activeColor}/> 
           <SideItem navSize={navSize} icon={FiUser} title="Customers" active={activeItem === "/customers"} to="/customers" onClick={() => handleItemClick("customers")} activeColor={activeColor}/>
         </Flex>

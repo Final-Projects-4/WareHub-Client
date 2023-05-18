@@ -6,7 +6,7 @@ import { allProducts, allVendors, allWarehouses, allCategories} from './allData'
 import { FiSearch, FiEdit,FiUpload, FiPlus, FiArrowLeft, FiArrowRight, FiMaximize, FiDelete, FiDivideCircle } from 'react-icons/fi';
 import { deleteProduct } from '@/fetching/deleteData';
 import { useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, Accordion
-,ModalBody,AccordionItem,AccordionButton,AccordionIcon,AccordionPanel, Icon } from '@chakra-ui/react';
+,ModalBody,AccordionItem,AccordionButton,AccordionIcon,AccordionPanel, Icon, useMediaQuery } from '@chakra-ui/react';
 //Parent
 function Product() {
   const [dummyState, setDummyState] = useState(0); // Create dummy state
@@ -54,7 +54,7 @@ function Product() {
       data={data}
       setData={setData}
       />
-      <Stack>
+      {/* <Stack>
       <AddProductForm category={category} handleAddProduct={handleAddProduct} />
       <AddStockForm 
       data={data} 
@@ -62,7 +62,7 @@ function Product() {
       handleAddProduct={handleAddProduct}
       warehouses={warehouses}
       vendors={vendors}/>
-      </Stack>
+      </Stack> */}
     </Box>
   )
   
@@ -456,6 +456,8 @@ export const AddStockForm = ({ data, setData, warehouses, vendors, handleAddProd
 //filter and render component
 function FilterForm({ filters, setFilters, warehouses, vendors, category, totalItems, handleApplyFilters, pageOptions, data, setData}) {
   //category.categories
+  const [updatedFilters, setUpdatedFilters] = useState(filters);
+
   const toast = useToast();
   const router = useRouter();
   const limitOptions = [
@@ -470,17 +472,18 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
     if (name === 'page') {
       onPageChange({ ...filters, [name]: value });
     } else {
-      setFilters(prevFilters => ({
+      setUpdatedFilters(prevFilters => ({
         ...prevFilters,
         [name]: value
       }));
     }
   };
-  //warehouses[]
+  
   function handleSubmit(e) {
     e.preventDefault();
+    setFilters(updatedFilters);
     handleApplyFilters();
-  };
+  }
 
   const handleClearFilters = () => {
     setFilters({ q: "", warehouse: "", vendor: "", page: 1, category:"",sort:'' });
@@ -640,151 +643,138 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
     );
   }
   
-    
-  
   const tableBody = renderProduct(data.products);
-  
+  const [isSmallerScreen] = useMediaQuery("(max-width: 768px)");
   return (
-    <form onSubmit={handleSubmit}>
-    <HStack spacing={4} alignItems="flex-end">
-    <Box flex="1">
-    <Flex alignItems="center">
-    <InputGroup mr={2}>
-      <InputLeftElement pointerEvents="none" />
-      <Select
-        type="text"
-        name="warehouse_id"
-        value={filters.warehouse_id}
-        onChange={handleChange}
-        placeholder='Select Warehouse'
-      >
-        {warehouses.map((w) => {
-          return (
-            <option key={w.id} value={w.id}>
-              {w.name}
-            </option>
-          );
-        })}
-      </Select>
-
-    </InputGroup>
-    <InputGroup mr={2}>
-      <InputLeftElement pointerEvents="none"/>
-      <Select
-        type="text"
-        name="category_id"
-        value={filters.category_id}
-        onChange={handleChange}
-        placeholder='Select Category'
-      >
-        {category.categories.map((c) => {
-          return (
-            <option key={c.id} value={c.id}>
-              {c.name}
-            </option>
-          );
-        })}
-      </Select>
-    </InputGroup>
-    <InputGroup mr={2}>
-      <InputLeftElement pointerEvents="none"/>
-      <Select
-        type="text"
-        name="vendor_id"
-        value={filters.vendor_id}
-        onChange={handleChange}
-        placeholder='Select Vendor'
-      >
-        {vendors.map((v) => {
-          return (
-            <option key={v.id} value={v.id}>
-              {v.name}
-            </option>
-          );
-        })}
-      </Select>
-    </InputGroup>
-    </Flex>
-    <Stack direction={{ base: 'column', md: 'row' }} spacing="4">
-      <FormControl>
-        <FormLabel htmlFor="q">Search</FormLabel>
-        <Input
-          type="text"
-          id="q"
-          name="q"
-          value={filters.q}
-          onChange={handleChange}
-          placeholder="Search products"
-        />
-      </FormControl>
-      
-    </Stack>
-    <Flex align="center" justify="center" direction="column" top="0"
-      bottom="0"
-      left="0"
-      right="0">
-        <Heading as="h2" size="lg" mb="4">
-          Product List
-        </Heading>
-        <Table>
-          <Thead style={{ position: "sticky", top: 0 }}>
-            <Tr>
-              <Th>Lists</Th>
-              <Th>Category</Th>
-              <Th>Warehouse</Th>
-              <Th>Vendor</Th>
-              <Th>Quantity</Th>
-            </Tr>
-          </Thead>
-          <Tbody>{tableBody}</Tbody>
-        </Table>
-      </Flex>
-      <HStack>
-      <FormControl>
-        <FormLabel htmlFor="limit">Limit</FormLabel>
-        <Select id="limit" name="limit" value={filters.limit} onChange={handleChange}>
-          {limitOptions.map(option => (
-            <option key={option.value} value={option.value}>
-              {option.label} ({totalItems > 0 ? Math.min(totalItems, option.value) : 0} items)
-            </option>
-          ))}
-        </Select>
-      </FormControl>
-      <FormControl>
-      <FormLabel htmlFor="page">Page</FormLabel>
-      <PageSelect filters={filters} pageOptions={pageOptions} onPageChange={setFilters} />
-      </FormControl>
-      <FormControl>
-        <FormLabel htmlFor="sort">Sort</FormLabel>
-        <Select
-          id="sort"
-          name="sort"
-          value={filters.sort}
-          onChange={handleChange}
-        >
-          <option value="">None</option>
-          <option value="name:ASC">Name (A-Z)</option>
-          <option value="name:DESC">Name (Z-A)</option>
-        </Select>
-      </FormControl>
-      </HStack>
-  </Box>
-    <VStack>
-    <Button type="submit" leftIcon={<FiSearch />}>
-      Apply filters
-    </Button>
-    
-    <Button 
-    onClick={handleClearFilters}
-    leftIcon={<FiDelete />}
-    >
-      Clear Filters
-      </Button>
-    </VStack>
-    
-    </HStack>
-    </form>
-
+          <>
+            {/* {WAREHOUSE SEARCH} */}
+            <InputGroup mr={2}>
+              <InputLeftElement pointerEvents="none" />
+              <Select
+                type="text"
+                name="warehouse_id"
+                defaultValue={filters.warehouse_id}
+                onChange={handleChange}
+              >
+                <option value="" disabled>Warehouse</option>
+                {warehouses.map((w) => {
+                  return (
+                    <option key={w.id} value={w.id}>
+                      {w.name}
+                    </option>
+                  );
+                })}
+              </Select>
+            </InputGroup>
+            {/* {CATEGORY SEARCH} */}
+            <InputGroup mr={2}>
+              <InputLeftElement pointerEvents="none"/>
+              <Select
+                type="text"
+                name="category_id"
+                defaultValue={filters.category_id}
+                onChange={handleChange}
+               
+              >
+                <option value="" disabled>Category</option>
+                {category.categories.map((c) => {
+                  return (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  );
+                })}
+              </Select>
+            </InputGroup>
+            {/* {VENDOR SEARCH} */}
+            <InputGroup mr={2}>
+              <InputLeftElement pointerEvents="none"/>
+              <Select
+                type="text"
+                name="vendor_id"
+                defaultValue={filters.vendor_id}
+                onChange={handleChange}
+              >
+                <option value="" disabled>Vendors</option>
+                {vendors.map((v) => {
+                  return (
+                    <option key={v.id} value={v.id}>
+                      {v.name}
+                    </option>
+                  );
+                })}
+              </Select>
+            </InputGroup>
+            {/* {Q SEARCH} */}
+            <FormControl>
+            <FormLabel htmlFor="q">Search</FormLabel>
+            <Input
+              type="text"
+              id="q"
+              name="q"
+              defaultValue={filters.q}
+              onChange={handleChange}
+              placeholder="Search products"
+            />
+            </FormControl>    
+            <FormControl>
+            <FormLabel htmlFor="limit">Limit</FormLabel>
+              <Select id="limit" name="limit" value={filters.limit} onChange={handleChange}>
+                {limitOptions.map(option => (
+                  <option key={option.value} value={option.value}>
+                    {option.label} ({totalItems > 0 ? Math.min(totalItems, option.value) : 0} items)
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl>
+            <FormLabel htmlFor="page">Page</FormLabel>
+            <PageSelect filters={filters} pageOptions={pageOptions} onPageChange={setFilters} />
+            </FormControl>
+            <FormControl>
+              <FormLabel htmlFor="sort">Sort</FormLabel>
+              <Select
+                id="sort"
+                name="sort"
+                value={filters.sort}
+                onChange={handleChange}
+              >
+                <option value="">None</option>
+                <option value="name:ASC">Name (A-Z)</option>
+                <option value="name:DESC">Name (Z-A)</option>
+              </Select>
+            </FormControl>
+            <Button onClick={handleSubmit} leftIcon={<FiSearch />}>
+              Apply filters
+            </Button>
+            <Button 
+            onClick={handleClearFilters}
+            leftIcon={<FiDelete />}
+            >
+            Clear Filters
+            </Button>
+            <Flex 
+                align="center" 
+                justify="center" 
+                direction="column" 
+                p={4}>
+                  <Heading as="h2" size="lg" mb="4">
+                    Product List
+                  </Heading>
+                  <Table>
+                    <Thead style={{ position: "sticky", top: 0 }}>
+                      <Tr>
+                        <Th>Lists</Th>
+                        <Th>Category</Th>
+                        <Th>Warehouse</Th>
+                        <Th>Vendor</Th>
+                        <Th>Quantity</Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>{tableBody}</Tbody>
+                  </Table>
+               </Flex>
+            </>
   );
 }
 

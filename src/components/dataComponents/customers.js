@@ -268,17 +268,19 @@ export const LatestCustomer = () => {
 
   return(
     
-      <Box>
+      
         <VStack>
-          <HStack><FiUserPlus size={20} />
-        <Text>{totalCustomers}</Text></HStack>
+          <HStack>
+            <FiUserPlus size={20} />
+        <Text>{totalCustomers}</Text>
+        </HStack>
         {latestCustomer && (
         <Text as="span" color="green.300">
           + {latestCustomer.first_name} {latestCustomer.last_name} joined the hub
         </Text>
         )}
         </VStack>
-      </Box>
+      
     
   );
 
