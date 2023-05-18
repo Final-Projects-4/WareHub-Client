@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { postProduct, postStock } from '@/fetching/postData';
+import { postProduct, postStock, bulkInsertProducts } from '@/fetching/postData';
 import { InputGroup, IconButton,HStack, useToast, Link, Stack, FormControl, FormLabel, Text, Button, Card, Collapse, Box, Input, InputLeftElement, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, VStack, Badge, Image} from "@chakra-ui/react";
 import { allProducts, allVendors, allWarehouses, allCategories} from './allData';
 import { FiSearch, FiEdit, FiPlus, FiArrowLeft, FiArrowRight, FiMaximize, FiDelete, FiDivideCircle } from 'react-icons/fi';
@@ -41,7 +41,7 @@ function Product() {
 
   return(
     <Box>
-    
+      <BulkInsertForm/>
       <FilterForm 
       filters={filters} 
       setFilters={setFilters} 
@@ -54,7 +54,7 @@ function Product() {
       data={data}
       setData={setData}
       />
-      {/* <Stack>
+      <Stack>
       <AddProductForm category={category} handleAddProduct={handleAddProduct} />
       <AddStockForm 
       data={data} 
@@ -62,7 +62,7 @@ function Product() {
       handleAddProduct={handleAddProduct}
       warehouses={warehouses}
       vendors={vendors}/>
-      </Stack> */}
+      </Stack>
       <LowStockAlert
       data={data.products}/>
       
@@ -220,6 +220,56 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
         </Collapse>
       </Card>
     </Box>
+  );
+};
+
+//Bulk Add Product
+export const BulkInsertForm = () => {
+  const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const toast = useToast();
+
+  const handleChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const accessToken = sessionStorage.getItem('accessToken');
+    setIsLoading(true);
+    try {
+      await bulkInsertProducts(file, accessToken);
+      setFile(null);
+      toast({
+        title: 'Bulk insert successful',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (err) {
+      toast({
+        title: 'Failed to perform bulk insert',
+        description: err.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <FormControl mb={4}>
+        <FormLabel htmlFor="file">Select File:</FormLabel>
+        <Input type="file" id="file" accept=".csv" onChange={handleChange} />
+      </FormControl>
+      <Button type="submit" colorScheme="teal" isLoading={isLoading} loadingText="Uploading">
+        Bulk Insert
+      </Button>
+    </form>
   );
 };
 

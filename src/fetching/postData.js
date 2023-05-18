@@ -51,6 +51,27 @@ export async function postProduct(
   return data;
 };
 
+export async function bulkInsertProducts(file, accessToken) {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const response = await fetch(`${baseUrl}products/bulk`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    },
+    body: formData
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data;
+}
+
+
 export async function postCategory(
   name, description, accessToken
 ) {
