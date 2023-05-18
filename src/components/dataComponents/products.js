@@ -259,6 +259,7 @@ export const BulkInsertForm = () => {
     }
   };
   const buttonCollor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+  const imageUrl = colorMode === 'dark' ? 'darkBulk.png' : 'https://img.freepik.com/free-vector/checking-boxes-concept-illustration_114360-2465.jpg?w=740&t=st=1684387560~exp=1684388160~hmac=e225f2314b5666af1ce71c24159d0e45587d38a74f171444232d2e4243fef2a1'
 
   return (
     <>
@@ -273,24 +274,24 @@ export const BulkInsertForm = () => {
           <ModalCloseButton />
           <ModalBody>
             <div style={{ display: 'flex' }}>
-              <img src="https://img.freepik.com/free-vector/checking-boxes-concept-illustration_114360-2465.jpg?w=740&t=st=1684387560~exp=1684388160~hmac=e225f2314b5666af1ce71c24159d0e45587d38a74f171444232d2e4243fef2a1" alt="Restock" style={{ marginRight: '20px' }} />
+              <img src={imageUrl}/>
               <div>
                 <Accordion defaultIndex={[0]} allowMultiple>
                   <AccordionItem>
                     <AccordionButton>
                       <Box flex="1" textAlign="left" colorScheme="teal">
-                        Rule 1: Data Format
+                        Data Format
                       </Box>
                       <AccordionIcon />
                     </AccordionButton>
                     <AccordionPanel pb={4}>
-                      The data in the file should be formatted in a specific way...
+                      The data in the file should be formatted in a specific way, you can see the example on product list page
                     </AccordionPanel>
                   </AccordionItem>
                   <AccordionItem>
                     <AccordionButton>
                       <Box flex="1" textAlign="left">
-                        Rule 2: Data Validation
+                        Data Validation
                       </Box>
                       <AccordionIcon />
                     </AccordionButton>
@@ -301,29 +302,30 @@ export const BulkInsertForm = () => {
                   <AccordionItem>
                     <AccordionButton>
                       <Box flex="1" textAlign="left">
-                        Rule 3: Error Handling
+                      Error Handling
                       </Box>
                       <AccordionIcon />
                     </AccordionButton>
                     <AccordionPanel pb={4}>
-                      Handle any errors that occur during the bulk insert process...
+                      Don't worry any invalid data would cancel out every insertion
                     </AccordionPanel>
                   </AccordionItem>
                 </Accordion>
               </div>
             </div>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <FormControl mt={4}>
                 <FormLabel htmlFor="file">
                   <Icon as={FiUpload} boxSize={6} mr={2} />
                 </FormLabel>
                 <Input type="file" id="file" accept=".csv" onChange={handleChange} />
               </FormControl>
-              <Button type="submit" justifyContent="center" colorScheme="teal" mt={4} isLoading={isLoading} loadingText="Uploading">
+              <Button type="submit" justifyContent="center" backgroundColor={buttonCollor} mt={4} isLoading={isLoading} loadingText="Uploading">
                 Upload
               </Button>
             </form>
+
           </ModalBody>
         </ModalContent>
       </Modal>
@@ -789,30 +791,81 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
 //low Stock alert
 export const LowStockAlert = ({ data }) => {
   const hasLowStock = (product) => {
-    return product.Warehouses.some((warehouse) => warehouse.WarehouseStock.quantity < 10);
+    return product.Warehouses.some(
+      (warehouse) =>
+        warehouse.WarehouseStock.quantity >= 1 &&
+        warehouse.WarehouseStock.quantity < 10
+    );
   };
 
+  const [sufficientStock, setSufficientStock] = useState(true);
+
+  useEffect(() => {
+    const hasSufficientStock = data.every((product) => !hasLowStock(product));
+    setSufficientStock(hasSufficientStock);
+  }, [data]);
+
   return (
-    <Box p={4} shadow="md" borderWidth="1px" borderRadius="md" overflowY="auto">
-      <Text fontSize="lg" fontWeight="bold" mb={2}>
-        Low Stock Alert
+    <Box
+      p={4}
+      borderRadius="md"
+      overflowY={data.length > 0 ? "auto" : "hidden"}
+      maxH={data.length > 0 ? "100%" : "auto"}
+      alignItems="center"
+      boxShadow="rgba(0, 0, 0, 0.1) 0px 4px 12px"
+      color="gray.400"
+    >
+      <Text fontSize="lg" fontWeight="bold" mb={2} textAlign="center">
+        Stock Alert
       </Text>
-      {data.map((product) => (
-        hasLowStock(product) && (
-          <Box key={product.id} mb={2}>
-            <Text>{product.name}</Text>
-            <Badge colorScheme="red" variant="subtle" ml={2}>
-              Low Stock
-            </Badge>
-            <Text size="sm" color="gray.400">
-              at {product.Warehouses.filter((warehouse) => warehouse.WarehouseStock.quantity < 10).map((warehouse) => warehouse.name).join(", ")}
-            </Text>
-          </Box>
-        )
-      ))}
+      {data.length > 0 ? (
+        data.map((product) => (
+          hasLowStock(product) && (
+            <Box
+              key={product.id}
+              mb={2}
+              boxShadow="rgba(0, 0, 0, 0.1) 0px 4px 12px"
+              color="gray.400"
+            >
+              <Text textAlign="center">{product.name}</Text>
+              <Badge colorScheme="red" variant="subtle" ml={2}>
+                Low Stock
+              </Badge>
+              <Box
+                size="sm"
+                color="gray.400"
+                boxShadow="rgba(0, 0, 0, 0.1) 0px 4px 12px"
+                p={2}
+                mt={2}
+                borderRadius="md"
+              >
+                at{" "}
+                {product.Warehouses.filter(
+                  (warehouse) =>
+                    warehouse.WarehouseStock.quantity >= 1 &&
+                    warehouse.WarehouseStock.quantity < 10
+                ).map((warehouse) => warehouse.name).join(", ")}
+              </Box>
+            </Box>
+          )
+        ))
+      ) : (
+        <Box textAlign="center">
+          {sufficientStock ? (
+            <Text color="green.500">Stocks sufficient</Text>
+          ) : (
+            <>
+              <Text color="green.500">Stocks sufficient</Text>
+              <Image src="darkCustomer.png" />
+            </>
+          )}
+        </Box>
+      )}
     </Box>
   );
 };
+
+
 
 
 

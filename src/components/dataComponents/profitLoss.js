@@ -30,12 +30,13 @@ const ProfitLoss = () => {
       datasets: [
         {
           data: [expenses.expenses.totalExpense, revenues.revenues.totalRevenue],
-          backgroundColor: colorMode === 'dark' ? ['#5e64f7', '#40c7a5'] : ['#fb997b', '#04c9d7'],
+          backgroundColor: colorMode === 'dark' ? ['#da7272', '#7289da'] : ['#fb997b', '#3bd1c7'],
           hoverBackgroundColor: colorMode === 'dark' ? ['rgba(255, 165, 0, 0.2)', 'rgba(114, 137, 218, 0.2)'] :  ['rgba(255, 99, 71, 0.2)', 'rgba(0, 128, 128, 0.2)'],
           borderColor: 'transparent',
         },
       ],
-      options: {
+      options: { 
+        cutout: '60%',
         plugins: {
           legend: {
             labels: {
@@ -73,6 +74,5 @@ const ProfitLoss = () => {
         </>
     )
 };
-
 
 export default ProfitLoss

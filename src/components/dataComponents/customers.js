@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { postCustomer } from '@/fetching/postData';
-import { Button, Collapse, Flex, useToast, Table, Tr, Text,  Td, Thead, Heading, Th, Tbody, HStack, Link, Spinner } from '@chakra-ui/react';
+import { Button, Collapse, Box,Flex, useToast, Table, Tr, Text,  Td, Thead, Heading, Th, Tbody, HStack, Link, Spinner, VStack } from '@chakra-ui/react';
 import { allCustomers } from './allData';
-import { FiEdit, FiDivideCircle } from 'react-icons/fi';
+import { FiEdit, FiDivideCircle, FiUserPlus } from 'react-icons/fi';
 import { useRouter } from 'next/router';
 import { deleteCustomer } from '@/fetching/deleteData';
 //parents
@@ -12,9 +12,6 @@ const Customers = () => {
   function handleAddCustomers(details) {
     setCustomers(prevData => [...prevData, details]);
   }
-  
-  
-  
   return (
   <>
     <AddCustomersForm
@@ -262,3 +259,27 @@ export const RenderCustomer = ({customer, setCustomer, isLoading}) => {
     </>
   );
 };
+
+export const LatestCustomer = () => {
+  const {customers} = allCustomers();
+
+  const totalCustomers = customers.length;
+  const latestCustomer = totalCustomers > 0 ? customers[totalCustomers - 1] : null;
+
+  return(
+    
+      <Box>
+        <VStack>
+          <HStack><FiUserPlus size={20} />
+        <Text>{totalCustomers}</Text></HStack>
+        {latestCustomer && (
+        <Text as="span" color="green.300">
+          + {latestCustomer.first_name} {latestCustomer.last_name} joined the hub
+        </Text>
+        )}
+        </VStack>
+      </Box>
+    
+  );
+
+}

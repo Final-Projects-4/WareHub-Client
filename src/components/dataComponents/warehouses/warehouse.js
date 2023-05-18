@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { postWarehouse } from '@/fetching/postData';
 import { Button, Collapse, Flex, useToast, Table, Tr, Text,  Td, Thead, Heading, Th, Tbody, HStack, Link, Spinner } from '@chakra-ui/react';
-import { allWarehouses } from './allData';
+import { allWarehouses } from '../allData';
 import { useRouter } from 'next/router';
 import { FiEdit, FiDivideCircle } from 'react-icons/fi';
 import { deleteWarehouse } from '@/fetching/deleteData';
@@ -17,6 +17,7 @@ const Warehouses = () => {
 
   return(
     <>
+      
       <AddWarehouseForm handleAddWarehouse={handleAddWarehouse}/>
       <RenderWarehouses warehouses={warehouses} setWarehouses={setWarehouses} isLoading={isLoading}/>
     </>
@@ -24,10 +25,6 @@ const Warehouses = () => {
 }
 
 export default Warehouses;
-
-
-
-
 
 export const AddWarehouseForm = ({handleAddWarehouse}) => {
   const [details, setDetails] = useState({

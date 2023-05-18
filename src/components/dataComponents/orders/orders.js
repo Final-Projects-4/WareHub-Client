@@ -13,7 +13,7 @@ import {
   Collapse, HStack, Link , Text, Thead, Th, Tbody, Heading, Table, useToast, VStack, Tr, Td, Flex
 } from '@chakra-ui/react';
 import { FiPlus, FiEdit, FiDivideCircle, FiSearch, FiDelete } from 'react-icons/fi';
-import { allCustomers, allWarehouses, allOrders } from './allData';
+import { allCustomers, allWarehouses, allOrders } from '../allData';
 import { postOrder } from '@/fetching/postData';
 import { deleteOrder } from '@/fetching/deleteData';
 
