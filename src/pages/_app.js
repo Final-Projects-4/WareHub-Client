@@ -24,7 +24,11 @@ export default function App({ Component, pageProps }) {
               <Box>
                 <Sidebar/>
               </Box>
-              <Box p={5}>
+              <Box p={5}
+              backgroundImage=""
+              backgroundRepeat="no-repeat"
+              backgroundSize="cover"
+              backgroundPosition="center">
                 <Component {...pageProps} />
               </Box>
             </Grid>

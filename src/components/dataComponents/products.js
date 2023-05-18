@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { postProduct, postStock, bulkInsertProducts } from '@/fetching/postData';
-import { InputGroup, IconButton,HStack, useToast, Link, Stack, FormControl, FormLabel, Text, Button, Card, Collapse, Box, Input, InputLeftElement, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, VStack, Badge, Image} from "@chakra-ui/react";
+import { InputGroup, IconButton,HStack, useToast, Link, Stack, FormControl, FormLabel, Text, Button, Card, Collapse, Box, Input, InputLeftElement, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, VStack, Badge, Image, useColorMode} from "@chakra-ui/react";
 import { allProducts, allVendors, allWarehouses, allCategories} from './allData';
-import { FiSearch, FiEdit, FiPlus, FiArrowLeft, FiArrowRight, FiMaximize, FiDelete, FiDivideCircle } from 'react-icons/fi';
+import { FiSearch, FiEdit,FiUpload, FiPlus, FiArrowLeft, FiArrowRight, FiMaximize, FiDelete, FiDivideCircle } from 'react-icons/fi';
 import { deleteProduct } from '@/fetching/deleteData';
-
+import { useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, Accordion
+,ModalBody,AccordionItem,AccordionButton,AccordionIcon,AccordionPanel, Icon } from '@chakra-ui/react';
 //Parent
 function Product() {
   const [dummyState, setDummyState] = useState(0); // Create dummy state
@@ -41,7 +42,6 @@ function Product() {
 
   return(
     <Box>
-      <BulkInsertForm/>
       <FilterForm 
       filters={filters} 
       setFilters={setFilters} 
@@ -63,9 +63,6 @@ function Product() {
       warehouses={warehouses}
       vendors={vendors}/>
       </Stack>
-      <LowStockAlert
-      data={data.products}/>
-      
     </Box>
   )
   
@@ -227,7 +224,9 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
 export const BulkInsertForm = () => {
   const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
+  const {colorMode} = useColorMode();
 
   const handleChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -259,17 +258,76 @@ export const BulkInsertForm = () => {
       setIsLoading(false);
     }
   };
+  const buttonCollor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
 
   return (
-    <form onSubmit={handleSubmit}>
-      <FormControl mb={4}>
-        <FormLabel htmlFor="file">Select File:</FormLabel>
-        <Input type="file" id="file" accept=".csv" onChange={handleChange} />
-      </FormControl>
-      <Button type="submit" colorScheme="teal" isLoading={isLoading} loadingText="Uploading">
+    <>
+      <Button backgroundColor={buttonCollor} onClick={onOpen}>
         Bulk Insert
       </Button>
-    </form>
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader textAlign="center">Bulk Insert Product</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <div style={{ display: 'flex' }}>
+              <img src="https://img.freepik.com/free-vector/checking-boxes-concept-illustration_114360-2465.jpg?w=740&t=st=1684387560~exp=1684388160~hmac=e225f2314b5666af1ce71c24159d0e45587d38a74f171444232d2e4243fef2a1" alt="Restock" style={{ marginRight: '20px' }} />
+              <div>
+                <Accordion defaultIndex={[0]} allowMultiple>
+                  <AccordionItem>
+                    <AccordionButton>
+                      <Box flex="1" textAlign="left" colorScheme="teal">
+                        Rule 1: Data Format
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                    <AccordionPanel pb={4}>
+                      The data in the file should be formatted in a specific way...
+                    </AccordionPanel>
+                  </AccordionItem>
+                  <AccordionItem>
+                    <AccordionButton>
+                      <Box flex="1" textAlign="left">
+                        Rule 2: Data Validation
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                    <AccordionPanel pb={4}>
+                      Validate the data for any required fields, constraints, or business rules...
+                    </AccordionPanel>
+                  </AccordionItem>
+                  <AccordionItem>
+                    <AccordionButton>
+                      <Box flex="1" textAlign="left">
+                        Rule 3: Error Handling
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                    <AccordionPanel pb={4}>
+                      Handle any errors that occur during the bulk insert process...
+                    </AccordionPanel>
+                  </AccordionItem>
+                </Accordion>
+              </div>
+            </div>
+
+            <form onSubmit={handleSubmit}>
+              <FormControl mt={4}>
+                <FormLabel htmlFor="file">
+                  <Icon as={FiUpload} boxSize={6} mr={2} />
+                </FormLabel>
+                <Input type="file" id="file" accept=".csv" onChange={handleChange} />
+              </FormControl>
+              <Button type="submit" justifyContent="center" colorScheme="teal" mt={4} isLoading={isLoading} loadingText="Uploading">
+                Upload
+              </Button>
+            </form>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </>
   );
 };
 
@@ -728,8 +786,7 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
   );
 }
 
-
-
+//low Stock alert
 export const LowStockAlert = ({ data }) => {
   const hasLowStock = (product) => {
     return product.Warehouses.some((warehouse) => warehouse.WarehouseStock.quantity < 10);
