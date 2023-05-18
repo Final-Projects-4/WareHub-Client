@@ -1,4 +1,4 @@
-import Warehouses from "@/components/dataComponents/warehouse"
+import Warehouses from "@/components/dataComponents/warehouses/warehouse"
 
 const Warehouse = () => {
 

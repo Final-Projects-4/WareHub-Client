@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { postProduct, postStock } from '@/fetching/postData';
-import { InputGroup, IconButton,HStack, useToast, Link, Stack, FormControl, FormLabel, Text, Button, Card, Collapse, Box, Input, InputLeftElement, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, VStack, Spacer, Image} from "@chakra-ui/react";
+import { postProduct, postStock, bulkInsertProducts } from '@/fetching/postData';
+import { InputGroup, IconButton,HStack, useToast, Link, Stack, FormControl, FormLabel, Text, Button, Card, Collapse, Box, Input, InputLeftElement, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, VStack, Badge, Image, useColorMode} from "@chakra-ui/react";
 import { allProducts, allVendors, allWarehouses, allCategories} from './allData';
-import { FiSearch, FiEdit, FiPlus, FiArrowLeft, FiArrowRight, FiMaximize, FiDelete, FiDivideCircle } from 'react-icons/fi';
+import { FiSearch, FiEdit,FiUpload, FiPlus, FiArrowLeft, FiArrowRight, FiMaximize, FiDelete, FiDivideCircle } from 'react-icons/fi';
 import { deleteProduct } from '@/fetching/deleteData';
-
+import { useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, Accordion
+,ModalBody,AccordionItem,AccordionButton,AccordionIcon,AccordionPanel, Icon } from '@chakra-ui/react';
 //Parent
 function Product() {
   const [dummyState, setDummyState] = useState(0); // Create dummy state
@@ -30,15 +31,17 @@ function Product() {
     }));
     setDummyState(prevState => prevState + 1); // Update dummy state
   }
+
   function handleApplyFilters() {
     setDummyState(prevState => prevState + 1);
   }
+
   const { vendors } = allVendors();
-  const { category, setCategory } = allCategories();
+  const { category} = allCategories();
+
 
   return(
-    <>
-    <Flex>
+    <Box>
       <FilterForm 
       filters={filters} 
       setFilters={setFilters} 
@@ -60,8 +63,7 @@ function Product() {
       warehouses={warehouses}
       vendors={vendors}/>
       </Stack>
-      </Flex>
-    </>
+    </Box>
   )
   
 }
@@ -215,6 +217,119 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
         </Collapse>
       </Card>
     </Box>
+  );
+};
+
+//Bulk Add Product
+export const BulkInsertForm = () => {
+  const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
+  const {colorMode} = useColorMode();
+
+  const handleChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const accessToken = sessionStorage.getItem('accessToken');
+    setIsLoading(true);
+    try {
+      await bulkInsertProducts(file, accessToken);
+      setFile(null);
+      toast({
+        title: 'Bulk insert successful',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (err) {
+      toast({
+        title: 'Failed to perform bulk insert',
+        description: err.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const buttonCollor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+  const imageUrl = colorMode === 'dark' ? 'darkBulk.png' : 'https://img.freepik.com/free-vector/checking-boxes-concept-illustration_114360-2465.jpg?w=740&t=st=1684387560~exp=1684388160~hmac=e225f2314b5666af1ce71c24159d0e45587d38a74f171444232d2e4243fef2a1'
+
+  return (
+    <>
+      <Button backgroundColor={buttonCollor} onClick={onOpen}>
+        Bulk Insert
+      </Button>
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader textAlign="center">Bulk Insert Product</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <div style={{ display: 'flex' }}>
+              <img src={imageUrl}/>
+              <div>
+                <Accordion defaultIndex={[0]} allowMultiple>
+                  <AccordionItem>
+                    <AccordionButton>
+                      <Box flex="1" textAlign="left" colorScheme="teal">
+                        Data Format
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                    <AccordionPanel pb={4}>
+                      The data in the file should be formatted in a specific way, you can see the example on product list page
+                    </AccordionPanel>
+                  </AccordionItem>
+                  <AccordionItem>
+                    <AccordionButton>
+                      <Box flex="1" textAlign="left">
+                        Data Validation
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                    <AccordionPanel pb={4}>
+                      Validate the data for any required fields, constraints, or business rules...
+                    </AccordionPanel>
+                  </AccordionItem>
+                  <AccordionItem>
+                    <AccordionButton>
+                      <Box flex="1" textAlign="left">
+                      Error Handling
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                    <AccordionPanel pb={4}>
+                      Don't worry any invalid data would cancel out every insertion
+                    </AccordionPanel>
+                  </AccordionItem>
+                </Accordion>
+              </div>
+            </div>
+
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <FormControl mt={4}>
+                <FormLabel htmlFor="file">
+                  <Icon as={FiUpload} boxSize={6} mr={2} />
+                </FormLabel>
+                <Input type="file" id="file" accept=".csv" onChange={handleChange} />
+              </FormControl>
+              <Button type="submit" justifyContent="center" backgroundColor={buttonCollor} mt={4} isLoading={isLoading} loadingText="Uploading">
+                Upload
+              </Button>
+            </form>
+
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </>
   );
 };
 
@@ -672,6 +787,84 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
 
   );
 }
+
+//low Stock alert
+export const LowStockAlert = ({ data }) => {
+  const hasLowStock = (product) => {
+    return product.Warehouses.some(
+      (warehouse) =>
+        warehouse.WarehouseStock.quantity >= 1 &&
+        warehouse.WarehouseStock.quantity < 10
+    );
+  };
+
+  const [sufficientStock, setSufficientStock] = useState(true);
+
+  useEffect(() => {
+    const hasSufficientStock = data.every((product) => !hasLowStock(product));
+    setSufficientStock(hasSufficientStock);
+  }, [data]);
+
+  return (
+    <Box
+      p={4}
+      borderRadius="md"
+      overflowY={data.length > 0 ? "auto" : "hidden"}
+      maxH={data.length > 0 ? "100%" : "auto"}
+      alignItems="center"
+      boxShadow="rgba(0, 0, 0, 0.1) 0px 4px 12px"
+      color="gray.400"
+    >
+      <Text fontSize="lg" fontWeight="bold" mb={2} textAlign="center">
+        Stock Alert
+      </Text>
+      {data.length > 0 ? (
+        data.map((product) => (
+          hasLowStock(product) && (
+            <Box
+              key={product.id}
+              mb={2}
+              boxShadow="rgba(0, 0, 0, 0.1) 0px 4px 12px"
+              color="gray.400"
+            >
+              <Text textAlign="center">{product.name}</Text>
+              <Badge colorScheme="red" variant="subtle" ml={2}>
+                Low Stock
+              </Badge>
+              <Box
+                size="sm"
+                color="gray.400"
+                boxShadow="rgba(0, 0, 0, 0.1) 0px 4px 12px"
+                p={2}
+                mt={2}
+                borderRadius="md"
+              >
+                at{" "}
+                {product.Warehouses.filter(
+                  (warehouse) =>
+                    warehouse.WarehouseStock.quantity >= 1 &&
+                    warehouse.WarehouseStock.quantity < 10
+                ).map((warehouse) => warehouse.name).join(", ")}
+              </Box>
+            </Box>
+          )
+        ))
+      ) : (
+        <Box textAlign="center">
+          {sufficientStock ? (
+            <Text color="green.500">Stocks sufficient</Text>
+          ) : (
+            <>
+              <Text color="green.500">Stocks sufficient</Text>
+              <Image src="darkCustomer.png" />
+            </>
+          )}
+        </Box>
+      )}
+    </Box>
+  );
+};
+
 
 
 

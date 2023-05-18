@@ -13,9 +13,9 @@ const ToggleColorButton = () => {
       m="1rem"
     >
       {colorMode === "dark" ? (
-        <FiSun color="orange" />
+        <FiSun color="#7289da" />
       ) : (
-        <FiMoon color="blue" />
+        <FiMoon color="#3bd1c7" />
       )}
     </Button>
   );

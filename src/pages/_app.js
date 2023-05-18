@@ -1,7 +1,7 @@
 import * as React from 'react'
-import { ChakraProvider, ColorModeScript, useColorMode } from '@chakra-ui/react'
+import { ChakraProvider, 
+ColorModeScript, Grid, Box } from '@chakra-ui/react'
 import theme from '../styles/theme'
-import { Flex,Box } from '@chakra-ui/react'
 import Navbar from '../components/styleComponents/Navbar'
 import Sidebar from '@/components/styleComponents/Sidebar'
 import { useRouter } from 'next/router'
@@ -11,19 +11,28 @@ export default function App({ Component, pageProps }) {
   return (
     <ChakraProvider theme={theme}>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-      <Flex h="vh">
-        {router.pathname !== "/" && <Sidebar h="vh"/>}
-        <Flex flex="1" flexDirection="column">
-          <Box flex="1">
-            <Navbar pr={10} />
-            <Component {...pageProps} />
-          </Box>
-        </Flex>
-      </Flex>
+          <Grid
+          height="100vh"
+          templateRows="auto 1fr"
+          templateColumns="1fr"
+          gap={0}
+          >
+            <Box w="100%" p={4} pb={0}>
+              <Navbar />
+            </Box>
+            <Grid templateColumns="auto 1fr" height="100%">
+              <Box>
+                <Sidebar/>
+              </Box>
+              <Box p={5}
+              backgroundImage=""
+              backgroundRepeat="no-repeat"
+              backgroundSize="cover"
+              backgroundPosition="center">
+                <Component {...pageProps} />
+              </Box>
+            </Grid>
+          </Grid>
     </ChakraProvider>
   );
 }
-
-
-
-

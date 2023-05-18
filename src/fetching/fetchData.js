@@ -1,7 +1,7 @@
 export const baseUrl = "http://localhost:3001/";
 
 //Data Fetching function, just change the url parameters when calling fetchData('example')
-const fetchData = async (url) => {
+export const fetchData = async (url) => {
   const response = await fetch(`${baseUrl}${url}`, {
     method: "GET",
     headers: {

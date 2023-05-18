@@ -1,4 +1,4 @@
-import Order, {  } from "@/components/dataComponents/orders";
+import Order, {  } from "@/components/dataComponents/orders/orders";
 
 
 const Orders = () => {

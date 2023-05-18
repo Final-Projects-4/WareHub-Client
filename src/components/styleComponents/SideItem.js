@@ -3,7 +3,7 @@ import { Link, Flex, Icon, Text, useColorMode } from '@chakra-ui/react';
 
 const SideItem = ({ icon, title, active, navSize, to, onClick, activeColor }) => {
   const { colorMode } = useColorMode();
-  const hoverColor = colorMode === 'dark' ? '#ff99c8' : '#2e8c86';
+  const hoverColor = colorMode === 'dark' ? '#7289da' : '#66b2b2';
 
   return (
     <Link
