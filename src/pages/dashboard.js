@@ -119,7 +119,7 @@ const Dashboard = () => {
   const {data} = useProducts();
   const {vendors} = allVendors();
   const totalVendors = vendors.length;
-  console.log(totalVendors)
+  
   
   const [isSmallerScreen] = useMediaQuery("(max-width: 768px)");
   const { colorMode } = useColorMode();
@@ -194,12 +194,10 @@ const Dashboard = () => {
               <VStack>
                 <HStack><FiUsers size={20} />
                   <Text>{totalVendors}</Text>
-                </HStack>
-                    
+                </HStack> 
                   <Text as="span" color="green.300">
                     Vendors supplied us!
                   </Text>
-                    
               </VStack>
             </Box>
             <Box p={4}>

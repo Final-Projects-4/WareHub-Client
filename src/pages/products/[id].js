@@ -4,9 +4,9 @@ import { FiSettings } from "react-icons/fi";
 import {
     Box,
     Badge, Image,
-    Text,
-    Stack,
-    Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, FormControl, FormLabel, Input
+    Text, Card,
+    Stack, Heading,
+    Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, FormControl, FormLabel, Input, useColorMode, CardBody
 } from '@chakra-ui/react';
 import { updateProduct } from "@/fetching/updateData";
 
@@ -55,46 +55,56 @@ export async function getServerSideProps(ctx) {
 //Display Product By id
 const ProductDetailCard = ({ product }) => {
     return (
-        <Stack spacing="2">
-        <Box borderWidth="1px" borderRadius="lg" p="4">
-          <Image src={product.image} boxSize="100px"/>
-          
-            <Text fontSize="lg" fontWeight="bold" mb="4">
-            {product.name}
-            </Text>
-            <Box mb="2">
-            <Badge colorScheme="green" fontSize="sm">
+      
+        <Card direction={{ base: 'column', sm: 'row' }}
+        overflow='hidden'
+        variant='outline'
+        p={4}>
+          <Image src={product.image} objectFit='cover'
+            maxW={{ base: '100%', sm: '200px' }} 
+            alt={`${product.name}`}/>
+          <Stack>
+            <CardBody>
+              <Heading size='md'>
+                {product.name}
+              </Heading>
+              <Badge colorScheme="green" fontSize="sm">
                 {product.SKU}
-            </Badge>
-            </Box>
-            <Box mb="4">
-            <Text fontSize="sm">
-                Price: <strong>{product.price}</strong>
-            </Text>
-            <Text fontSize="sm">
-                Weight: <strong>{product.weight}</strong>
-            </Text>
-            <Text fontSize="sm">
-                Size: <strong>{product.size}</strong>
-            </Text>
-            </Box>
-                <Text fontSize="sm">{product.description}</Text>
-                <Stack direction="row" justifyContent="space-between" fontSize="sm" color="gray.500">
-                <Text fontWeight="bold">Created Date:</Text>
-                <Text>
-                    <strong>{new Date(product.createdAt).toLocaleString()}</strong>
-                </Text>
-                </Stack>
-                <Stack direction="row" justifyContent="space-between" fontSize="sm" color="gray.500">
-                <Text fontWeight="bold">Updated Date:</Text>
-                <Text>
-                    <strong>{new Date(product.updatedAt).toLocaleString()}</strong>
-                </Text>
-                </Stack>
-        </Box>
-        </Stack>
+              </Badge>
+              <Text py='2'>
+                {product.description}
+              </Text>
 
-    );
+              <Box mb="4">
+                <Text fontSize="sm">
+                  Price: <strong>{product.price}</strong>
+                </Text>
+                <Text fontSize="sm">
+                  Weight: <strong>{product.weight}</strong>
+                </Text>
+                <Text fontSize="sm">
+                  Size: <strong>{product.size}</strong>
+                </Text>
+              </Box>
+            </CardBody>
+            <Stack ml={4} direction="row" justifyContent="space-between" fontSize="sm" color="gray.500">
+              <Text color="gray.500" fontWeight="bold">Created Date:</Text>
+              <Text>
+                <strong>{new Date(product.createdAt).toLocaleString()}</strong>
+              </Text>
+          </Stack>
+          <Stack direction="row" justifyContent="space-between" fontSize="sm" color="gray.500">
+              <Text fontWeight="bold">Updated Date:</Text>
+              <Text>
+                <strong>{new Date(product.updatedAt).toLocaleString()}</strong>
+              </Text>
+          </Stack>
+          </Stack>
+          
+          
+          
+        </Card>
+    )
 };
 
 //Update Product
@@ -138,11 +148,13 @@ const ProductUpdateButton = ({ product, onUpdate }) => {
       const file = e.target.files[0];
       setImageFile(file);
     };
-  
+    const {colorMode} = useColorMode()
+    const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
     return (
       <>
         <Box
         as={FiSettings}
+        
         cursor="pointer"
         fontSize="xl"
         onClick={() => setIsModalOpen(true)}
