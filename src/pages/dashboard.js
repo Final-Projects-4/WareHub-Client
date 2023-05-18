@@ -1,11 +1,13 @@
 import { BulkInsertForm, LowStockAlert } from '@/components/dataComponents/products';
 import ProfitLoss from '@/components/dataComponents/profitLoss';
-import { Grid, Box, useMediaQuery, Stack, Image, VStack, useColorMode, Badge, Text } from '@chakra-ui/react';
+import { Grid, Box, useMediaQuery, Stack, Image, VStack, HStack, useColorMode, Badge, Text } from '@chakra-ui/react';
 import { fetchData} from '@/fetching/fetchData';
 import { useState, useEffect } from 'react';
 import { LatestCustomer } from '@/components/dataComponents/customers';
 import WarehouseBar from '@/components/dataComponents/warehouses/warehouseCharts';
-import { FiShoppingBag } from 'react-icons/fi';
+import { FiShoppingBag, FiUsers } from 'react-icons/fi';
+import { allVendors } from '@/components/dataComponents/allData';
+import MovingBox from '@/components/styleComponents/AnimateBox';
 
 const LastTransaction = () => {
   const fetchOrders = async () => {
@@ -38,8 +40,6 @@ const LastTransaction = () => {
   };
 
   const { data } = useOrders();
-
-  console.log(data);
 
   return (
     <Box height="100%" width="100%" overflow="auto" display="flex" justifyContent="center" alignItems="center">
@@ -117,8 +117,10 @@ const Dashboard = () => {
   };
 
   const {data} = useProducts();
+  const {vendors} = allVendors();
+  const totalVendors = vendors.length;
+  console.log(totalVendors)
   
-
   const [isSmallerScreen] = useMediaQuery("(max-width: 768px)");
   const { colorMode } = useColorMode();
   const imageUrl = colorMode === 'dark' ? 'darkBulk.png' : 'https://img.freepik.com/free-vector/checking-boxes-concept-illustration_114360-2465.jpg?w=740&t=st=1684387560~exp=1684388160~hmac=e225f2314b5666af1ce71c24159d0e45587d38a74f171444232d2e4243fef2a1'
@@ -183,11 +185,20 @@ const Dashboard = () => {
             <Box p={4}>
               <LatestCustomer/>
             </Box>
-            <Box bg="orange.200" p={4}>
-              <LowStockAlert data={data.products}/>
+            <Box p={4}>
+              <VStack>
+                <HStack><FiUsers size={20} />
+                  <Text>{totalVendors}</Text>
+                </HStack>
+                    
+                  <Text as="span" color="green.300">
+                    Vendors supplied us!
+                  </Text>
+                    
+              </VStack>
             </Box>
-            <Box bg="cyan.200" p={4}>
-            
+            <Box p={4}>
+              <MovingBox/>
             </Box>
           </Grid>
         </Grid>

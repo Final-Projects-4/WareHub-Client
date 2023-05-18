@@ -1,4 +1,4 @@
-import { Box,HStack, Container, Spacer} from "@chakra-ui/react";
+import { Box,HStack, Spacer} from "@chakra-ui/react";
 import ToggleColorButton from "./NavbarItems/ToggleDark";
 import Footer from "./Footer";
 
