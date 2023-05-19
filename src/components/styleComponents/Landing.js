@@ -1,4 +1,15 @@
-import { Box, Flex, Text, Button } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Text,
+  Button,
+  HStack,
+  useDisclosure,
+  useColorMode,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+} from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import React from "react";
@@ -17,25 +28,8 @@ import {
   AccordionPanel,
   useColorModeValue,
 } from "@chakra-ui/react";
+import LoginPage from "./Login";
 
-const LoginPage = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const router = useRouter();
-  const [showPassword, setShowPassword] = useState(false);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    postLoginData(username, password)
-      .then((data) => {
-        const { token } = data;
-        sessionStorage.setItem("accessToken", token);
-        router.push("/register");
-      })
-      .catch((err) => {});
-  };
-};
 const AnimatedNumber = ({ value, text }) => {
   const [animatedValue, setAnimatedValue] = useState(0);
   const valueRef = useRef(0);
@@ -67,6 +61,10 @@ const AnimatedNumber = ({ value, text }) => {
 
 const Landing = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { toggleColorMode } = useColorMode();
+  useColorModeValue("White", "gray.700");
+  const [isLogin, setIsLogin] = useState(false);
 
   return (
     <Box
@@ -141,6 +139,45 @@ const Landing = () => {
             </Button>
           </Link>
         </motion.div>
+        <motion.div
+          initial={{ y: -50 }}
+          animate={{ y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <HStack mr={6}>
+            {!isLogin ? (
+              <Button
+                onClick={onOpen}
+                colorScheme="teal"
+                bg={"teal.400"}
+                color={"white"}
+                _hover={{ bg: "teal.900" }}
+              >
+                Login
+              </Button>
+            ) : (
+              <Button
+                colorScheme="teal"
+                bg={"teal.400"}
+                color={"white"}
+                _hover={{ bg: "teal.900" }}
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  setIsLogin(false);
+                  router.push("/");
+                }}
+              >
+                Logout
+              </Button>
+            )}
+          </HStack>
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <LoginPage />
+            </ModalContent>
+          </Modal>
+        </motion.div>
       </Flex>
 
       {/* Section 1 */}
@@ -199,7 +236,7 @@ const Landing = () => {
       {/* Section 2 */}
       <Box bg={"teal.400"} py={10} px={0} mx={0}>
         <Text fontSize="2xl" color="white" textAlign="center" mb={8}>
-        Trusted by renowned brands
+          Trusted by renowned brands
         </Text>
         <Flex maxWidth="100%" justifyContent="center">
           <Flex flexDirection="column" alignItems="center" mx={4}>
@@ -274,7 +311,7 @@ const Landing = () => {
       {/* Section 3 */}
       <Box py={16} px={8} bg={useColorModeValue("white", "#1A202C")} id="fitur">
         <Text fontSize="2xl" fontWeight="bold" mb={8} textAlign="center">
-        Advantageous features of using Warehub
+          Advantageous features of using Warehub
         </Text>
         <Flex justify="space-between">
           {/* Card 1 */}
@@ -416,117 +453,123 @@ const Landing = () => {
 
       {/* Section 6 */}
       <Box py={0} px={8} bg={"teal.400"} id="tentang-kami">
-  <Flex alignItems="center">
-    <Box flex={1}>
-      <Text fontSize="2xl" fontWeight="bold" color="white">
-        About Us
-      </Text>
-      <Accordion allowToggle mt={8}>
-        {/* Pertanyaan 1 */}
-        <AccordionItem>
-          <h2>
-            <AccordionButton>
-              <Box flex="1" textAlign="left">
-                <Text color="white" fontWeight="bold">
-                  What is Warehub?
-                </Text>
-              </Box>
-            </AccordionButton>
-          </h2>
-          <AccordionPanel pb={4}>
-            <Text color="white">
-              Warehub is an e-commerce platform that provides marketing,
-              inventory management, and logistics solutions for online
-              businesses.
+        <Flex alignItems="center">
+          <Box flex={1}>
+            <Text fontSize="2xl" fontWeight="bold" color="white">
+              About Us
             </Text>
-          </AccordionPanel>
-        </AccordionItem>
+            <Accordion allowToggle mt={8}>
+              {/* Pertanyaan 1 */}
+              <AccordionItem>
+                <h2>
+                  <AccordionButton>
+                    <Box flex="1" textAlign="left">
+                      <Text color="white" fontWeight="bold">
+                        What is Warehub?
+                      </Text>
+                    </Box>
+                  </AccordionButton>
+                </h2>
+                <AccordionPanel pb={4}>
+                  <Text color="white">
+                    Warehub is an e-commerce platform that provides marketing,
+                    inventory management, and logistics solutions for online
+                    businesses.
+                  </Text>
+                </AccordionPanel>
+              </AccordionItem>
 
-        {/* Pertanyaan 2 */}
-        <AccordionItem>
-          <h2>
-            <AccordionButton>
-              <Box flex="1" textAlign="left">
-                <Text color="white" fontWeight="bold">
-                  How can I sign up for Warehub?
-                </Text>
-              </Box>
-            </AccordionButton>
-          </h2>
-          <AccordionPanel pb={4}>
-            <Text color="white">
-              You can sign up for Warehub by visiting our official website and
-              following the provided registration steps.
-            </Text>
-          </AccordionPanel>
-        </AccordionItem>
+              {/* Pertanyaan 2 */}
+              <AccordionItem>
+                <h2>
+                  <AccordionButton>
+                    <Box flex="1" textAlign="left">
+                      <Text color="white" fontWeight="bold">
+                        How can I sign up for Warehub?
+                      </Text>
+                    </Box>
+                  </AccordionButton>
+                </h2>
+                <AccordionPanel pb={4}>
+                  <Text color="white">
+                    You can sign up for Warehub by visiting our official website
+                    and following the provided registration steps.
+                  </Text>
+                </AccordionPanel>
+              </AccordionItem>
 
-        {/* Pertanyaan 3 */}
-        <AccordionItem>
-          <h2>
-            <AccordionButton>
-              <Box flex="1" textAlign="left">
-                <Text color="white" fontWeight="bold">
-                  What are the benefits of using Warehub?
-                </Text>
-              </Box>
-            </AccordionButton>
-          </h2>
-          <AccordionPanel pb={4}>
-            <Text color="white">
-              The benefits of using Warehub include access to various
-              logistics services, efficient inventory management, and
-              integration with marketing platforms to enhance sales.
-            </Text>
-          </AccordionPanel>
-        </AccordionItem>
+              {/* Pertanyaan 3 */}
+              <AccordionItem>
+                <h2>
+                  <AccordionButton>
+                    <Box flex="1" textAlign="left">
+                      <Text color="white" fontWeight="bold">
+                        What are the benefits of using Warehub?
+                      </Text>
+                    </Box>
+                  </AccordionButton>
+                </h2>
+                <AccordionPanel pb={4}>
+                  <Text color="white">
+                    The benefits of using Warehub include access to various
+                    logistics services, efficient inventory management, and
+                    integration with marketing platforms to enhance sales.
+                  </Text>
+                </AccordionPanel>
+              </AccordionItem>
 
-        {/* Pertanyaan 4 */}
-        <AccordionItem>
-          <h2>
-            <AccordionButton>
-              <Box flex="1" textAlign="left">
-                <Text color="white" fontWeight="bold">
-                  How does the shipping process work with Warehub?
-                </Text>
-              </Box>
-            </AccordionButton>
-          </h2>
-          <AccordionPanel pb={4}>
-            <Text color="white">
-              After you receive an order, Warehub will handle the packaging
-              and shipping process of the goods to your customers through
-              connected logistics services.
-            </Text>
-          </AccordionPanel>
-        </AccordionItem>
+              {/* Pertanyaan 4 */}
+              <AccordionItem>
+                <h2>
+                  <AccordionButton>
+                    <Box flex="1" textAlign="left">
+                      <Text color="white" fontWeight="bold">
+                        How does the shipping process work with Warehub?
+                      </Text>
+                    </Box>
+                  </AccordionButton>
+                </h2>
+                <AccordionPanel pb={4}>
+                  <Text color="white">
+                    After you receive an order, Warehub will handle the
+                    packaging and shipping process of the goods to your
+                    customers through connected logistics services.
+                  </Text>
+                </AccordionPanel>
+              </AccordionItem>
 
-        {/* Pertanyaan 5 */}
-        <AccordionItem>
-          <h2>
-            <AccordionButton>
-              <Box flex="1" textAlign="left">
-                <Text color="white" fontWeight="bold">
-                  Does Warehub have a shipment tracking feature?
-                </Text>
-              </Box>
-            </AccordionButton>
-          </h2>
-          <AccordionPanel pb={4}>
-            <Text color="white">
-              Yes, Warehub provides a shipment tracking feature that allows
-              you and your customers to track the delivery status of the goods
-              in real-time.
-            </Text>
-          </AccordionPanel>
-        </AccordionItem>
-        </Accordion>
-</Box>
-<Box py={16} px={8} bg={"teal.400"} id="gambar-pertanyaan" marginLeft="auto">
-  <img src="bertanya.png" alt="Gambar" width={350} height={300} />
-</Box>
-</Flex>
-</Box>
+              {/* Pertanyaan 5 */}
+              <AccordionItem>
+                <h2>
+                  <AccordionButton>
+                    <Box flex="1" textAlign="left">
+                      <Text color="white" fontWeight="bold">
+                        Does Warehub have a shipment tracking feature?
+                      </Text>
+                    </Box>
+                  </AccordionButton>
+                </h2>
+                <AccordionPanel pb={4}>
+                  <Text color="white">
+                    Yes, Warehub provides a shipment tracking feature that
+                    allows you and your customers to track the delivery status
+                    of the goods in real-time.
+                  </Text>
+                </AccordionPanel>
+              </AccordionItem>
+            </Accordion>
+          </Box>
+          <Box
+            py={16}
+            px={8}
+            bg={"teal.400"}
+            id="gambar-pertanyaan"
+            marginLeft="auto"
+          >
+            <img src="bertanya.png" alt="Gambar" width={350} height={300} />
+          </Box>
+        </Flex>
+      </Box>
       {/* Footer */}
       <Box py={2} px={6} bg={useColorModeValue("white", "#1A202C")}>
         <Flex justify="center">
