@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import React from "react";
 import NextLink from "next/link";
-import { useRouter } from "next/router";
 import { FiBox } from "react-icons/fi";
 import { FaBullseye } from "react-icons/fa";
 import { VscChecklist } from "react-icons/vsc";
@@ -139,19 +138,13 @@ const Landing = () => {
             {!isLogin ? (
               <Button
                 onClick={onOpen}
-                colorScheme="teal"
-                bg={"teal.400"}
-                color={"white"}
-                _hover={{ bg: "teal.900" }}
+                bgColor={buttonColor}
               >
                 Login
               </Button>
             ) : (
               <Button
-                colorScheme="teal"
-                bg={"teal.400"}
-                color={"white"}
-                _hover={{ bg: "teal.900" }}
+                bgColor={counterColor}
                 onClick={() => {
                   localStorage.removeItem("token");
                   setIsLogin(false);

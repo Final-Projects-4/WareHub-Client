@@ -5,7 +5,6 @@ import {
   Button,
   Text,
   FormControl,
-  FormLabel,
   InputGroup,
   InputRightElement,
   Stack,
@@ -13,7 +12,7 @@ import {
   Box,
   Link,
   useToast,
-  useDisclosure,
+  useDisclosure, useColorMode
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { postLoginData } from "@/fetching/postData";
@@ -28,7 +27,9 @@ const LoginPage = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const toast = useToast();
-
+  const {colorMode} = useColorMode();
+  const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+  const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -72,15 +73,10 @@ const LoginPage = () => {
           boxShadow={"lg"}
           p={8}
         >
-          <Box rounded={"lg"} boxShadow={"lg"} p={4}>
+          <Box rounded={"lg"}  p={4}>
             <Stack align={"center"}>
-              <Heading fontSize={"4xl"}>Welcome Back...</Heading>
-              <Text
-                fontSize={"lg"}
-                color={useColorModeValue("gray.700", "white")}
-              >
-                Please Login with your personal information
-              </Text>
+              <Heading fontSize={"4xl"}>Login</Heading>
+           
             </Stack>
           </Box>
 
@@ -120,19 +116,18 @@ const LoginPage = () => {
               <Button
                 onClick={handleSubmit}
                 mb={6}
-                colorScheme="teal"
-                bg={"teal.400"}
-                color={"white"}
-                _hover={{ bg: "teal.900" }}
+                
+                bgColor={buttonColor}
+                size="sm"
               >
                 Login
               </Button>
             </Stack>
           </Stack>
           <Stack>
-            <Text align={"center"}>
+            <Text size="xs" align={"center"}>
               Doesn't have an account?{" "}
-              <Link href="/register" color="blue.400">
+              <Link size="sm" href="/register" color="blue.400">
                 Register
               </Link>
             </Text>
