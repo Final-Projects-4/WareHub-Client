@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { postVendor } from '@/fetching/postData';
-import { Button, Collapse, Flex, useToast, Table, Tr, Text,  Td, Thead, Heading, Th, Tbody, HStack, Link, Spinner } from '@chakra-ui/react';
+import { Button, Collapse, Flex, useToast, Table, Tr, Text,  Td, Thead, Heading, Th, Tbody, HStack, Link, Spinner, useColorMode } from '@chakra-ui/react';
 import { allVendors } from './allData';
 import { useRouter } from 'next/router';
 import { FiEdit, FiDivideCircle } from 'react-icons/fi';
@@ -72,10 +72,12 @@ export const AddVendorForm = ({handleAddVendor}) => {
           });
         }
       };
-
+  const {colorMode} = useColorMode();
+  const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+  const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
       return (
         <>
-          <Button onClick={() => setIsOpen(!isOpen)}>
+          <Button size="sm" bgColor={buttonColor} onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? 'Cancel' : '+ Vendor'}
           </Button>
           <Collapse in={isOpen} animateOpacity>
@@ -94,7 +96,7 @@ export const AddVendorForm = ({handleAddVendor}) => {
                 value={details.country}
                 onChange={handleChange}
               ></input>
-              <Button type='submit'>Submit</Button>
+              <Button size="sm" bgColor={buttonColor} type='submit'>Submit</Button>
             </form>
           </Collapse>
         </>
@@ -157,7 +159,9 @@ export const RenderVendors = ({vendors, setVendors, isLoading}) => {
             });
           });
       }
-
+      const {colorMode} = useColorMode();
+      const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+      const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
       return(
         <Tr key={v.id}>
             <Td>
@@ -181,7 +185,7 @@ export const RenderVendors = ({vendors, setVendors, isLoading}) => {
             </Td> 
 
             <Td>
-              <Button leftIcon={<FiDivideCircle />} onClick={() => handleDelete(v.id)}>Delete</Button>
+            <Button bgColor={counterColor} leftIcon={<FiDivideCircle />} onClick={() => handleDelete(v.id)}>Delete</Button>
             </Td>
           </Tr>
         );
@@ -206,6 +210,7 @@ export const RenderVendors = ({vendors, setVendors, isLoading}) => {
             <Tr>
               <Th>Name</Th>
               <Th>Country</Th>
+              <Th>Action</Th>
             </Tr>
           </Thead>
           <Tbody>{tableBody}</Tbody>
