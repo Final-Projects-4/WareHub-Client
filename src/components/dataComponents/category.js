@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { postCategory } from '@/fetching/postData';
-import { Button, Collapse, useToast, Table, Tr, Text,  Td, Thead, Heading, Th, Tbody, HStack, Link } from '@chakra-ui/react';
+import { Button, Collapse, useToast, Table, Tr, Text,  Td, Thead, Heading, Th, Tbody, HStack, Link, useColorMode } from '@chakra-ui/react';
 import { allCategories } from './allData';
 import { FiEdit, FiDivideCircle } from 'react-icons/fi';
 import { useRouter } from 'next/router';
@@ -81,12 +81,12 @@ export const AddCategoryForm = ({handleAddCategory}) => {
         });
       }
   };
-
-    
-
+  const {colorMode} = useColorMode();
+  const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+  const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
   return (
     <>
-      <Button onClick={() => setIsOpen(!isOpen)}>
+      <Button size="sm" bgColor={buttonColor} onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? 'Cancel' : '+ Category'}
       </Button>
       <Collapse in={isOpen} animateOpacity>
@@ -105,7 +105,7 @@ export const AddCategoryForm = ({handleAddCategory}) => {
             value={details.description}
             onChange={handleChange}
           ></input>
-          <Button type='submit'>Submit</Button>
+          <Button size="sm" bgColor={buttonColor} type='submit'>Submit</Button>
         </form>
       </Collapse>
     </>
@@ -146,7 +146,9 @@ export const RenderCategory = ({category, setCategory}) => {
             });
           });
       }
-
+      const {colorMode} = useColorMode();
+      const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+      const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
       return(
         <Tr key={c.id}>
             <Td>
@@ -170,7 +172,7 @@ export const RenderCategory = ({category, setCategory}) => {
             </Td> 
 
             <Td>
-              <Button leftIcon={<FiDivideCircle />} onClick={() => handleDelete(c.id)}>Delete</Button>
+            <Button size="sm" bgColor={counterColor} leftIcon={<FiDivideCircle />} onClick={() => handleDelete(c.id)}>Delete</Button>
             </Td>
           </Tr>
         );
@@ -189,6 +191,7 @@ export const RenderCategory = ({category, setCategory}) => {
             <Tr>
               <Th>Name</Th>
               <Th>Description</Th>
+              <Th>Action</Th>
             </Tr>
           </Thead>
           <Tbody>{tableBody}</Tbody>

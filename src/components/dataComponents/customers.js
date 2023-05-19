@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { postCustomer } from '@/fetching/postData';
-import { Button, Collapse, Box,Flex, useToast, Table, Tr, Text,  Td, Thead, Heading, Th, Tbody, HStack, Link, Spinner, VStack } from '@chakra-ui/react';
+import { Button, Collapse, Box,Flex, useToast, Table, Tr, Text,  Td, Thead, Heading, Th, Tbody, HStack, Link, Spinner, VStack, useColorMode } from '@chakra-ui/react';
 import { allCustomers } from './allData';
 import { FiEdit, FiDivideCircle, FiUserPlus } from 'react-icons/fi';
 import { useRouter } from 'next/router';
@@ -85,12 +85,12 @@ export const AddCustomersForm = ({handleAddCustomer}) => {
         });
       }
   };
-
-    
-
+  const {colorMode} = useColorMode();
+  const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+  const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
   return (
     <>
-      <Button onClick={() => setIsOpen(!isOpen)}>
+      <Button size="sm" bgColor={buttonColor} onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? 'Cancel' : '+ Customers'}
       </Button>
       <Collapse in={isOpen} animateOpacity>
@@ -130,7 +130,7 @@ export const AddCustomersForm = ({handleAddCustomer}) => {
             value={details.company}
             onChange={handleChange}
           ></input>
-          <Button type='submit'>Submit</Button>
+          <Button size="sm" bgColor={buttonColor} type='submit'>Submit</Button>
         </form>
       </Collapse>
     </>
@@ -190,7 +190,9 @@ export const RenderCustomer = ({customer, setCustomer, isLoading}) => {
             });
           });
       }
-
+  const {colorMode} = useColorMode();
+  const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+  const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
       return(
         <Tr key={c.id}>
             <Td>
@@ -216,7 +218,7 @@ export const RenderCustomer = ({customer, setCustomer, isLoading}) => {
               {c.company}
             </Td> 
             <Td>
-              <Button
+            <Button size="sm" bgColor={counterColor}
                 leftIcon={<FiDivideCircle />}
                 onClick={() => {
                   setTimeout(() => {
