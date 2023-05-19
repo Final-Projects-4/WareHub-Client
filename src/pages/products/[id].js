@@ -2,13 +2,26 @@ import { useState, useEffect } from "react"
 import { fetchProductById } from "@/fetching/fetchById";
 import { FiSettings } from "react-icons/fi";
 import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend
+} from 'chart.js'
+import { Doughnut } from 'react-chartjs-2';
+import {
     Box,
     Badge, Image,
-    Text,
-    Stack,
-    Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, FormControl, FormLabel, Input
+    Text, Card, Flex,
+    Stack, Heading, VStack,
+    Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, FormControl, FormLabel, Input, useColorMode, CardBody
 } from '@chakra-ui/react';
 import { updateProduct } from "@/fetching/updateData";
+
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend
+);
 
 const ProductDetail = ({productId}) => {
     const [product, setProduct] = useState({});
@@ -36,12 +49,15 @@ const ProductDetail = ({productId}) => {
       if (isLoading) {
         return <div>Loading...</div>;
       }
+
+      const stocks = product.Stocks;
+      console.log(product.Stocks)
     
     return (
         <>
-        <ProductDetailCard product={product}/>
-        <ProductUpdateButton product={product} onUpdate={handleUpdate} />
-        </>
+         <ProductDetailCard product={product} stocks={stocks}/>
+          <ProductUpdateButton product={product} onUpdate={handleUpdate} />
+         </>
     );
 };
 export default ProductDetail;
@@ -53,48 +69,68 @@ export async function getServerSideProps(ctx) {
 }
 
 //Display Product By id
-const ProductDetailCard = ({ product }) => {
+const ProductDetailCard = ({ product, stocks }) => {
+  const {colorMode} = useColorMode();
+  const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
     return (
-        <Stack spacing="2">
-        <Box borderWidth="1px" borderRadius="lg" p="4">
-          <Image src={product.image} boxSize="100px"/>
+      
+        <Card direction={{ base: 'column', sm: 'row' }}
+        borderWidth="2px"
+        overflow='hidden'
+        variant='outline'
+        size="lg"
+        p={4}
+        borderColor={buttonColor}>
+          <Image src={product.image} objectFit='cover' borderRadius={10}
+              maxW={{ base: '100%', sm: '500px' }} 
+              alt={`${product.name}`}/>
+          <Stack justifyContent="center">
+            <CardBody>
+              <Heading textAlign="center" size='md'>
+                {product.name}
+              </Heading>
+              <Flex justifyContent="center"> {/* Added Flex container */}
+                <Badge colorScheme="green" fontSize="sm">
+                  {product.SKU}
+                </Badge>
+              </Flex>
+              <Text textAlign="center" py='2'>
+                {product.description}
+              </Text>
+              
+              <Box mb="4">
+                <Text textAlign="center" fontSize="sm">
+                  Price: <strong>{product.price}</strong>
+                </Text>
+                <Text textAlign="center" fontSize="sm">
+                  Weight: <strong>{product.weight}</strong>
+                </Text>
+                <Text textAlign="center" fontSize="sm">
+                  Size: <strong>{product.size}</strong>
+                </Text>
+              </Box>
+            </CardBody>
+            <VStack  p={4} direction="row"  fontSize="xsm" color="gray.500">
+              <Text color="gray.500" size="sm" fontWeight="bold">Created:</Text>
+              <Text>
+                <strong>{new Date(product.createdAt).toLocaleDateString()}</strong>
+              </Text>
+              <Text color="gray.500" size="sm" fontWeight="bold">Updated:</Text>
+              <Text>
+                <strong>{new Date(product.updatedAt).toLocaleDateString()}</strong>
+              </Text>
+            </VStack>
+            </Stack>
+            <VStack>
+              <Text textAlign="center" fontSize="sm"> <strong>Stocks</strong> </Text>
+              <Box flex="1"> {/* Add Box component with flexible width */}
+                <StocksChart stocks={stocks} />
+              </Box>
+            </VStack>
+           
           
-            <Text fontSize="lg" fontWeight="bold" mb="4">
-            {product.name}
-            </Text>
-            <Box mb="2">
-            <Badge colorScheme="green" fontSize="sm">
-                {product.SKU}
-            </Badge>
-            </Box>
-            <Box mb="4">
-            <Text fontSize="sm">
-                Price: <strong>{product.price}</strong>
-            </Text>
-            <Text fontSize="sm">
-                Weight: <strong>{product.weight}</strong>
-            </Text>
-            <Text fontSize="sm">
-                Size: <strong>{product.size}</strong>
-            </Text>
-            </Box>
-                <Text fontSize="sm">{product.description}</Text>
-                <Stack direction="row" justifyContent="space-between" fontSize="sm" color="gray.500">
-                <Text fontWeight="bold">Created Date:</Text>
-                <Text>
-                    <strong>{new Date(product.createdAt).toLocaleString()}</strong>
-                </Text>
-                </Stack>
-                <Stack direction="row" justifyContent="space-between" fontSize="sm" color="gray.500">
-                <Text fontWeight="bold">Updated Date:</Text>
-                <Text>
-                    <strong>{new Date(product.updatedAt).toLocaleString()}</strong>
-                </Text>
-                </Stack>
-        </Box>
-        </Stack>
-
-    );
+        </Card>
+    )
 };
 
 //Update Product
@@ -138,11 +174,13 @@ const ProductUpdateButton = ({ product, onUpdate }) => {
       const file = e.target.files[0];
       setImageFile(file);
     };
-  
+    const {colorMode} = useColorMode()
+    const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
     return (
       <>
         <Box
         as={FiSettings}
+        
         cursor="pointer"
         fontSize="xl"
         onClick={() => setIsModalOpen(true)}
@@ -188,7 +226,7 @@ const ProductUpdateButton = ({ product, onUpdate }) => {
               </FormControl>
             </ModalBody>
             <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={handleUpdate}>
+              <Button bgColor={buttonColor} mr={3} onClick={handleUpdate}>
                 Update
               </Button>
               <Button onClick={() => setIsModalOpen(false)}>Cancel</Button>
@@ -198,4 +236,31 @@ const ProductUpdateButton = ({ product, onUpdate }) => {
       </>
     );
 };
-  
+
+const StocksChart = ({stocks}) => {
+// Extracting warehouse IDs and quantities from the stocks data
+const warehouseIds = stocks.map((stock) => stock.id);
+const quantities = stocks.map((stock) => stock.WarehouseStock.quantity);
+
+// Generate random colors for the chart
+const randomColors = warehouseIds.map(() => {
+  const hue = Math.floor(Math.random() * 360); // Random hue value between 0 and 360
+  const saturation = Math.floor(Math.random() * 30) + 70; // Random saturation value between 70 and 100
+  const lightness = Math.floor(Math.random() * 30) + 70; // Random lightness value between 70 and 100
+
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+});
+
+// Prepare the chart data
+const data = {
+  labels: warehouseIds.map((id) => `Warehouse ${id}`),
+  datasets: [
+    {
+      data: quantities,
+      backgroundColor: randomColors,
+    },
+  ],
+};
+
+return <Doughnut data={data}/>;
+};
