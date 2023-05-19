@@ -42,6 +42,7 @@ function Product() {
   const { vendors } = allVendors();
   const { category} = allCategories();
 
+
   return(
     <Box>
       <HStack justify="space-between">
