@@ -1,4 +1,4 @@
-import { Flex, Heading, Input, Button } from "@chakra-ui/react";
+import { Flex, Heading, Input, Button, useColorMode } from "@chakra-ui/react";
 import { useState } from "react";
 import { postLoginData } from "@/fetching/postData";
 import { useRouter } from "next/router";
@@ -7,7 +7,9 @@ const LoginPage = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const router = useRouter()
-
+  const {colorMode} = useColorMode();
+  const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+  const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -31,7 +33,7 @@ const LoginPage = () => {
         <Heading mb={6}>Log in</Heading>
         <Input placeholder="username" variant="filled" mb={3} type="username" onChange={(e) => setUsername(e.target.value)}/>
         <Input placeholder="********" variant="filled" mb={6} type="password" onChange={(e) => setPassword(e.target.value)}/>
-        <Button onClick={handleSubmit} mb={6} colorScheme="teal">Log in</Button>
+        <Button onClick={handleSubmit} mb={6} bgColor={buttonColor}>Log in</Button>
       </Flex>
     </Flex>
   );
