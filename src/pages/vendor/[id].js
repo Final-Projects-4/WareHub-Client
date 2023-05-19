@@ -36,11 +36,13 @@ const VendorDetail = ({vendorId}) => {
       if (isLoading) {
         return <div>Loading...</div>;
       }
+
+      const vendor = vendors.vendor;
     
     return (
         <>
-        <VendorDetailCard vendors={vendors}/>
-        <VendorUpdateButton vendors={vendors} onUpdate={handleUpdate} />
+        <VendorDetailCard vendors={vendor}/>
+        <VendorUpdateButton vendors={vendor} onUpdate={handleUpdate} />
         </>
     );
 };
