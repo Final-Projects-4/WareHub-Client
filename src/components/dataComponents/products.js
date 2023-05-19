@@ -44,7 +44,7 @@ function Product() {
 
 
   return(
-    <Box>
+    <Box flex="1">
       <HStack justify="space-between">
         <AddProductForm category={category} handleAddProduct={handleAddProduct} />
         <AddStockForm 
