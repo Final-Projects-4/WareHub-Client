@@ -16,25 +16,8 @@ import {
   AccordionPanel,
   useColorModeValue,
 } from "@chakra-ui/react";
+import LoginPage from "./Login";
 
-const LoginPage = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const router = useRouter();
-  const [showPassword, setShowPassword] = useState(false);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    postLoginData(username, password)
-      .then((data) => {
-        const { token } = data;
-        sessionStorage.setItem("accessToken", token);
-        router.push("/register");
-      })
-      .catch((err) => {});
-  };
-};
 const AnimatedNumber = ({ value, text }) => {
   const [animatedValue, setAnimatedValue] = useState(0);
   const valueRef = useRef(0);
@@ -66,6 +49,10 @@ const AnimatedNumber = ({ value, text }) => {
 
 const Landing = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { toggleColorMode } = useColorMode();
+  useColorModeValue("White", "gray.700");
+  const [isLogin, setIsLogin] = useState(false);
 
   const {colorMode} = useColorMode();
   const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
@@ -143,6 +130,45 @@ const Landing = () => {
             </Button>
           </Link>
         </motion.div>
+        <motion.div
+          initial={{ y: -50 }}
+          animate={{ y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <HStack mr={6}>
+            {!isLogin ? (
+              <Button
+                onClick={onOpen}
+                colorScheme="teal"
+                bg={"teal.400"}
+                color={"white"}
+                _hover={{ bg: "teal.900" }}
+              >
+                Login
+              </Button>
+            ) : (
+              <Button
+                colorScheme="teal"
+                bg={"teal.400"}
+                color={"white"}
+                _hover={{ bg: "teal.900" }}
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  setIsLogin(false);
+                  router.push("/");
+                }}
+              >
+                Logout
+              </Button>
+            )}
+          </HStack>
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <LoginPage />
+            </ModalContent>
+          </Modal>
+        </motion.div>
       </Flex>
 
       {/* Section 1 */}
@@ -198,7 +224,7 @@ const Landing = () => {
       {/* Section 2 */}
       <Box bgColor={buttonColor} py={10} px={0} mx={0}>
         <Text fontSize="2xl" color="white" textAlign="center" mb={8}>
-        Trusted by renowned brands
+          Trusted by renowned brands
         </Text>
         <Flex maxWidth="100%" justifyContent="center">
           <Flex flexDirection="column" alignItems="center" mx={4}>
@@ -273,7 +299,7 @@ const Landing = () => {
       {/* Section 3 */}
       <Box py={16} px={8} bg={useColorModeValue("white", "#1A202C")} id="fitur">
         <Text fontSize="2xl" fontWeight="bold" mb={8} textAlign="center">
-        Advantageous features of using Warehub
+          Advantageous features of using Warehub
         </Text>
         <Flex justify="space-between">
           {/* Card 1 */}

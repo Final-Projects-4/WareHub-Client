@@ -2,9 +2,7 @@ import LoginPage from "../components/styleComponents/Login";
 import Landing from "../components/styleComponents/Landing";
 import { Box } from "@chakra-ui/react";
 
-
 const Home = () => {
-
   return (
     <div>
     <Landing />

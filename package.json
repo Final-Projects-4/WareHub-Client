@@ -17,15 +17,16 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@react-icons/all-files": "^4.1.0",
     "chart.js": "^4.3.0",
-    "eslint": "8.39.0",
-    "eslint-config-next": "13.3.4",
-    "next": "13.3.4",
-    "next-connect": "^0.13.0",
-    "react": "18.2.0",
+    "eslint": "^8.40.0",
+    "eslint-config-next": "^13.4.3",
+    "framer-motion": "^10.12.12",
+    "next": "^13.4.3",
+    "next-connect": "^1.0.0",
+    "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
-    "react-dom": "18.2.0",
+    "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
-    "react-router-dom": "^6.11.1",
+    "react-router-dom": "^6.11.2",
     "react-scroll": "^1.8.9"
   }
 }
