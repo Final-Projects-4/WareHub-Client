@@ -113,11 +113,11 @@ const ProductDetailCard = ({ product, stocks }) => {
             <VStack  p={4} direction="row"  fontSize="xsm" color="gray.500">
               <Text color="gray.500" size="sm" fontWeight="bold">Created:</Text>
               <Text>
-                <strong>{new Date(product.createdAt).toLocaleString()}</strong>
+                <strong>{new Date(product.createdAt).toLocaleDateString()}</strong>
               </Text>
-              <Text color="gray.500" fontWeight="bold">Updated:</Text>
+              <Text color="gray.500" size="sm" fontWeight="bold">Updated:</Text>
               <Text>
-                <strong>{new Date(product.updatedAt).toLocaleString()}</strong>
+                <strong>{new Date(product.updatedAt).toLocaleDateString()}</strong>
               </Text>
             </VStack>
             </Stack>
