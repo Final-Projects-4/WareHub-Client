@@ -848,8 +848,8 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
                               variant="filled"
                             >
                               <option value="">None</option>
-                              <option value="name:ASC">Name (A-Z)</option>
-                              <option value="name:DESC">Name (Z-A)</option>
+                              <option value="name:ASC">(A-Z)</option>
+                              <option value="name:DESC">(Z-A)</option>
                             </Select>
                         </FormControl>
                         <Flex justify="space-between">

@@ -391,38 +391,50 @@ export const RenderOrders = ({ data, setData, customers, warehouses}) => {
 
 //Filter
 function FilterForm({ filters, setFilters, warehouses, customers,totalData,handleApplyFilters, pageOptions,setDummyState}) {
-  const limitOptions = [
-    { label: "5", value: 5 },
-    { label: "10", value: 10 },
-    { label: "15", value: 15 },
-    { label: "20", value: 20 },
-  ];
-  const [isOpen, setIsOpen] = useState(false);
-  function handleChange(e) {
-    const { name, value } = e.target;
-    setFilters(prevFilters => ({
-      ...prevFilters,
-      [name]: value
-    }));
-  }
+    const limitOptions = [
+      { label: "5", value: 5 },
+      { label: "10", value: 10 },
+      { label: "15", value: 15 },
+      { label: "20", value: 20 },
+    ];
+    const handleOpenModal = () => {
+      setIsOpen(true);
+    };
+  
+    const handleCloseModal = () => {
+      setIsOpen(false);
+    };
+    const [isOpen, setIsOpen] = useState(false);
+    const [updatedFilters, setUpdatedFilters] = useState(filters);
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    handleApplyFilters();
-    handleCloseModal();
-  }
+    function handleChange(e) {
+      const { name, value } = e.target;
+      if (name === 'page') {
+        onPageChange({ ...filters, [name]: value });
+      } else {
+        setUpdatedFilters(prevFilters => ({
+          ...prevFilters,
+          [name]: value
+        }));
+      }
+    };
+
+    function handleSubmit(e) {
+      e.preventDefault();
+      setFilters(updatedFilters);
+      handleApplyFilters();
+      
+    }
 
   const handleClearFilters = () => {
     setFilters({ warehouse_id: "",  page: 1, customer_id:"",sort:'' });
+    setUpdatedFilters({ warehouse_id: "",  page: 1, customer_id:"",sort:''});
+    document.getElementsByName("warehouse_id")[0].selectedIndex = 0;
+    document.getElementsByName("customer_id")[0].selectedIndex = 0;
+    document.getElementById("sort")[0].selectedIndex = 0;
   };
 
-  const handleOpenModal = () => {
-    setIsOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsOpen(false);
-  };
+  
   const {colorMode} = useColorMode();
   const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
   const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
@@ -478,9 +490,10 @@ function FilterForm({ filters, setFilters, warehouses, customers,totalData,handl
       </Flex>
     );
   }
-  return (<><Button rightIcon={<FiSearch/>} onClick={handleOpenModal} p={4} variant="outline">
-  Search
-</Button>
+  return (<>
+            <Button rightIcon={<FiSearch/>} onClick={handleOpenModal} p={4} variant="outline">
+              Search
+            </Button>
             <Modal isOpen={isOpen} onClose={handleCloseModal}>
               <ModalOverlay />
                 <ModalContent>
@@ -494,7 +507,7 @@ function FilterForm({ filters, setFilters, warehouses, customers,totalData,handl
                                     id="warehouse_id"
                                     name="warehouse_id"
                                     size="sm" variant="filled"
-                                    value={filters.warehouse_id}
+                                    defaultValue={filters.warehouse_id}
                                     onChange={handleChange}
                                     placeholder="Select Warehouse"
                                   >
@@ -512,7 +525,7 @@ function FilterForm({ filters, setFilters, warehouses, customers,totalData,handl
                                   size="sm" variant="filled"
                                   id="customer_id"
                                   name="customer_id"
-                                  value={filters.customer_id}
+                                  defaultValue={filters.customer_id}
                                   onChange={handleChange}
                                   placeholder="Select Customer"
                                 >
@@ -530,7 +543,7 @@ function FilterForm({ filters, setFilters, warehouses, customers,totalData,handl
                                     size="sm" variant="filled"
                                               id="limit"
                                               name="limit"
-                                              value={filters.limit}
+                                              defaultValue={filters.limit}
                                               onChange={handleChange}
                                             >
                                     {limitOptions.map((option) => (
@@ -560,14 +573,15 @@ function FilterForm({ filters, setFilters, warehouses, customers,totalData,handl
                               <option value="name:DESC">(Z-A)</option>
                             </Select>
                                     </FormControl>
-                                    <ButtonGroup>
-                                    <Button type="submit" leftIcon={<FiSearch />}>
+                                    <Flex p={4} justify="space-between">
+                                    <Button size="sm" variant="solid" bgColor={buttonColor} onClick={handleSubmit} leftIcon={<FiSearch />}>
                                     Search
                                     </Button>
-                                    <Button leftIcon={<FiDelete />} onClick={handleClearFilters}>
+                                    <Button size="sm" variant="solid"  bgColor={counterColor} leftIcon={<FiDelete />} onClick={handleClearFilters}>
                                     Clear
                                     </Button>
-                                    </ButtonGroup>
+                                    </Flex>
+                                    
                                     
                                    
                           </ModalBody>
