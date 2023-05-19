@@ -2,25 +2,8 @@ import { useState, useEffect } from "react"
 import { fetchOrderById } from "@/fetching/fetchById";
 import { FiSettings } from "react-icons/fi";
 import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend
-} from 'chart.js'
-import { Doughnut } from 'react-chartjs-2';
-import {
-    Box,
-    Badge, Image,
-    Text, Card, Flex,
-    Stack, Heading, VStack,
-    Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, FormControl, FormLabel, Input, useColorMode, CardBody
+    Card, Badge, Box, Image, Text, VStack, Flex, Grid, Slide
 } from '@chakra-ui/react';
-
-ChartJS.register(
-  ArcElement,
-  Tooltip,
-  Legend
-);
 
 /*
 needed data
@@ -61,10 +44,10 @@ const OrderDetails = ({orderId}) => {
     const customer = order.customer // .first_name .last_name 1
     const warehouse = order.warehouse // .name 1
     const products = order.products //[] .SKU .price .name .image // .OrderProduct.price / quantity .createdAt
-    
+    console.log(products)
     return (
         <>
-         <OrderDetailsCard orders={orders}/>
+         <OrderDetailsCard orders={orders} details={details} customer={customer} warehouse={warehouse} products={products}/>
          </>
     );
 };
@@ -76,50 +59,60 @@ export async function getServerSideProps(ctx) {
     return { props: {orderId : +id} }
 }
 
-//Display order By id
+//Display Order By id
 const OrderDetailsCard = ({ orders, details, customer, warehouse, products }) => {
-  const {colorMode} = useColorMode();
-  const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
-    return (
-        <Card direction={{ base: 'column', sm: 'row' }}
-        borderWidth="2px"
-        overflow='hidden'
-        variant='outline'
-        size="lg"
-        p={4}
-        borderColor={buttonColor}>
-          {/* <Image src={order.image} objectFit='cover' borderRadius={10}
-              maxW={{ base: '100%', sm: '500px' }} 
-              alt={`${order.name}`}/> */}
 
-            <CardBody>
-              <Heading textAlign="center" size='md'>
-                {orders.name}
-              </Heading>
-              <Flex justifyContent="center">
-                <Badge colorScheme="green" fontSize="sm">
-                  {orders.total_price}
-                </Badge>
+    const totalQuantity = products.reduce(
+        (total, product) => total + product.OrderProduct.quantity,
+        0
+      );
+
+
+      return (
+        <Card maxW="md" p="4" boxShadow="md">
+          <VStack spacing="4" align="start">
+            <Box>
+              <Text fontWeight="bold">Order Details</Text>
+              <Flex justifyContent="space-between">
+                <Text>Customer: {customer.first_name}</Text>
+                <Text>Warehouse: {warehouse.name}</Text>
               </Flex>
-              <Text textAlign="center" py='2'>
-                {orders.createdAt}
-              </Text>
-              
-              {/* <Box mb="4">
-                <Text textAlign="center" fontSize="sm">
-                  Price: <strong>{order.price}</strong>
-                </Text>
-                <Text textAlign="center" fontSize="sm">
-                  Weight: <strong>{order.weight}</strong>
-                </Text>
-                <Text textAlign="center" fontSize="sm">
-                  Size: <strong>{order.size}</strong>
-                </Text>
-              </Box> */}
-            </CardBody>
+              <Flex justifyContent="space-between">
+                <Text>Total Price: {orders.total_price}</Text>
+                <Text>Total Quantity: {totalQuantity}</Text>
+              </Flex>
+            </Box>
+    
+            <Box>
+              <Text fontWeight="bold">Products</Text>
+              <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap="4">
+                {products.map((product) => (
+                  <SlideableCard key={product.SKU} product={product} />
+                ))}
+              </Grid>
+            </Box>
+          </VStack>
         </Card>
-    )
+      );
 };
+
+const SlideableCard = ({ product }) => {
+    return (
+      <Card maxW="sm" p="4" borderWidth="1px" borderRadius="lg" overflow="hidden">
+        <VStack spacing="2" align="start">
+          <Image src={product.image} alt={product.name} boxSize="200px" objectFit="cover" />
+          <Text fontWeight="bold">{product.name}</Text>
+          <Badge size="sm" colorScheme="green">{product.SKU}</Badge>
+          <Text>Base Price: {product.price}</Text>
+          <Text fontWeight="bold">Order Details:</Text>
+          <Text>
+            Price: {product.OrderProduct.price} | Quantity: {product.OrderProduct.quantity}
+          </Text>
+        </VStack>
+      </Card>
+    );
+  };
+  
 
 // //Update order
 // const orderUpdateButton = ({ order, onUpdate }) => {
