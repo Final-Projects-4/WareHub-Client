@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import {
-  Container,
-  FormControl, ModalBody,
+  FormControl, ModalBody, IconButton,
   FormLabel, ModalOverlay, ModalContent,
   Input, ButtonGroup,
-  Select, ModalFooter,
+  Select, ModalFooter, ModalCloseButton,
   Button, Modal,
   Box, ModalHeader,
   HStack, Link , Text, Thead, Th, Tbody, Heading, Table, useToast, VStack, Tr, Td, Flex, useColorMode
 } from '@chakra-ui/react';
-import { FiPlus, FiEdit, FiDivideCircle, FiSearch, FiDelete } from 'react-icons/fi';
+import { FiPlus, FiEdit, FiDivideCircle, FiSearch, FiDelete, FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import { allCustomers, allWarehouses, allOrders } from '../allData';
 import { postOrder } from '@/fetching/postData';
 import { deleteOrder } from '@/fetching/deleteData';
@@ -49,30 +48,28 @@ function Order() {
  
   return(
     <Box flex="1">
-      <VStack>
-      <FilterForm
-        filters={filters}
-        setFilters={setFilters}
-        handleApplyFilters={handleApplyFilters}
-        warehouses={warehouses}
-        customers={customers}
-        pageOptions={Array.from({length: totalPages}, (_, i) => i + 1)}
-        totalData={totalData}
-        />
-      <HStack>
-        <RenderOrders 
+      <HStack justify="space-between">
+          <AddOrderForm 
+          customers={customers}
+          warehouses={warehouses}
+          handleAddOrder={handleAddOrder}
+          />
+          <FilterForm
+          filters={filters}
+          setFilters={setFilters}
+          handleApplyFilters={handleApplyFilters}
+          warehouses={warehouses}
+          customers={customers}
+          pageOptions={Array.from({length: totalPages}, (_, i) => i + 1)}
+          totalData={totalData}
+          />
+      </HStack>
+      <RenderOrders 
         data={data} 
         setData={setData} 
         filters={filters}
         customers={customers}
         warehouses={warehouses} />
-        <AddOrderForm 
-        customers={customers}
-        warehouses={warehouses}
-        handleAddOrder={handleAddOrder}
-        />
-      </HStack>
-      </VStack>
     </Box>
   );
 };
@@ -326,7 +323,10 @@ export const RenderOrders = ({ data, setData, customers, warehouses}) => {
       const handleOrderDetails = (orderId) => {
         router.push(`/orders/${orderId}`)
       }
-
+      
+      const {colorMode} = useColorMode();
+      const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+      const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
       return(
         <>
           <Tr key={o.id}>
@@ -352,7 +352,7 @@ export const RenderOrders = ({ data, setData, customers, warehouses}) => {
               </Td>
               <Td>{o.Warehouse ? o.Warehouse.name : null}</Td>
               <Td>
-              <Button leftIcon={<FiDivideCircle />} onClick={() => handleDelete(o.id)}>Delete</Button>
+              <Button size="sm" leftIcon={<FiDivideCircle />} bgColor={counterColor} onClick={() => handleDelete(o.id)}/>
             </Td>
           </Tr>
         </>
@@ -366,8 +366,8 @@ export const RenderOrders = ({ data, setData, customers, warehouses}) => {
     bottom="0"
     left="0"
     right="0">
-      <Heading as="h2" size="lg" mb="4">
-        Order List
+      <Heading as="h2" size="lg" mb="4" textAlign="center">
+        Orders
       </Heading>
       <Table>
         <Thead style={{ position: "sticky", top: 0 }}>
@@ -376,6 +376,7 @@ export const RenderOrders = ({ data, setData, customers, warehouses}) => {
             <Th>Total $</Th>
             <Th>Customers</Th>
             <Th>Warehouse</Th>
+            <Th>Action</Th>
             
           </Tr>
         </Thead>
@@ -396,7 +397,7 @@ function FilterForm({ filters, setFilters, warehouses, customers,totalData,handl
     { label: "15", value: 15 },
     { label: "20", value: 20 },
   ];
-
+  const [isOpen, setIsOpen] = useState(false);
   function handleChange(e) {
     const { name, value } = e.target;
     setFilters(prevFilters => ({
@@ -408,103 +409,171 @@ function FilterForm({ filters, setFilters, warehouses, customers,totalData,handl
   function handleSubmit(e) {
     e.preventDefault();
     handleApplyFilters();
+    handleCloseModal();
   }
 
   const handleClearFilters = () => {
     setFilters({ warehouse_id: "",  page: 1, customer_id:"",sort:'' });
   };
-  return (
-    <form onSubmit={handleSubmit}>
-    <HStack spacing={4} alignItems="flex-end">
-    <FormControl>
-    <FormLabel htmlFor="warehouse_id">Warehouse</FormLabel>
-    <Select
-               id="warehouse_id"
-               name="warehouse_id"
-               value={filters.warehouse_id}
-               onChange={handleChange}
-               placeholder="Select Warehouse"
-             >
-    {warehouses.map((w) => {
+
+  const handleOpenModal = () => {
+    setIsOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsOpen(false);
+  };
+  const {colorMode} = useColorMode();
+  const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+  const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
+
+
+  function PageSelect({ filters, pageOptions, onPageChange }) {
+    function handleChange(event) {
+      const { name, value } = event.target;
+      onPageChange({ ...filters, [name]: value });
+    }
+    function handlePrevPage() {
+      if (filters.page > 1) {
+        onPageChange({ ...filters, page: filters.page - 1 });
+      }
+    }
+  
+    function handleNextPage() {
+      if (filters.page < pageOptions.length) {
+        onPageChange({ ...filters, page: filters.page + 1 });
+      }
+    }
+    
     return (
-    <option key={w.id} value={w.id}>
-    {w.name}
-    </option>
+      <Flex alignItems="center">
+        <IconButton size="sm" bgColor={buttonColor}
+          
+          icon={<FiArrowLeft />}
+          aria-label="Previous page"
+          onClick={handlePrevPage}
+          mr={2}
+        />
+        <Select
+        size="sm"
+        variant="filled"
+          id="page"
+          name="page"
+          value={filters.page}
+          onChange={handleChange}
+          flex={1}
+        >
+          {pageOptions.map((page) => (
+            <option key={page} value={page}>
+              {page}
+            </option>
+          ))}
+        </Select>
+        <IconButton size="sm" bgColor={buttonColor}
+          icon={<FiArrowRight />}
+          aria-label="Next page"
+          onClick={handleNextPage}
+          ml={2}
+        />
+      </Flex>
     );
-    })}
-    </Select>
-    </FormControl>
-    <FormControl>
-    <FormLabel htmlFor="customer_id">Customer</FormLabel>
-    <Select
-               id="customer_id"
-               name="customer_id"
-               value={filters.customer_id}
-               onChange={handleChange}
-               placeholder="Select Customer"
-             >
-    {customers.map((c) => {
-    return (
-    <option key={c.id} value={c.id}>
-    {c.first_name} {c.last_name}
-    </option>
-    );
-    })}
-    </Select>
-    </FormControl>
-    <FormControl>
-    <FormLabel htmlFor="limit">Limit</FormLabel>
-    <Select
-               id="limit"
-               name="limit"
-               value={filters.limit}
-               onChange={handleChange}
-             >
-    {limitOptions.map((option) => (
-    <option key={option.value} value={option.value}>
-    {option.label} ({totalData > 0 ? Math.min(totalData, option.value) : 0} data)
-    </option>
-    ))}
-    </Select>
-    </FormControl>
-    <FormControl>
-    <FormLabel htmlFor="page">Page</FormLabel>
-    <Select
-    id="page"
-    name="page"
-    value={filters.page}
-    onChange={handleChange}
-    >
-    {pageOptions.map((page) => (
-    <option key={page} value={page}>
-    {page}
-    </option>
-    ))}
-    </Select>
-    </FormControl>
-    <FormControl>
-    <FormLabel htmlFor="sort">Sort</FormLabel>
-    <Select
-    id="sort"
-    name="sort"
-    value={filters.sort}
-    onChange={handleChange}
-    >
-    <option value="">None</option>
-    <option value="name:ASC">Name (A-Z)</option>
-    <option value="name:DESC">Name (Z-A)</option>
-    </Select>
-    </FormControl>
-    <ButtonGroup>
-    <Button type="submit" leftIcon={<FiSearch />}>
-    Search
-    </Button>
-    <Button leftIcon={<FiDelete />} onClick={handleClearFilters}>
-    Clear
-    </Button>
-    </ButtonGroup>
-    </HStack>
-    </form>
+  }
+  return (<><Button rightIcon={<FiSearch/>} onClick={handleOpenModal} p={4} variant="outline">
+  Search
+</Button>
+            <Modal isOpen={isOpen} onClose={handleCloseModal}>
+              <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader textAlign="center">Filters</ModalHeader>
+                    <ModalCloseButton />
+                      <ModalBody>
+                          
+                            <FormControl>
+                            <FormLabel htmlFor="warehouse_id">Warehouse</FormLabel>
+                                <Select
+                                    id="warehouse_id"
+                                    name="warehouse_id"
+                                    size="sm" variant="filled"
+                                    value={filters.warehouse_id}
+                                    onChange={handleChange}
+                                    placeholder="Select Warehouse"
+                                  >
+                                    {warehouses.map((w) => {
+                                    return (
+                                    <option key={w.id} value={w.id}>
+                                    {w.name}
+                                    </option>
+                                    );
+                                    })}
+                                </Select>
+                                   
+                            <FormLabel htmlFor="customer_id">Customer</FormLabel>
+                                <Select
+                                  size="sm" variant="filled"
+                                  id="customer_id"
+                                  name="customer_id"
+                                  value={filters.customer_id}
+                                  onChange={handleChange}
+                                  placeholder="Select Customer"
+                                >
+                                {customers.map((c) => {
+                                return (
+                                <option key={c.id} value={c.id}>
+                                {c.first_name} {c.last_name}
+                                </option>
+                                );
+                                })}
+                                </Select>
+                                    
+                                    <FormLabel htmlFor="limit">Limit</FormLabel>
+                                    <Select
+                                    size="sm" variant="filled"
+                                              id="limit"
+                                              name="limit"
+                                              value={filters.limit}
+                                              onChange={handleChange}
+                                            >
+                                    {limitOptions.map((option) => (
+                                    <option key={option.value} value={option.value}>
+                                    {option.label} ({totalData > 0 ? Math.min(totalData, option.value) : 0} data)
+                                    </option>
+                                    ))}
+                                    </Select>
+                                    
+                                    <FormLabel  size="sm"
+                              variant="filled" htmlFor="page">Page</FormLabel>
+                          <PageSelect size="sm"
+                              variant="filled" filters={filters} pageOptions={pageOptions} onPageChange={setFilters} />
+                                    
+                                    <FormLabel size="sm"
+                            variant="filled" htmlFor="sort">Sort</FormLabel>
+                            <Select
+                              id="sort"
+                              name="sort"
+                              defaultValue={filters.sort}
+                              onChange={handleChange}
+                              size="sm"
+                              variant="filled"
+                            >
+                              <option value="">None</option>
+                              <option value="name:ASC">(A-Z)</option>
+                              <option value="name:DESC">(Z-A)</option>
+                            </Select>
+                                    </FormControl>
+                                    <ButtonGroup>
+                                    <Button type="submit" leftIcon={<FiSearch />}>
+                                    Search
+                                    </Button>
+                                    <Button leftIcon={<FiDelete />} onClick={handleClearFilters}>
+                                    Clear
+                                    </Button>
+                                    </ButtonGroup>
+                                    
+                                   
+                          </ModalBody>
+                  </ModalContent>
+                       </Modal>
+                       </>
     );
 
 }
