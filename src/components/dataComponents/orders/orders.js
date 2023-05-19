@@ -2,15 +2,13 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import {
   Container,
-  FormControl,
-  FormLabel,
+  FormControl, ModalBody,
+  FormLabel, ModalOverlay, ModalContent,
   Input, ButtonGroup,
-  Select,
-  Button,
-  Box,
-
-  Card,
-  Collapse, HStack, Link , Text, Thead, Th, Tbody, Heading, Table, useToast, VStack, Tr, Td, Flex
+  Select, ModalFooter,
+  Button, Modal,
+  Box, ModalHeader,
+  HStack, Link , Text, Thead, Th, Tbody, Heading, Table, useToast, VStack, Tr, Td, Flex, useColorMode
 } from '@chakra-ui/react';
 import { FiPlus, FiEdit, FiDivideCircle, FiSearch, FiDelete } from 'react-icons/fi';
 import { allCustomers, allWarehouses, allOrders } from '../allData';
@@ -28,8 +26,8 @@ function Order() {
     limit: 5,
     sort: ''
   });
-  const { data, isLoading , setData, error} = allOrders({ filters, dummyState})
-  const { orders, totalData , totalPages, currentPage } = data;
+  const { data,setData} = allOrders({ filters, dummyState})
+  const { totalData , totalPages } = data;
   const { customers } = allCustomers();
   const { warehouses } = allWarehouses()
   
@@ -50,7 +48,7 @@ function Order() {
   }
  
   return(
-    <>
+    <Box flex="1">
       <VStack>
       <FilterForm
         filters={filters}
@@ -75,7 +73,7 @@ function Order() {
         />
       </HStack>
       </VStack>
-    </>
+    </Box>
   );
 };
 
@@ -133,6 +131,13 @@ export const AddOrderForm = ({ customers, warehouses,handleAddOrder}) => {
     }
   };
   
+  const handleOpenModal = () => {
+    setIsOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsOpen(false);
+  };
 
   const handleSubmit = async (e) => {
     const accessToken = sessionStorage.getItem('accessToken');
@@ -158,6 +163,7 @@ export const AddOrderForm = ({ customers, warehouses,handleAddOrder}) => {
         order_products: []
       });
       setProducts([]);
+      handleCloseModal();
       toast({
         title: 'Orders created.',
         status: 'success',
@@ -174,21 +180,26 @@ export const AddOrderForm = ({ customers, warehouses,handleAddOrder}) => {
         });
       }
 };
-  
+  const {colorMode} = useColorMode();
+  const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+  const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
   return (
     <Box >
-        <Card mt={4} bgColor="transparent" borderRadius={10}>
-            <Button as={FiPlus} onClick={() => setIsOpen(!isOpen)}>
-              {isOpen ? 'Cancel' : '+ Product'}
-            </Button>
-              <Collapse in={isOpen} animateOpacity>
+        <Button size="sm" bgColor={buttonColor} leftIcon={<FiPlus/>} onClick={handleOpenModal}>
+            Add Order
+        </Button>
+          <Modal isOpen={isOpen} onClose={handleCloseModal}>
+                <ModalOverlay/>
+                <ModalContent>
+                  <ModalHeader textAlign="center">Create Product</ModalHeader>
+                  <ModalBody>
                 <form onSubmit={handleSubmit} style={{marginTop: '1rem'}}>
-                <Container>
                   <FormControl>
-                    <FormLabel>Order Event:</FormLabel>
-                    <Input name="name" value={details.name} onChange={handleChange} />
-                    <FormLabel>Warehouse:</FormLabel>
+                    <FormLabel size="sm" textAlign="center">Order Event:</FormLabel>
+                    <Input size="sm" variant="filled" name="name" value={details.name} onChange={handleChange} />
+                    <FormLabel size="sm" textAlign="center">Warehouse:</FormLabel>
                     <Select 
+                    size="sm" variant="filled"
                       value={selectedWarehouse} 
                       placeholder='select source warehouse'
                       onChange={(e) => {
@@ -204,8 +215,9 @@ export const AddOrderForm = ({ customers, warehouses,handleAddOrder}) => {
                         </option>
                       ))}
                     </Select>
-                    <FormLabel>Customer:</FormLabel>
+                    <FormLabel size="sm" textAlign="center">Customer:</FormLabel>
                     <Select
+                    size="sm" variant="filled"
                       placeholder='Choose Customer'
                       name="customer_id"
                       value={details.customer_id}
@@ -219,8 +231,9 @@ export const AddOrderForm = ({ customers, warehouses,handleAddOrder}) => {
                     </Select>
                     {products.map((p, index) => (
                       <FormControl key={index}>
-                        <FormLabel>Product:</FormLabel>
+                        <FormLabel size="sm" textAlign="center">Product:</FormLabel>
                         <Select
+                        size="sm" variant="filled"
                           placeholder='Select a product to sell'
                           value={p.product_id}
                           onChange={(e) => {
@@ -235,8 +248,9 @@ export const AddOrderForm = ({ customers, warehouses,handleAddOrder}) => {
                             </option>
                           ))}
                         </Select>
-                        <FormLabel>Price:</FormLabel>
+                        <FormLabel size="sm" textAlign="center">Price:</FormLabel>
                         <Input
+                        size="sm" variant="filled"
                           value={p.price}
                           onChange={(e) => {
                             const newProducts = [...products];
@@ -244,8 +258,9 @@ export const AddOrderForm = ({ customers, warehouses,handleAddOrder}) => {
                             setProducts(newProducts);
                           }}
                         />
-                        <FormLabel>Quantity:</FormLabel>
+                        <FormLabel size="sm" textAlign="center">Quantity:</FormLabel>
                         <Input
+                          size="sm" variant="filled"
                           value={p.quantity}
                           onChange={(e) => {
                             const newProducts = [...products];
@@ -253,16 +268,27 @@ export const AddOrderForm = ({ customers, warehouses,handleAddOrder}) => {
                             setProducts(newProducts);
                           }}
                         />
-                        <Button onClick={() => removeProduct(index)}>Remove Product</Button>
+                        <Box p={4} display="flex" justifyContent="flex-end">
+                          <Button  size="sm" bgColor={counterColor} onClick={() => removeProduct(index)}>
+                            Remove Product
+                          </Button>
+                        </Box>
                       </FormControl>
                     ))}
-                    <Button onClick={addProduct}>Add Product</Button>
-                    <Button type="submit">Submit</Button>
+                    <Box p={4} display="flex" justifyContent="flex-start"><Button  p={4} size="sm" bgColor={buttonColor} onClick={addProduct}>Add Product</Button></Box>
                   </FormControl>
-                </Container>
                 </form>
-              </Collapse>
-          </Card>
+                    </ModalBody>
+                <ModalFooter>
+                <Button size="sm" bgColor={buttonColor} onClick={handleSubmit}>
+                  Submit
+                </Button>
+                <Button  bgColor={counterColor} size="sm" colorScheme="gray" onClick={handleCloseModal} ml={2}>
+                  Cancel
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
       </Box>
   );
 }

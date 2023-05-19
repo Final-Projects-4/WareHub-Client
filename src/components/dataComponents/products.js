@@ -77,12 +77,12 @@ export default Product;
 export const AddProductForm = ({ handleAddProduct, category }) => {
   const [details, setDetails] = useState({
     name: '',
-    price: 0,
-    weight: 0,
+    price: '',
+    weight: '',
     size: '',
     description: '',
     SKU: '',
-    category_id: 0,
+    category_id: 1,
     image: ''
   })
   const handleOpenModal = () => {
@@ -153,6 +153,7 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
   };
   const {colorMode} = useColorMode();
   const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+  const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
   return (
     <Box>
           <Button size="sm" bgColor={buttonColor} leftIcon={<FiPlus/>} onClick={handleOpenModal}>
@@ -240,7 +241,7 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
             <Button size="sm" bgColor={buttonColor} onClick={handleSubmit}>
               Submit
             </Button>
-            <Button size="sm" colorScheme="gray" onClick={handleCloseModal} ml={2}>
+            <Button size="sm" bgColor={counterColor} onClick={handleCloseModal} ml={2}>
               Cancel
             </Button>
           </ModalFooter>
@@ -293,7 +294,7 @@ export const BulkInsertForm = () => {
 
   return (
     <>
-      <Button backgroundColor={buttonCollor} onClick={onOpen}>
+      <Button backgroundColor={buttonCollor} size="sm" variant="filled" onClick={onOpen}>
         Bulk Insert
       </Button>
 
@@ -349,9 +350,9 @@ export const BulkInsertForm = () => {
                 <FormLabel htmlFor="file">
                   <Icon as={FiUpload} boxSize={6} mr={2} />
                 </FormLabel>
-                <Input type="file" id="file" accept=".csv" onChange={handleChange} />
+                <Input  size="sm" variant="filled" type="file" id="file" accept=".csv" onChange={handleChange} />
               </FormControl>
-              <Button type="submit" justifyContent="center" backgroundColor={buttonCollor} mt={4} isLoading={isLoading} loadingText="Uploading">
+              <Button  size="sm" variant="filled" type="submit" justifyContent="center" backgroundColor={buttonCollor} mt={4} isLoading={isLoading} loadingText="Uploading">
                 Upload
               </Button>
             </form>
@@ -438,6 +439,7 @@ export const AddStockForm = ({ data, setData, warehouses, vendors, handleAddProd
 
       const {colorMode} = useColorMode();
       const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+      const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
     return (
           <>
       <Button size="sm" bgColor={buttonColor} leftIcon={<FiArrowUpRight/>} onClick={handleOpenModal}>
@@ -452,6 +454,7 @@ export const AddStockForm = ({ data, setData, warehouses, vendors, handleAddProd
             <FormControl mb={4}>
               <FormLabel>Product</FormLabel>
               <Select
+              size="sm" variant="filled"
                 name="product_id"
                 value={details.product_id}
                 onChange={handleChange}
@@ -466,6 +469,7 @@ export const AddStockForm = ({ data, setData, warehouses, vendors, handleAddProd
             <FormControl mb={4}>
               <FormLabel>Quantity</FormLabel>
               <Input
+              size="sm" variant="filled"
                 type="text"
                 name="quantity"
                 value={details.quantity}
@@ -475,6 +479,7 @@ export const AddStockForm = ({ data, setData, warehouses, vendors, handleAddProd
             <FormControl mb={4}>
               <FormLabel>Vendor</FormLabel>
               <Select
+               size="sm" variant="filled"
                 name="vendor_id"
                 value={details.vendor_id}
                 onChange={handleChange}
@@ -489,6 +494,7 @@ export const AddStockForm = ({ data, setData, warehouses, vendors, handleAddProd
             <FormControl mb={4}>
               <FormLabel>Warehouse</FormLabel>
               <Select
+               size="sm" variant="filled"
                 name="warehouse_id"
                 value={details.warehouse_id}
                 onChange={handleChange}
@@ -503,10 +509,10 @@ export const AddStockForm = ({ data, setData, warehouses, vendors, handleAddProd
           </form>
           </ModalBody>
           <ModalFooter>
-            <Button bgColor={buttonColor} onClick={handleSubmit}>
+            <Button size="sm" variant="filled" bgColor={buttonColor} onClick={handleSubmit}>
               Submit
             </Button>
-            <Button colorScheme="gray" onClick={handleCloseModal} ml={2}>
+            <Button size="sm" variant="filled" bgColor={counterColor} onClick={handleCloseModal} ml={2}>
               Cancel
             </Button>
           </ModalFooter>
@@ -570,7 +576,8 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
   
 
   const {colorMode} = useColorMode();
-  const buttonColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
+  const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+  const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
   function renderProduct(data) {
     return data.map((p) => {
       const warehousesForProduct = p.Warehouses ? p.Warehouses.map((w) => ({
@@ -588,7 +595,7 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
 
       const warehouseSelect =
         warehousesForProduct.length > 1 ? (
-          <Select variant="unstyled">
+          <Select variant="outline">
             {warehousesForProduct.map((w) => (
               <option key={w.name}>
                 {w.name} Q({w.WarehouseStock.quantity})
@@ -603,7 +610,7 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
 
       const vendorSelect =
         vendorsForProduct.length > 1 ? (
-          <Select variant="unstyled">
+          <Select variant="outline">
             {vendorsForProduct.map((v) => (
               <option key={v.name}>{v.name}</option>
             ))}
@@ -670,7 +677,7 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
             <Image src={p.image}boxSize="50px" objectFit="cover" />
             </Td>
             <Td>
-              <Button size="sm"  bgColor={buttonColor} leftIcon={<FiDelete />} onClick={() => handleDelete(p.id)}></Button>
+              <Button size="sm"  bgColor={counterColor} leftIcon={<FiDelete />} onClick={() => handleDelete(p.id)}></Button>
             </Td>
           </Tr>
         );
@@ -696,13 +703,16 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
     
     return (
       <Flex alignItems="center">
-        <IconButton
+        <IconButton size="sm" bgColor={buttonColor}
+          
           icon={<FiArrowLeft />}
           aria-label="Previous page"
           onClick={handlePrevPage}
           mr={2}
         />
         <Select
+        size="sm"
+        variant="filled"
           id="page"
           name="page"
           value={filters.page}
@@ -715,7 +725,7 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
             </option>
           ))}
         </Select>
-        <IconButton
+        <IconButton size="sm" bgColor={buttonColor}
           icon={<FiArrowRight />}
           aria-label="Next page"
           onClick={handleNextPage}
@@ -815,22 +825,27 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
                         </InputGroup>
                         <FormControl>
                           <FormLabel htmlFor="limit">Limit</FormLabel>
-                            <Select size="sm" id="limit" name="limit" defaultValue={filters.limit} onChange={handleChange}>
+                            <Select size="sm"
+                                variant="filled" id="limit" name="limit" defaultValue={filters.limit} onChange={handleChange}>
                               {limitOptions.map(option => (
                                 <option key={option.value} value={option.value}>
                                   {option.label} ({totalItems > 0 ? Math.min(totalItems, option.value) : 0} items)
                                 </option>
                               ))}
                             </Select>
-                            <FormLabel  size="sm" htmlFor="page">Page</FormLabel>
-                          <PageSelect size="sm" filters={filters} pageOptions={pageOptions} onPageChange={setFilters} />
-                            <FormLabel size="sm" htmlFor="sort">Sort</FormLabel>
+                            <FormLabel  size="sm"
+                              variant="filled" htmlFor="page">Page</FormLabel>
+                          <PageSelect size="sm"
+                              variant="filled" filters={filters} pageOptions={pageOptions} onPageChange={setFilters} />
+                            <FormLabel size="sm"
+                            variant="filled" htmlFor="sort">Sort</FormLabel>
                             <Select
                               id="sort"
                               name="sort"
                               defaultValue={filters.sort}
                               onChange={handleChange}
                               size="sm"
+                              variant="filled"
                             >
                               <option value="">None</option>
                               <option value="name:ASC">Name (A-Z)</option>
@@ -838,10 +853,12 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
                             </Select>
                         </FormControl>
                         <Flex justify="space-between">
-                        <Button mt={2} size="sm" onClick={handleSubmit} leftIcon={<FiSearch />}>
+                        <Button variant="filled" mt={2} size="sm" onClick={handleSubmit} bgColor={buttonColor} leftIcon={<FiSearch />}>
                             Apply
                           </Button>
-                          <Button 
+                          <Button
+                          bgColor={counterColor} 
+                          variant="solid"
                           mt={2}
                           onClick={handleClearFilters}
                           leftIcon={<FiCircle />}
@@ -895,9 +912,6 @@ export const LowStockAlert = ({ data }) => {
       (warehouse) => warehouse.WarehouseStock.quantity < 10
     );
   };
-  
-  
-
   const [sufficientStock, setSufficientStock] = useState(true);
 
   useEffect(() => {
