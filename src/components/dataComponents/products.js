@@ -857,7 +857,6 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
              {/* {Search by} */}
             
              <Box 
-                
                 align="center" 
                 justify="center" 
                 direction="column" 
