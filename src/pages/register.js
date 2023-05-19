@@ -5,7 +5,6 @@ import {
   Button,
   Text,
   FormControl,
-  FormLabel,
   InputGroup,
   InputRightElement,
   Stack,

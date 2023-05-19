@@ -8,7 +8,7 @@ import { useRouter } from 'next/router'
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
-  const isRootPage = router.pathname === '/';
+  const isRootPage = router.pathname === '/' || router.pathname === '/register';
   return (
     <ChakraProvider theme={theme}>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
