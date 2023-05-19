@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { postProduct, postStock, bulkInsertProducts } from '@/fetching/postData';
-import { InputGroup, IconButton,HStack, useToast, Link, Stack, FormControl, FormLabel, Text, Button, Card, Collapse, Box, Input, InputLeftElement, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, VStack, Badge, Image, useColorMode} from "@chakra-ui/react";
+import { InputGroup, IconButton, ModalFooter, HStack, useToast, Link, FormControl, FormLabel, Text, Button, Card, Box, Input, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, Badge, Image, useColorMode} from "@chakra-ui/react";
 import { allProducts, allVendors, allWarehouses, allCategories} from './allData';
-import { FiSearch, FiEdit,FiUpload, FiPlus, FiArrowLeft, FiArrowRight, FiMaximize, FiDelete, FiDivideCircle } from 'react-icons/fi';
+import { FiSearch, FiEdit,FiUpload, FiPlus, FiArrowLeft, FiArrowRight
+ ,FiCircle,
+ FiArrowUpRight,
+ FiDelete}  from 'react-icons/fi';
 import { deleteProduct } from '@/fetching/deleteData';
 import { useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, Accordion
-,ModalBody,AccordionItem,AccordionButton,AccordionIcon,AccordionPanel, Icon } from '@chakra-ui/react';
+,ModalBody,AccordionItem,AccordionButton,AccordionIcon,AccordionPanel, Icon, useMediaQuery } from '@chakra-ui/react';
 //Parent
 function Product() {
   const [dummyState, setDummyState] = useState(0); // Create dummy state
@@ -16,12 +19,12 @@ function Product() {
     category_id: '',
     vendor_id: '',
     page: 1,
-    limit: 10,
+    limit: 5,
     q: '',
     sort: ''
   });
-  const { data, setData, isLoading, error } = allProducts({ filters, dummyState });
-  const { products, totalItems, totalPages, currentPage } = data;
+  const { data, setData} = allProducts({ filters, dummyState });
+  const { totalItems, totalPages} = data;
   const { warehouses } = allWarehouses();
 
   function handleAddProduct(details) {
@@ -39,9 +42,18 @@ function Product() {
   const { vendors } = allVendors();
   const { category} = allCategories();
 
-
   return(
     <Box>
+      <HStack justify="space-between">
+        <AddProductForm category={category} handleAddProduct={handleAddProduct} />
+        <AddStockForm 
+        data={data} 
+        setData={setData} 
+        handleAddProduct={handleAddProduct}
+        warehouses={warehouses}
+        vendors={vendors}/>
+      </HStack>
+      
       <FilterForm 
       filters={filters} 
       setFilters={setFilters} 
@@ -54,15 +66,6 @@ function Product() {
       data={data}
       setData={setData}
       />
-      <Stack>
-      <AddProductForm category={category} handleAddProduct={handleAddProduct} />
-      <AddStockForm 
-      data={data} 
-      setData={setData} 
-      handleAddProduct={handleAddProduct}
-      warehouses={warehouses}
-      vendors={vendors}/>
-      </Stack>
     </Box>
   )
   
@@ -81,7 +84,13 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
     category_id: 0,
     image: ''
   })
-  
+  const handleOpenModal = () => {
+    setIsOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsOpen(false);
+  };
   const [isOpen, setIsOpen] = useState(false);
   const toast = useToast();
   
@@ -111,6 +120,7 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
           category_id: 0,
           image: ''
         });
+        handleCloseModal();
         toast({
           title: 'Product created.',
           status: 'success',
@@ -140,16 +150,21 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
       return { ...prev, image: e.target.files[0] };
     });
   };
-
+  const {colorMode} = useColorMode();
+  const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
   return (
     <Box>
-      <Card mt={4} bgColor="transparent" borderRadius={10}>
-        <Button as={FiPlus} onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? 'Cancel' : '+ Product'}
-        </Button>
-        <Collapse in={isOpen} animateOpacity>
-          <form onSubmit={handleSubmit} style={{ marginTop: '1rem' }}>
+          <Button size="sm" bgColor={buttonColor} leftIcon={<FiPlus/>} onClick={handleOpenModal}>
+            Add Product
+          </Button>
+            <Modal isOpen={isOpen} onClose={handleCloseModal}>
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader textAlign="center">Create Product</ModalHeader>
+                <ModalBody>
+
             <Input
+              size="sm"
               placeholder="Name"
               name="name"
               value={details.name}
@@ -157,6 +172,7 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
               mb={4}
             />
             <Input
+              size="sm"
               placeholder="Price"
               name="price"
               value={details.price}
@@ -164,6 +180,7 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
               mb={4}
             />
             <Input
+              size="sm"
               placeholder="Weight"
               name="weight"
               value={details.weight}
@@ -171,6 +188,7 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
               mb={4}
             />
             <Input
+              size="sm"
               placeholder="Size"
               name="size"
               value={details.size}
@@ -178,6 +196,7 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
               mb={4}
             />
             <Input
+              size="sm"
               placeholder="Description"
               name="description"
               value={details.description}
@@ -185,6 +204,7 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
               mb={4}
             />
             <Input
+              size="sm"
               placeholder="SKU"
               name="SKU"
               value={details.SKU}
@@ -192,7 +212,9 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
               mb={4}
             />
             <Select
-              placeholder="Select category"
+              variant="filled"
+              size="sm"
+              placeholder="category"
               name="category_id"
               value={details.category_id}
               onChange={handleChange}
@@ -205,17 +227,24 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
               ))}
             </Select>
             <Input
+              variant="filled"
+              size="sm"
               type="file"
               accept="image/*"
               onChange={handleImageChange}
               mb={4}
             />
-            <Button type="submit" colorScheme="green">
+            </ModalBody>
+            <ModalFooter>
+            <Button size="sm" bgColor={buttonColor} onClick={handleSubmit}>
               Submit
             </Button>
-          </form>
-        </Collapse>
-      </Card>
+            <Button size="sm" colorScheme="gray" onClick={handleCloseModal} ml={2}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };
@@ -341,8 +370,8 @@ export const AddStockForm = ({ data, setData, warehouses, vendors, handleAddProd
     const [isOpen, setIsOpen] = useState(false);
     
     const [details, setDetails] = useState({
-      product_id: 0,
-      quantity: 0,
+      product_id: 1,
+      quantity: 1,
       vendor_id: 1,
       warehouse_id: 1
     })
@@ -379,12 +408,14 @@ export const AddStockForm = ({ data, setData, warehouses, vendors, handleAddProd
               ...prevData,
               products: [...prevData.products, details]
             }));
+            handleCloseModal();
             toast({
               title: 'Stocks Added.',
               status: 'success',
               duration: 5000,
               isClosable: true,
             });
+            handleCloseModal();
           } catch (err) {
             toast({
               title: 'Failed to add stocks.',
@@ -394,68 +425,101 @@ export const AddStockForm = ({ data, setData, warehouses, vendors, handleAddProd
               isClosable: true,
             });
           }
-    };
+      };
+
+      const handleOpenModal = () => {
+        setIsOpen(true);
+      };
+    
+      const handleCloseModal = () => {
+        setIsOpen(false);
+      };
+
+      const {colorMode} = useColorMode();
+      const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
     return (
-          <Box>
-            <Button as={FiMaximize} onClick={() => setIsOpen(!isOpen)}>
-              {isOpen ? 'Cancel' : '+ Stocks'}
+          <>
+      <Button size="sm" bgColor={buttonColor} leftIcon={<FiArrowUpRight/>} onClick={handleOpenModal}>
+        {isOpen ? 'Cancel' : 'Stocks'}
+      </Button>
+      <Modal isOpen={isOpen} onClose={handleCloseModal}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader textAlign="center">Stock Form</ModalHeader>
+          <ModalBody>
+          <form onSubmit={handleSubmit}>
+            <FormControl mb={4}>
+              <FormLabel>Product</FormLabel>
+              <Select
+                name="product_id"
+                value={details.product_id}
+                onChange={handleChange}
+              >
+                {data.products.map((product) => (
+                  <option key={product.id} value={product.id}>
+                    {product.name}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Quantity</FormLabel>
+              <Input
+                type="text"
+                name="quantity"
+                value={details.quantity}
+                onChange={handleChange}
+              />
+            </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Vendor</FormLabel>
+              <Select
+                name="vendor_id"
+                value={details.vendor_id}
+                onChange={handleChange}
+              >
+                {vendors.map((vendor) => (
+                  <option key={vendor.id} value={vendor.id}>
+                    {vendor.name}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Warehouse</FormLabel>
+              <Select
+                name="warehouse_id"
+                value={details.warehouse_id}
+                onChange={handleChange}
+              >
+                {warehouses.map((warehouse) => (
+                  <option key={warehouse.id} value={warehouse.id}>
+                    {warehouse.name}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+          </form>
+          </ModalBody>
+          <ModalFooter>
+            <Button bgColor={buttonColor} onClick={handleSubmit}>
+              Submit
             </Button>
-            <Collapse in={isOpen} animateOpacity>
-              <form onSubmit={handleSubmit}>
-                <h3>Product</h3>{' '}
-                  <select
-                    name='product_id'
-                    value={details.product_id}
-                    onChange={handleChange}
-                  >
-                    {data.products.map((product) => (
-                      <option key={product.id} value={product.id}>
-                        {product.name}
-                      </option>
-                    ))}
-                  </select>
-                <h3>Quantity</h3>{' '}
-                <input
-                  type='text'
-                  name='quantity'
-                  value={details.quantity}
-                  onChange={handleChange}
-                ></input>
-                
-                <h3>Vendor</h3>{' '}
-                <select
-                    name='vendor_id'
-                    value={details.vendor_id}
-                    onChange={handleChange}
-                  >
-                    {vendors.map((vendor) => (
-                      <option key={vendor.id} value={vendor.id}>
-                        {vendor.name}
-                      </option>
-                    ))}
-                </select>
-                <h3>Warehouse</h3>{' '}
-                <select
-                  name='warehouse_id'
-                  value={details.warehouse_id}
-                  onChange={handleChange}
-                >
-                  {warehouses.map((warehouse) => (
-                    <option key={warehouse.id} value={warehouse.id}>
-                      {warehouse.name}
-                    </option>
-                  ))}
-                </select>
-                <Button type='submit'>Submit</Button>
-              </form>
-            </Collapse>
-          </Box>
-    );
+            <Button colorScheme="gray" onClick={handleCloseModal} ml={2}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
+  );
 };
 
 //filter and render component
 function FilterForm({ filters, setFilters, warehouses, vendors, category, totalItems, handleApplyFilters, pageOptions, data, setData}) {
   //category.categories
+  const [updatedFilters, setUpdatedFilters] = useState(filters);
+  const [isOpen, setIsOpen] = useState(false);
   const toast = useToast();
   const router = useRouter();
   const limitOptions = [
@@ -465,27 +529,47 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
     { label: "20", value: 20 },
   ];
 
+  const handleOpenModal = () => {
+    setIsOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsOpen(false);
+  };
+
   function handleChange(e) {
     const { name, value } = e.target;
     if (name === 'page') {
       onPageChange({ ...filters, [name]: value });
     } else {
-      setFilters(prevFilters => ({
+      setUpdatedFilters(prevFilters => ({
         ...prevFilters,
         [name]: value
       }));
     }
   };
-  //warehouses[]
+  
   function handleSubmit(e) {
     e.preventDefault();
+    setFilters(updatedFilters);
     handleApplyFilters();
-  };
+    handleCloseModal();
+  }
 
   const handleClearFilters = () => {
-    setFilters({ q: "", warehouse: "", vendor: "", page: 1, category:"",sort:'' });
-  };
+    setFilters({ q: "", warehouse_id: "", category_id: "", vendor_id: "", page: 1, sort: ''});
+    setUpdatedFilters({ q: "", warehouse_id: "", category_id: "", vendor_id: "", page: 1, sort: ''});
+    document.getElementsByName("warehouse_id")[0].selectedIndex = 0;
+    document.getElementsByName("category_id")[0].selectedIndex = 0;
+    document.getElementsByName("vendor_id")[0].selectedIndex = 0;
+    document.getElementById("q").value = "";
+    document.getElementById("sort")[0].selectedIndex = 0;
 
+  };
+  
+
+  const {colorMode} = useColorMode();
+  const buttonColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
   function renderProduct(data) {
     return data.map((p) => {
       const warehousesForProduct = p.Warehouses ? p.Warehouses.map((w) => ({
@@ -585,7 +669,7 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
             <Image src={p.image}boxSize="50px" objectFit="cover" />
             </Td>
             <Td>
-              <Button leftIcon={<FiDivideCircle />} onClick={() => handleDelete(p.id)}>Delete</Button>
+              <Button size="sm"  bgColor={buttonColor} leftIcon={<FiDelete />} onClick={() => handleDelete(p.id)}></Button>
             </Td>
           </Tr>
         );
@@ -640,151 +724,166 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
     );
   }
   
-    
-  
   const tableBody = renderProduct(data.products);
-  
+
+  const [isSmallerScreen] = useMediaQuery("(max-width: 768px)");
   return (
-    <form onSubmit={handleSubmit}>
-    <HStack spacing={4} alignItems="flex-end">
-    <Box flex="1">
-    <Flex alignItems="center">
-    <InputGroup mr={2}>
-      <InputLeftElement pointerEvents="none" />
-      <Select
-        type="text"
-        name="warehouse_id"
-        value={filters.warehouse_id}
-        onChange={handleChange}
-        placeholder='Select Warehouse'
-      >
-        {warehouses.map((w) => {
-          return (
-            <option key={w.id} value={w.id}>
-              {w.name}
-            </option>
-          );
-        })}
-      </Select>
+          <>
+            <Modal isOpen={isOpen} onClose={handleCloseModal}>
+              <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader textAlign="center">Filters</ModalHeader>
+                    <ModalCloseButton />
+                      <ModalBody>
+                      <InputGroup mr={2} spacing={2}>
+                          {/* Warehouse */}
+                          
+                          <Select
+                            variant='filled'
+                            size='sm'
+                            type="text"
+                            name="warehouse_id"
+                            defaultValue={filters.warehouse_id}
+                            onChange={handleChange}
+                            
+                          >
+                            <option value="" disabled>Warehouse</option>
+                            {warehouses.map((w) => {
+                              return (
+                                <option key={w.id} value={w.id}>
+                                  {w.name}
+                                </option>
+                              );
+                            })}
+                          </Select>
 
-    </InputGroup>
-    <InputGroup mr={2}>
-      <InputLeftElement pointerEvents="none"/>
-      <Select
-        type="text"
-        name="category_id"
-        value={filters.category_id}
-        onChange={handleChange}
-        placeholder='Select Category'
-      >
-        {category.categories.map((c) => {
-          return (
-            <option key={c.id} value={c.id}>
-              {c.name}
-            </option>
-          );
-        })}
-      </Select>
-    </InputGroup>
-    <InputGroup mr={2}>
-      <InputLeftElement pointerEvents="none"/>
-      <Select
-        type="text"
-        name="vendor_id"
-        value={filters.vendor_id}
-        onChange={handleChange}
-        placeholder='Select Vendor'
-      >
-        {vendors.map((v) => {
-          return (
-            <option key={v.id} value={v.id}>
-              {v.name}
-            </option>
-          );
-        })}
-      </Select>
-    </InputGroup>
-    </Flex>
-    <Stack direction={{ base: 'column', md: 'row' }} spacing="4">
-      <FormControl>
-        <FormLabel htmlFor="q">Search</FormLabel>
-        <Input
-          type="text"
-          id="q"
-          name="q"
-          value={filters.q}
-          onChange={handleChange}
-          placeholder="Search products"
-        />
-      </FormControl>
-      
-    </Stack>
-    <Flex align="center" justify="center" direction="column" top="0"
-      bottom="0"
-      left="0"
-      right="0">
-        <Heading as="h2" size="lg" mb="4">
-          Product List
-        </Heading>
-        <Table>
-          <Thead style={{ position: "sticky", top: 0 }}>
-            <Tr>
-              <Th>Lists</Th>
-              <Th>Category</Th>
-              <Th>Warehouse</Th>
-              <Th>Vendor</Th>
-              <Th>Quantity</Th>
-            </Tr>
-          </Thead>
-          <Tbody>{tableBody}</Tbody>
-        </Table>
-      </Flex>
-      <HStack>
-      <FormControl>
-        <FormLabel htmlFor="limit">Limit</FormLabel>
-        <Select id="limit" name="limit" value={filters.limit} onChange={handleChange}>
-          {limitOptions.map(option => (
-            <option key={option.value} value={option.value}>
-              {option.label} ({totalItems > 0 ? Math.min(totalItems, option.value) : 0} items)
-            </option>
-          ))}
-        </Select>
-      </FormControl>
-      <FormControl>
-      <FormLabel htmlFor="page">Page</FormLabel>
-      <PageSelect filters={filters} pageOptions={pageOptions} onPageChange={setFilters} />
-      </FormControl>
-      <FormControl>
-        <FormLabel htmlFor="sort">Sort</FormLabel>
-        <Select
-          id="sort"
-          name="sort"
-          value={filters.sort}
-          onChange={handleChange}
-        >
-          <option value="">None</option>
-          <option value="name:ASC">Name (A-Z)</option>
-          <option value="name:DESC">Name (Z-A)</option>
-        </Select>
-      </FormControl>
-      </HStack>
-  </Box>
-    <VStack>
-    <Button type="submit" leftIcon={<FiSearch />}>
-      Apply filters
-    </Button>
-    
-    <Button 
-    onClick={handleClearFilters}
-    leftIcon={<FiDelete />}
-    >
-      Clear Filters
-      </Button>
-    </VStack>
-    
-    </HStack>
-    </form>
+                          {/* Category */}
+                          
+                          <Select
+                            variant='filled'
+                            type="text"
+                            name="category_id"
+                            defaultValue={filters.category_id}
+                            onChange={handleChange}
+                            size='sm'
+                          >
+                            <option value="" disabled>Category</option>
+                            {category.categories.map((c) => {
+                              return (
+                                <option key={c.id} value={c.id}>
+                                  {c.name}
+                                </option>
+                              );
+                            })}
+                          </Select>
 
+                          {/* Vendor */}
+                          
+                          <Select
+                            
+                            variant='filled'
+                            type="text"
+                            name="vendor_id"
+                            defaultValue={filters.vendor_id}
+                            onChange={handleChange}
+                            size='sm'
+                          >
+                            <option value="" disabled>Vendors</option>
+                            {vendors.map((v) => {
+                              return (
+                                <option key={v.id} value={v.id}>
+                                  {v.name}
+                                </option>
+                              );
+                            })}
+                          </Select>
+                          {/* {Q SEARCH} */}
+                      
+                          <Input
+                            variant='filled'
+                            size='sm'
+                            type="text"
+                            id="q"
+                            name="q"
+                            defaultValue={filters.q}
+                            onChange={handleChange}
+                            placeholder="Name..."
+                            focusBorderColor='white'
+                          />
+                          
+                        </InputGroup>
+                        <FormControl>
+                          <FormLabel htmlFor="limit">Limit</FormLabel>
+                            <Select size="sm" id="limit" name="limit" defaultValue={filters.limit} onChange={handleChange}>
+                              {limitOptions.map(option => (
+                                <option key={option.value} value={option.value}>
+                                  {option.label} ({totalItems > 0 ? Math.min(totalItems, option.value) : 0} items)
+                                </option>
+                              ))}
+                            </Select>
+                            <FormLabel  size="sm" htmlFor="page">Page</FormLabel>
+                          <PageSelect size="sm" filters={filters} pageOptions={pageOptions} onPageChange={setFilters} />
+                            <FormLabel size="sm" htmlFor="sort">Sort</FormLabel>
+                            <Select
+                              id="sort"
+                              name="sort"
+                              defaultValue={filters.sort}
+                              onChange={handleChange}
+                              size="sm"
+                            >
+                              <option value="">None</option>
+                              <option value="name:ASC">Name (A-Z)</option>
+                              <option value="name:DESC">Name (Z-A)</option>
+                            </Select>
+                        </FormControl>
+                        <Flex justify="space-between">
+                        <Button mt={2} size="sm" onClick={handleSubmit} leftIcon={<FiSearch />}>
+                            Apply
+                          </Button>
+                          <Button 
+                          mt={2}
+                          onClick={handleClearFilters}
+                          leftIcon={<FiCircle />}
+                          size="sm"
+                          >
+                          Clear
+                          </Button>
+                        </Flex>
+                      </ModalBody>
+                  </ModalContent>
+            </Modal>
+            {/* {RENDER PRODUCTS} */}
+             {/* {Search by} */}
+            
+             <Box 
+                align="center" 
+                justify="center" 
+                direction="column" 
+                p={4}>
+                  <Flex justify="space-between">
+                    <Heading as="h2" size="lg" mb="4" mx="auto">
+                      Product List
+                    </Heading>
+                    <Button rightIcon={<FiSearch/>} onClick={handleOpenModal} p={4} variant="outline">
+                      Search
+                    </Button>
+                  </Flex>
+                  <Table size='md' maxWidth="100%" variant="simple">
+                    <Thead style={{ position: "sticky", top: 0 }}>
+                      <Tr>
+                        <Th>Lists</Th>
+                        <Th>Category</Th>
+                        <Th>Warehouse</Th>
+                        <Th>Vendor</Th>
+                        <Th>Quantity</Th>
+                        <Th>Image</Th>
+                        <Th>Action</Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>{tableBody}</Tbody>
+                  </Table>
+               </Box>
+          </>
   );
 }
 
@@ -806,47 +905,27 @@ export const LowStockAlert = ({ data }) => {
   }, [data]);
 
   return (
-    <Box
-      p={4}
-      borderRadius="md"
-      overflowY={data.length > 0 ? "auto" : "hidden"}
-      maxH={data.length > 0 ? "100%" : "auto"}
-      alignItems="center"
-      boxShadow="rgba(0, 0, 0, 0.1) 0px 4px 12px"
-      color="gray.400"
-    >
+    <Card p={4} borderRadius="md" boxShadow="md" color="gray.400">
       <Text fontSize="lg" fontWeight="bold" mb={2} textAlign="center">
         Stock Alert
       </Text>
       {data.length > 0 ? (
         data.map((product) => (
           hasLowStock(product) && (
-            <Box
-              key={product.id}
-              mb={2}
-              boxShadow="rgba(0, 0, 0, 0.1) 0px 4px 12px"
-              color="gray.400"
-            >
+            <Card key={product.id} mb={2} boxShadow="md" color="gray.400">
               <Text textAlign="center">{product.name}</Text>
               <Badge colorScheme="red" variant="subtle" ml={2}>
                 Low Stock
               </Badge>
-              <Box
-                size="sm"
-                color="gray.400"
-                boxShadow="rgba(0, 0, 0, 0.1) 0px 4px 12px"
-                p={2}
-                mt={2}
-                borderRadius="md"
-              >
-                at{" "}
+              <Box p={2} mt={2} borderRadius="md" bgColor="gray.50">
+                at{' '}
                 {product.Warehouses.filter(
                   (warehouse) =>
                     warehouse.WarehouseStock.quantity >= 1 &&
                     warehouse.WarehouseStock.quantity < 10
-                ).map((warehouse) => warehouse.name).join(", ")}
+                ).map((warehouse) => warehouse.name).join(', ')}
               </Box>
-            </Box>
+            </Card>
           )
         ))
       ) : (
@@ -861,7 +940,7 @@ export const LowStockAlert = ({ data }) => {
           )}
         </Box>
       )}
-    </Box>
+    </Card>
   );
 };
 

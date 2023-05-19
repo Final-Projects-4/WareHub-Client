@@ -52,10 +52,10 @@ const ProfitLoss = () => {
     const PercentageMessage = () => {
       return (
         <Box mt={4} textAlign="center">
-          <Text fontSize="sm" color={isPositive ? "green.500" : "red.500"}>
+          <Text fontSize="sm" color={isPositive ? "green.300" : "red.300"}>
             {isPositive ? "+" : "-"}{percentageDifference}%
           </Text>
-          <Text fontSize="sm" color={isPositive ? "green.500" : "red.500"}>
+          <Text fontSize="sm" color={isPositive ? "green.300" : "red.300"}>
             {isPositive ? "Profit Gained" : "Lost Suffered"}
           </Text>
         </Box>

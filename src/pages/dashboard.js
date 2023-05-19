@@ -119,7 +119,11 @@ const Dashboard = () => {
   const {data} = useProducts();
   const {vendors} = allVendors();
   const totalVendors = vendors.length;
+<<<<<<< HEAD
   console.log(totalVendors)
+=======
+  
+>>>>>>> a702f9c6c6fda549ce620cd6e45e2a53b464eb7b
   
   const [isSmallerScreen] = useMediaQuery("(max-width: 768px)");
   const { colorMode } = useColorMode();
@@ -133,6 +137,12 @@ const Dashboard = () => {
           <Box p={4}>
           <ProfitLoss />
           </Box>
+<<<<<<< HEAD
+=======
+          <Box p={4}>
+              <LowStockAlert data={data.products}/>
+            </Box>
+>>>>>>> a702f9c6c6fda549ce620cd6e45e2a53b464eb7b
           <Box p={4} borderColor={buttonCollor}>
               <VStack>
               <Image src={imageUrl}/>
@@ -145,6 +155,7 @@ const Dashboard = () => {
           <Box p={4}>
             <WarehouseBar/>
           </Box>
+<<<<<<< HEAD
           <Box bg="pink.200" p={4}>
             {/* Content for the second column */}
           </Box>
@@ -152,6 +163,17 @@ const Dashboard = () => {
           </Box>
           <Box bg="orange.200" p={4}>
             {/* Content for the second column */}
+=======
+          <Box  p={4}>
+          <VStack>
+                <HStack><FiUsers size={20} />
+                  <Text>{totalVendors}</Text>
+                </HStack>
+                  <Text as="span" color="green.300">
+                    Vendors supplied us!
+                  </Text>  
+              </VStack>
+>>>>>>> a702f9c6c6fda549ce620cd6e45e2a53b464eb7b
           </Box>
           <Box  p={4}>
             <LatestCustomer/>
@@ -189,12 +211,19 @@ const Dashboard = () => {
               <VStack>
                 <HStack><FiUsers size={20} />
                   <Text>{totalVendors}</Text>
+<<<<<<< HEAD
                 </HStack>
                     
                   <Text as="span" color="green.300">
                     Vendors supplied us!
                   </Text>
                     
+=======
+                </HStack> 
+                  <Text as="span" color="green.300">
+                    Vendors supplied us!
+                  </Text>
+>>>>>>> a702f9c6c6fda549ce620cd6e45e2a53b464eb7b
               </VStack>
             </Box>
             <Box p={4}>

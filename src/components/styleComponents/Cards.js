@@ -41,7 +41,7 @@ function OrderCard({ orderId }) {
   if (!orderData) {
     return null;
   }
-  console.log(orderData)
+  
 
   const customer = customers.find((c) => c.id === orderData.customer_id);
   const warehouse = warehouses.find((w) => w.id === orderData.warehouse_id);
