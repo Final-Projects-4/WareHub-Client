@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { postWarehouse } from '@/fetching/postData';
-import { Button, Collapse, Flex, useToast, Table, Tr, Text,  Td, Thead, Heading, Th, Tbody, HStack, Link, Spinner } from '@chakra-ui/react';
+import { Button, Collapse, Flex, useToast, Table, Tr, Text,  Td, Thead, Heading, Th, Tbody, HStack, Link, Spinner, useColorMode } from '@chakra-ui/react';
 import { allWarehouses } from '../allData';
 import { useRouter } from 'next/router';
 import { FiEdit, FiDivideCircle } from 'react-icons/fi';
@@ -13,8 +13,6 @@ const Warehouses = () => {
   function handleAddWarehouse(details) {
     setWarehouses(prevData => [...prevData, details]);
   }
-  
-
   return(
     <>
       
@@ -75,10 +73,12 @@ export const AddWarehouseForm = ({handleAddWarehouse}) => {
           });
         }
       };
-
+      const {colorMode} = useColorMode();
+      const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+      const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
       return (
         <>
-          <Button onClick={() => setIsOpen(!isOpen)}>
+          <Button size="sm" bgColor={buttonColor} onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? 'Cancel' : '+ Warehouses'}
           </Button>
           <Collapse in={isOpen} animateOpacity>
@@ -104,7 +104,7 @@ export const AddWarehouseForm = ({handleAddWarehouse}) => {
                 value={details.address}
                 onChange={handleChange}
               ></input>
-              <Button type='submit'>Submit</Button>
+              <Button size="sm" bgColor={buttonColor} type='submit'>Submit</Button>
             </form>
           </Collapse>
         </>
@@ -167,7 +167,9 @@ export const RenderWarehouses = ({warehouses, setWarehouses, isLoading}) => {
             });
           });
       }
-
+      const {colorMode} = useColorMode();
+      const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+      const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
       return(
         <Tr key={w.id}>
             <Td>
@@ -194,7 +196,7 @@ export const RenderWarehouses = ({warehouses, setWarehouses, isLoading}) => {
             </Td> 
 
             <Td>
-              <Button leftIcon={<FiDivideCircle />} onClick={() => handleDelete(w.id)}>Delete</Button>
+            <Button size="sm" bgColor={counterColor} leftIcon={<FiDivideCircle />} onClick={() => handleDelete(w.id)}>Delete</Button>
             </Td>
           </Tr>
         );
@@ -220,6 +222,7 @@ export const RenderWarehouses = ({warehouses, setWarehouses, isLoading}) => {
               <Th>Name</Th>
               <Th>City</Th>
               <Th>Address</Th>
+              <Th>Action</Th>
             </Tr>
           </Thead>
           <Tbody>{tableBody}</Tbody>
