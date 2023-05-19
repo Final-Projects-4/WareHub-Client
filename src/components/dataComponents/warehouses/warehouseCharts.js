@@ -8,13 +8,18 @@ Chart.register(...registerables);
 const BarChart = ({ data }) => {
   const { colorMode } = useColorMode();
   const barColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+
+  // Extract product quantities from the data array
   const chartData = {
     labels: data.map((item) => item.name),
     datasets: [
       {
         label: 'Products Quantity',
-        data: data.flatMap((item) =>
-          item.Products.map((product) => product.WarehouseStock.quantity)
+        data: data.map((item) =>
+          item.Products.reduce(
+            (total, product) => total + product.WarehouseStock.quantity,
+            0
+          )
         ),
         backgroundColor: barColor,
         borderSkipped: 'bottom',
@@ -48,7 +53,7 @@ const BarChart = ({ data }) => {
 
   
 const WarehouseBar = () => {
-    const { warehouses } = allWarehouses(); // Assuming allWarehouses() returns an object with the warehouses array
+    const { warehouses } = allWarehouses();
   
     return (
       <div>

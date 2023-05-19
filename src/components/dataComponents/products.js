@@ -891,12 +891,12 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
 //low Stock alert
 export const LowStockAlert = ({ data }) => {
   const hasLowStock = (product) => {
-    return product.Warehouses.some(
-      (warehouse) =>
-        warehouse.WarehouseStock.quantity >= 1 &&
-        warehouse.WarehouseStock.quantity < 10
+    return product.Warehouses && product.Warehouses.some(
+      (warehouse) => warehouse.WarehouseStock.quantity < 10
     );
   };
+  
+  
 
   const [sufficientStock, setSufficientStock] = useState(true);
 
@@ -912,7 +912,7 @@ export const LowStockAlert = ({ data }) => {
       </Text>
       {data.length > 0 ? (
         data.map((product) => (
-          hasLowStock(product) && (
+          product.Warehouses && hasLowStock(product) && (
             <Card key={product.id} mb={2} boxShadow="md" color="gray.400">
               <Text textAlign="center">{product.name}</Text>
               <Badge colorScheme="red" variant="subtle" ml={2}>
@@ -931,14 +931,7 @@ export const LowStockAlert = ({ data }) => {
         ))
       ) : (
         <Box textAlign="center">
-          {sufficientStock ? (
             <Text color="green.500">Stocks sufficient</Text>
-          ) : (
-            <>
-              <Text color="green.500">Stocks sufficient</Text>
-              <Image src="darkCustomer.png" />
-            </>
-          )}
         </Box>
       )}
     </Card>
