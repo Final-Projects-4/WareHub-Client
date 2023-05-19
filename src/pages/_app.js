@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
+  const isRootPage = router.pathname === '/';
   return (
     <ChakraProvider theme={theme}>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
@@ -17,18 +18,16 @@ export default function App({ Component, pageProps }) {
           templateColumns="1fr"
           gap={0}
           >
-            <Box w="100%" p={4} pb={0}>
-              <Navbar />
-            </Box>
-            <Grid templateColumns="auto 1fr" height="100%">
-              <Box>
-                <Sidebar/>
+              <Box w="100%" p={4} pb={0}>
+                <Navbar />
               </Box>
-              <Box p={5}
-              backgroundImage=""
-              backgroundRepeat="no-repeat"
-              backgroundSize="cover"
-              backgroundPosition="center">
+            <Grid templateColumns="auto 1fr" height="100%">
+                {!isRootPage && (
+                <Box>
+                  <Sidebar />
+                </Box>
+              )}
+              <Box p={5}>
                 <Component {...pageProps} />
               </Box>
             </Grid>

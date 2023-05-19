@@ -1,14 +1,12 @@
-import { Box, Flex, Text, Button } from "@chakra-ui/react";
+import { Box, Flex, Text, Button, useColorMode, IconButton, useDisclosure, HStack, Modal, ModalOverlay, ModalContent } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import React from "react";
 import NextLink from "next/link";
-import { useRouter } from "next/router";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faListCheck } from "@fortawesome/free-solid-svg-icons";
-import { faBullseye } from "@fortawesome/free-solid-svg-icons";
 import { FiBox } from "react-icons/fi";
-import { faChartSimple } from "@fortawesome/free-solid-svg-icons";
+import { FaBullseye } from "react-icons/fa";
+import { VscChecklist } from "react-icons/vsc";
+import { SiGoogleanalytics } from "react-icons/si";
 import { Link } from "react-scroll";
 import {
   Accordion,
@@ -17,25 +15,8 @@ import {
   AccordionPanel,
   useColorModeValue,
 } from "@chakra-ui/react";
+import LoginPage from "./Login";
 
-const LoginPage = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const router = useRouter();
-  const [showPassword, setShowPassword] = useState(false);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    postLoginData(username, password)
-      .then((data) => {
-        const { token } = data;
-        sessionStorage.setItem("accessToken", token);
-        router.push("/register");
-      })
-      .catch((err) => {});
-  };
-};
 const AnimatedNumber = ({ value, text }) => {
   const [animatedValue, setAnimatedValue] = useState(0);
   const valueRef = useRef(0);
@@ -67,7 +48,14 @@ const AnimatedNumber = ({ value, text }) => {
 
 const Landing = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { toggleColorMode } = useColorMode();
+  useColorModeValue("White", "gray.700");
+  const [isLogin, setIsLogin] = useState(false);
 
+  const {colorMode} = useColorMode();
+  const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+  const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
   return (
     <Box
       bg={useColorModeValue("white", "#1A202C")}
@@ -141,6 +129,39 @@ const Landing = () => {
             </Button>
           </Link>
         </motion.div>
+        <motion.div
+          initial={{ y: -50 }}
+          animate={{ y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <HStack mr={6}>
+            {!isLogin ? (
+              <Button
+                onClick={onOpen}
+                bgColor={buttonColor}
+              >
+                Login
+              </Button>
+            ) : (
+              <Button
+                bgColor={counterColor}
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  setIsLogin(false);
+                  router.push("/");
+                }}
+              >
+                Logout
+              </Button>
+            )}
+          </HStack>
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <LoginPage />
+            </ModalContent>
+          </Modal>
+        </motion.div>
       </Flex>
 
       {/* Section 1 */}
@@ -159,11 +180,8 @@ const Landing = () => {
               </Text>
               <NextLink href="/register">
                 <Button
-                  colorScheme="teal"
+                  bgColor={buttonColor}
                   mt={8}
-                  bg={"teal.400"}
-                  color={"white"}
-                  _hover={{ bg: "teal.900" }}
                 >
                   Free Trial for 1 Month
                 </Button>
@@ -197,9 +215,9 @@ const Landing = () => {
       </Box>
 
       {/* Section 2 */}
-      <Box bg={"teal.400"} py={10} px={0} mx={0}>
+      <Box bgColor={buttonColor} py={10} px={0} mx={0}>
         <Text fontSize="2xl" color="white" textAlign="center" mb={8}>
-        Trusted by renowned brands
+          Trusted by renowned brands
         </Text>
         <Flex maxWidth="100%" justifyContent="center">
           <Flex flexDirection="column" alignItems="center" mx={4}>
@@ -274,7 +292,7 @@ const Landing = () => {
       {/* Section 3 */}
       <Box py={16} px={8} bg={useColorModeValue("white", "#1A202C")} id="fitur">
         <Text fontSize="2xl" fontWeight="bold" mb={8} textAlign="center">
-        Advantageous features of using Warehub
+          Advantageous features of using Warehub
         </Text>
         <Flex justify="space-between">
           {/* Card 1 */}
@@ -289,17 +307,15 @@ const Landing = () => {
               transition="background-color 0.3s"
             >
               <Text fontSize="xl" fontWeight="bold" mb={4}>
-                Improved Operational Efficiency
+                Operational Efficiency
               </Text>
               <Text lineHeight="tall" mb={4}>
                 Helps improve the operational efficiency of your warehouse
-                through real-time stock monitoring, automated order processing,
-                and integration with other systems.
+                through real-time stock monitoring, automated order processing.
               </Text>
-              <FontAwesomeIcon
-                icon={faListCheck}
-                style={{ color: "#38B2AC", fontSize: "2rem", margin: "0 auto" }}
-              />
+              <IconButton size="sm" bgColor={buttonColor}
+
+          icon={<VscChecklist />}/>
             </Box>
 
             {/* Card 2 */}
@@ -319,10 +335,9 @@ const Landing = () => {
                 tracking. This reduces the risk of human errors, stock loss, and
                 shipping mistakes.
               </Text>
-              <FontAwesomeIcon
-                icon={faBullseye}
-                style={{ color: "#38B2AC", fontSize: "2rem", margin: "0 auto" }}
-              />
+              <IconButton size="sm" bgColor={buttonColor}
+
+          icon={<FaBullseye />}/>
             </Box>
 
             {/* Card 3 */}
@@ -342,10 +357,9 @@ const Landing = () => {
                 decision-making. You can track demand trends and identify the
                 best-selling products.
               </Text>
-              <FontAwesomeIcon
-                icon={faChartSimple}
-                style={{ color: "#38B2AC", fontSize: "2rem", margin: "0 auto" }}
-              />
+              <IconButton size="sm" bgColor={buttonColor}
+
+          icon={<SiGoogleanalytics />}/>
             </Box>
           </Flex>
         </Flex>
@@ -415,7 +429,7 @@ const Landing = () => {
       </Box>
 
       {/* Section 6 */}
-      <Box py={0} px={8} bg={"teal.400"} id="tentang-kami">
+      <Box py={0} px={8} bgColor={buttonColor} id="tentang-kami">
   <Flex alignItems="center">
     <Box flex={1}>
       <Text fontSize="2xl" fontWeight="bold" color="white">
@@ -522,7 +536,7 @@ const Landing = () => {
         </AccordionItem>
         </Accordion>
 </Box>
-<Box py={16} px={8} bg={"teal.400"} id="gambar-pertanyaan" marginLeft="auto">
+<Box py={16} px={8} bgColor={buttonColor} id="gambar-pertanyaan" marginLeft="auto">
   <img src="bertanya.png" alt="Gambar" width={350} height={300} />
 </Box>
 </Flex>
@@ -542,10 +556,7 @@ const Landing = () => {
             <Box mt={7} textAlign="center">
               <a href="mailto:info@warehub.com">
                 <Button
-                  colorScheme="blue"
-                  bg={"teal.400"}
-                  color={"white"}
-                  _hover={{ bg: "teal.900" }}
+                  bgColor={buttonColor}
                 >
                   Contact Us
                 </Button>
