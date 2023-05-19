@@ -44,7 +44,7 @@ function Product() {
 
 
   return(
-    <Box>
+    <Box flex="1">
       <HStack justify="space-between">
         <AddProductForm category={category} handleAddProduct={handleAddProduct} />
         <AddStockForm 
@@ -857,6 +857,7 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
              {/* {Search by} */}
             
              <Box 
+                
                 align="center" 
                 justify="center" 
                 direction="column" 
