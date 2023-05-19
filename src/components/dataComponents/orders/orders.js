@@ -3,11 +3,11 @@ import { useRouter } from 'next/router';
 import {
   FormControl, ModalBody, IconButton,
   FormLabel, ModalOverlay, ModalContent,
-  Input, ButtonGroup,
+  Input, 
   Select, ModalFooter, ModalCloseButton,
   Button, Modal,
   Box, ModalHeader,
-  HStack, Link , Text, Thead, Th, Tbody, Heading, Table, useToast, VStack, Tr, Td, Flex, useColorMode
+  HStack, Link , Text, Thead, Th, Tbody, Heading, Table, useToast, Tr, Td, Flex, useColorMode
 } from '@chakra-ui/react';
 import { FiPlus, FiEdit, FiDivideCircle, FiSearch, FiDelete, FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import { allCustomers, allWarehouses, allOrders } from '../allData';
@@ -291,7 +291,7 @@ export const AddOrderForm = ({ customers, warehouses,handleAddOrder}) => {
 }
 
 //Render Orders with details
-export const RenderOrders = ({ data, setData, customers, warehouses}) => {
+export const RenderOrders = ({ data, setData}) => {
   const toast = useToast();
   const router = useRouter();
   const tableBody = renderOrder(data.orders);

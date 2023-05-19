@@ -21,6 +21,7 @@ import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 // import Link from "next/link";
 
 const LoginPage = () => {
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -30,6 +31,7 @@ const LoginPage = () => {
   const {colorMode} = useColorMode();
   const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
   const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -90,7 +92,6 @@ const LoginPage = () => {
                 />
               </InputGroup>
             </FormControl>
-
             <FormControl>
               <InputGroup>
                 <Input
