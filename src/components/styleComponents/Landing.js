@@ -1,4 +1,4 @@
-import { Box, Flex, Text, Button} from "@chakra-ui/react";
+import { Box, Flex, Text, Button } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import React from "react";
@@ -415,112 +415,118 @@ const Landing = () => {
       </Box>
 
       {/* Section 6 */}
-      <Box py={16} px={8} bg={"teal.400"} id="tentang-kami">
-        <Text fontSize="2xl" fontWeight="bold" color="white">
-          About Us
-        </Text>
-        <Accordion allowToggle mt={8}>
-          {/* Question 1 */}
-          <AccordionItem>
-            <h2>
-              <AccordionButton>
-                <Box flex="1" textAlign="left">
-                  <Text color="white" fontWeight="bold">
-                    What is Warehub?
-                  </Text>
-                </Box>
-              </AccordionButton>
-            </h2>
-            <AccordionPanel pb={4}>
-              <Text color="white">
-                Warehub is an e-commerce platform that provides marketing,
-                inventory management, and logistics solutions for online
-                businesses.
-              </Text>
-            </AccordionPanel>
-          </AccordionItem>
+      <Box py={0} px={8} bg={"teal.400"} id="tentang-kami">
+  <Flex alignItems="center">
+    <Box flex={1}>
+      <Text fontSize="2xl" fontWeight="bold" color="white">
+        About Us
+      </Text>
+      <Accordion allowToggle mt={8}>
+        {/* Pertanyaan 1 */}
+        <AccordionItem>
+          <h2>
+            <AccordionButton>
+              <Box flex="1" textAlign="left">
+                <Text color="white" fontWeight="bold">
+                  What is Warehub?
+                </Text>
+              </Box>
+            </AccordionButton>
+          </h2>
+          <AccordionPanel pb={4}>
+            <Text color="white">
+              Warehub is an e-commerce platform that provides marketing,
+              inventory management, and logistics solutions for online
+              businesses.
+            </Text>
+          </AccordionPanel>
+        </AccordionItem>
 
-          {/* Question 2 */}
-          <AccordionItem>
-            <h2>
-              <AccordionButton>
-                <Box flex="1" textAlign="left">
-                  <Text color="white" fontWeight="bold">
-                    How can I sign up for Warehub?
-                  </Text>
-                </Box>
-              </AccordionButton>
-            </h2>
-            <AccordionPanel pb={4}>
-              <Text color="white">
-                You can sign up for Warehub by visiting our official website and
-                following the provided registration steps.
-              </Text>
-            </AccordionPanel>
-          </AccordionItem>
+        {/* Pertanyaan 2 */}
+        <AccordionItem>
+          <h2>
+            <AccordionButton>
+              <Box flex="1" textAlign="left">
+                <Text color="white" fontWeight="bold">
+                  How can I sign up for Warehub?
+                </Text>
+              </Box>
+            </AccordionButton>
+          </h2>
+          <AccordionPanel pb={4}>
+            <Text color="white">
+              You can sign up for Warehub by visiting our official website and
+              following the provided registration steps.
+            </Text>
+          </AccordionPanel>
+        </AccordionItem>
 
-          {/* Question 3 */}
-          <AccordionItem>
-            <h2>
-              <AccordionButton>
-                <Box flex="1" textAlign="left">
-                  <Text color="white" fontWeight="bold">
-                    What are the benefits of using Warehub?
-                  </Text>
-                </Box>
-              </AccordionButton>
-            </h2>
-            <AccordionPanel pb={4}>
-              <Text color="white">
-                The benefits of using Warehub include access to various
-                logistics services, efficient inventory management, and
-                integration with marketing platforms to enhance sales.
-              </Text>
-            </AccordionPanel>
-          </AccordionItem>
+        {/* Pertanyaan 3 */}
+        <AccordionItem>
+          <h2>
+            <AccordionButton>
+              <Box flex="1" textAlign="left">
+                <Text color="white" fontWeight="bold">
+                  What are the benefits of using Warehub?
+                </Text>
+              </Box>
+            </AccordionButton>
+          </h2>
+          <AccordionPanel pb={4}>
+            <Text color="white">
+              The benefits of using Warehub include access to various
+              logistics services, efficient inventory management, and
+              integration with marketing platforms to enhance sales.
+            </Text>
+          </AccordionPanel>
+        </AccordionItem>
 
-          {/* Question 4 */}
-          <AccordionItem>
-            <h2>
-              <AccordionButton>
-                <Box flex="1" textAlign="left">
-                  <Text color="white" fontWeight="bold">
-                    How does the shipping process work with Warehub?
-                  </Text>
-                </Box>
-              </AccordionButton>
-            </h2>
-            <AccordionPanel pb={4}>
-              <Text color="white">
-                After you receive an order, Warehub will handle the packaging
-                and shipping process of the goods to your customers through
-                connected logistics services.
-              </Text>
-            </AccordionPanel>
-          </AccordionItem>
+        {/* Pertanyaan 4 */}
+        <AccordionItem>
+          <h2>
+            <AccordionButton>
+              <Box flex="1" textAlign="left">
+                <Text color="white" fontWeight="bold">
+                  How does the shipping process work with Warehub?
+                </Text>
+              </Box>
+            </AccordionButton>
+          </h2>
+          <AccordionPanel pb={4}>
+            <Text color="white">
+              After you receive an order, Warehub will handle the packaging
+              and shipping process of the goods to your customers through
+              connected logistics services.
+            </Text>
+          </AccordionPanel>
+        </AccordionItem>
 
-          {/* Question 5 */}
-          <AccordionItem>
-            <h2>
-              <AccordionButton>
-                <Box flex="1" textAlign="left">
-                  <Text color="white" fontWeight="bold">
-                    Does Warehub have a shipment tracking feature?
-                  </Text>
-                </Box>
-              </AccordionButton>
-            </h2>
-            <AccordionPanel pb={4}>
-              <Text color="white">
-                Yes, Warehub provides a shipment tracking feature that allows
-                you and your customers to track the delivery status of the goods
-                in real-time.
-              </Text>
-            </AccordionPanel>
-          </AccordionItem>
+        {/* Pertanyaan 5 */}
+        <AccordionItem>
+          <h2>
+            <AccordionButton>
+              <Box flex="1" textAlign="left">
+                <Text color="white" fontWeight="bold">
+                  Does Warehub have a shipment tracking feature?
+                </Text>
+              </Box>
+            </AccordionButton>
+          </h2>
+          <AccordionPanel pb={4}>
+            <Text color="white">
+              Yes, Warehub provides a shipment tracking feature that allows
+              you and your customers to track the delivery status of the goods
+              in real-time.
+            </Text>
+          </AccordionPanel>
+        </AccordionItem>
         </Accordion>
-      </Box>
-
+</Box>
+<Box py={16} px={8} bg={"teal.400"} id="gambar-pertanyaan" marginLeft="auto">
+  <img src="bertanya.png" alt="Gambar" width={350} height={300} />
+</Box>
+</Flex>
+</Box>
       {/* Footer */}
       <Box py={2} px={6} bg={useColorModeValue("white", "#1A202C")}>
         <Flex justify="center">
