@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 
 
 
-function Dropdown() {
+const Dropdown = () => {
     const { colorMode } = useColorMode();
     const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
 
@@ -25,7 +25,6 @@ function Dropdown() {
             try {
               setIsLoading(true);
               const response = await user();
-              console.log(response)
               setData(response);
               setIsLoading(false);
             } catch (err) {

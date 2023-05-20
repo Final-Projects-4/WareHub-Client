@@ -1,14 +1,14 @@
 import { fetchUser } from '@/fetching/fetchData';
 import React, { useEffect, useState } from 'react'
 
-function index() {
+const index = () => {
     const user = async () => {
         // Replace 'fetchData' with your actual fetch function
         const response = await fetchUser();
         return response;
       };
     
-      const useUser = () => {
+      const User = () => {
         const [data, setData] = useState({ user: [] });
         const [isLoading, setIsLoading] = useState(false);
         const [error, setError] = useState(null);
@@ -18,7 +18,6 @@ function index() {
             try {
               setIsLoading(true);
               const response = await user();
-              console.log(response)
               setData(response);
               setIsLoading(false);
             } catch (err) {
@@ -32,7 +31,7 @@ function index() {
         return { data };
       };
     
-      const { data } = useUser();
+      const { data } = User();
     
 
   return (
