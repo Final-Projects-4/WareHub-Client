@@ -59,7 +59,7 @@ const Landing = () => {
   return (
     <Box
       bg={useColorModeValue("white", "#1A202C")}
-      py={16}
+      py={0}
       px={0}
       position={"absolute"}
     >
