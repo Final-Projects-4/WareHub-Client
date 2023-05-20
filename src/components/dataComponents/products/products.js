@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { postProduct, postStock, bulkInsertProducts, moveProduct } from '@/fetching/postData';
-import { InputGroup, IconButton, ModalFooter, HStack, useToast, Link, FormControl, FormLabel, Text, Button, Card, Box, Input, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, Badge, Image, useColorMode} from "@chakra-ui/react";
+import { InputGroup, IconButton, ModalFooter, HStack, useToast, Link, FormControl, FormLabel, Text, Button, Card, Box, Input, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, Badge, Image, useColorMode, VStack} from "@chakra-ui/react";
 import { allProducts, allVendors, allWarehouses, allCategories} from '../allData';
 import { FiSearch, FiEdit,FiUpload, FiPlus, FiArrowLeft, FiArrowRight
  ,FiCircle,
  FiArrowUpRight,
  FiDelete,
- FiMove}  from 'react-icons/fi';
+ FiMove,
+ FiMonitor}  from 'react-icons/fi';
 import { deleteProduct } from '@/fetching/deleteData';
 import { useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, Accordion
-,ModalBody,AccordionItem,AccordionButton,AccordionIcon,AccordionPanel, Icon, useMediaQuery } from '@chakra-ui/react';
+,ModalBody, Option, AccordionItem,AccordionButton,AccordionIcon,AccordionPanel, Icon, useMediaQuery } from '@chakra-ui/react';
 //Parent
 function Product() {
   const [dummyState, setDummyState] = useState(0); // Create dummy state
@@ -49,13 +50,15 @@ function Product() {
     <Box flex="1">
       <HStack justify="space-between">
         <AddProductForm category={category} handleAddProduct={handleAddProduct} />
+        <VStack>
         <AddStockForm 
         data={data} 
         setData={setData} 
         handleAddProduct={handleAddProduct}
         warehouses={warehouses}
         vendors={vendors}/>
-        <MoveStocks data={data} warehouse={warehouses}/>
+        <MoveStocks data={data} warehouse={warehouses} />
+        </VStack>
       </HStack>
       
       <FilterForm 
@@ -682,7 +685,7 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
             <Image src={p.image}boxSize="50px" objectFit="cover" />
             </Td>
             <Td>
-              <Button size="sm"  bgColor={buttonColor} leftIcon={<FiMove />}></Button>
+              {/* <Button size="sm"  bgColor={buttonColor} leftIcon={<FiMove />}></Button> */}
               <Button size="sm"  bgColor={counterColor} leftIcon={<FiDelete />} onClick={() => handleDelete(p.id)}></Button>
               
             </Td>
@@ -744,7 +747,6 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
   
   const tableBody = renderProduct(data.products);
 
-  const [isSmallerScreen] = useMediaQuery("(max-width: 768px)");
   return (
           <>
             <Modal isOpen={isOpen} onClose={handleCloseModal}>
@@ -913,7 +915,19 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
 }
 
 export const MoveStocks = (data) => {
+
+  const [details, setDetails] = useState({
+      product_id: '',
+      source_warehouse_id: '',
+      quantity: '',
+      destination_warehouse_id: ''
+    })
+  const products = data.data.products;
+  const destinationWarehouse = data.warehouse;
+  const [selectedProductId, setSelectedProductId] = useState(0);
+  const toast = useToast();
   const [isOpen, setIsOpen] = useState(false);
+
   const handleOpenModal = () => {
     setIsOpen(true);
   };
@@ -922,76 +936,164 @@ export const MoveStocks = (data) => {
     setIsOpen(false);
   };
 
-  function handleMove(productId, quantity, source_warehouse_id, destination_warehouse_id) {
+  const handleChange = (e) => {
+      const { name, value } = e.target;
+      if (value === '') {
+        setDetails((prev) => ({ ...prev, [name]: 0 }));
+      } else {
+        const quantity = parseInt(value);
+        setDetails((prev) => ({ ...prev, [name]: quantity }));
+      }
+    };
+
+  const handleMoveSubmit = async(e) => {
     const accessToken = sessionStorage.getItem('accessToken');
-    moveProduct(productId, quantity, source_warehouse_id, destination_warehouse_id, accessToken)
-      .then(() => {
-        toast({
-          title: 'Product moved',
-          status: 'success',
-          duration: 3000,
-          isClosable: true,
-        });
-        setData((prevData) => ({
-          ...prevData,
-          products: prevData.products.filter((p) => p.id !== productId),
-        }));
-      })
-      .catch((error) => {
-        toast({
-          title: 'Error moving product',
-          description: error.message,
-          status: 'error',
-          duration: 3000,
-          isClosable: true,
-        });
+    e.preventDefault();
+    try {
+      await moveProduct(
+        details.product_id,
+        details.source_warehouse_id,
+        details.quantity,
+        details.destination_warehouse_id,
+        accessToken
+      );
+      setDetails({
+        product_id: '',
+        source_warehouse_id: '',
+        quantity: '',
+        destination_warehouse_id:''
       });
-  }
-
-  const products = data.data.products;
-  const destinationWarehouse = data.warehouse;
-
+      handleCloseModal();
+      toast({
+        title: 'Move Success.',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+      } catch (err) {
+        toast({
+          title: 'Move Failed.',
+          description: err.message,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+  } 
+  
+  const {colorMode} = useColorMode();
+  const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+  const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
   return (
     <>
-      <button onClick={handleOpenModal}>Open Modal</button>
+      <Button size="sm" bgColor={buttonColor} leftIcon={<FiMove/>} onClick={handleOpenModal}>
+        Stocks
+        </Button>
 
       <Modal isOpen={isOpen} onClose={handleCloseModal}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Move Stock</ModalHeader>
+          <ModalHeader textAlign="center" fontSize="sm">Move Stock</ModalHeader>
           <ModalCloseButton />
 
           <ModalBody>
             {/* Mapping over products */}
-            {products.map((product) => (
-              <div key={product.id}>
-                <h2>Product ID: {product.id}</h2>
-                {/* Mapping over the product's warehouses */}
-                {product.Warehouses.map((warehouse) => (
-                  <div key={warehouse.id}>
-                    <p>Warehouse ID: {warehouse.id}</p>
-                    <p>Warehouse Name: {warehouse.name}</p>
-                    <p>Quantity: {warehouse.WarehouseStock.quantity}</p>
-                  </div>
-                ))}
-              </div>
-            ))}
-            {/* Mapping over destinationWarehouse */}
-            {destinationWarehouse.map((warehouse) => (
-              <div key={warehouse.id}>
-                <h2>{warehouse.name}</h2>
-                {/* Mapping over the warehouse's products */}
-                {warehouse.Products.map((product) => (
-                  <div key={product.id}>
-                    <p>Product ID: {product.id}</p>
-                    <p>Quantity: {product.WarehouseStock.quantity}</p>
-                  </div>
-                ))}
-              </div>
-            ))}
-
             
+            <Select
+              p={4}
+              size="sm"
+              variant="filled"
+              name="product_id"
+              value={selectedProductId}
+              onChange={(e) => {
+                setSelectedProductId(+e.target.value);
+                setDetails((prev) => {
+                  return { ...prev, product_id: +e.target.value };
+                });
+              }}
+            >
+              <option value="" disabled isDisabled>
+                Select Product to move
+              </option>
+              {products.map((product) => (
+                <option key={product.id} value={product.id}>
+                  {product.name}
+                </option>
+              ))}
+            </Select>
+            {selectedProductId ? (
+            <Select
+              p={4}
+              size="sm"
+              variant="filled"
+              defaultValue={details.source_warehouse_id}
+              name="source_warehouse_id"
+              onChange={handleChange}
+            >
+              <option value="" disabled>
+                Select source
+              </option>
+              {products
+                .find((product) => product.id === selectedProductId)
+                .Warehouses.map((warehouse) => (
+                  <option key={warehouse.id} value={warehouse.id}>
+                    {warehouse.name} @ {warehouse.WarehouseStock.quantity}
+                  </option>
+                ))}
+            </Select>
+          ) : (
+            <Select
+              p={4}
+              size="sm"
+              variant="filled"
+              name="source_warehouse_id"
+              placeholder='select product to move first'
+              disabled
+            >
+              <option value="" disabled>
+                Select a product first
+              </option>
+            </Select>
+          )}
+        
+            {/* Mapping over destinationWarehouse */}
+            <Select p={4}
+              size="sm"
+              variant="filled"
+              name="destination_id"
+              value={details.destination_warehouse_id}
+              placeholder='Select warehouse destination'
+              onChange={(e) => {
+                setDetails((prev) => {
+                  return { ...prev, destination_warehouse_id: +e.target.value };
+                });
+              }}
+            >
+              {destinationWarehouse.map((w) => (
+                <option key={w.id} value={w.id}>
+                  {w.name}
+                </option>
+              ))}
+            </Select>
+            <Input size="sm" p={4}
+              variant="filled"
+              name="quantity"
+              value={details.quantity}
+              placeholder='Quantity'
+              onChange={(e) => {
+                setDetails((prev) => {
+                  return { ...prev, quantity: +e.target.value };
+                });
+              }} />
           </ModalBody>
+          <ModalFooter>
+                <Button size="sm" bgColor={buttonColor} onClick={handleMoveSubmit}>
+                  Submit
+                </Button>
+                <Button  bgColor={counterColor} size="sm" colorScheme="gray" onClick={handleCloseModal} ml={2}>
+                  Cancel
+                </Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </>

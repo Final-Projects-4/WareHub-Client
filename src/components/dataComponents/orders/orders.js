@@ -188,7 +188,7 @@ export const AddOrderForm = ({ customers, warehouses,handleAddOrder}) => {
           <Modal isOpen={isOpen} onClose={handleCloseModal}>
                 <ModalOverlay/>
                 <ModalContent>
-                  <ModalHeader textAlign="center">Create Product</ModalHeader>
+                  <ModalHeader textAlign="center">Create Order</ModalHeader>
                   <ModalBody>
                 <form onSubmit={handleSubmit} style={{marginTop: '1rem'}}>
                   <FormControl>

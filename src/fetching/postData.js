@@ -78,7 +78,7 @@ export async function bulkInsertProducts(file, accessToken) {
   return data;
 }
 
-export async function moveProduct(productId, quantity, source_warehouse_id, destination_warehouse_id,accessToken) {
+export async function moveProduct(product_id, source_warehouse_id, quantity,  destination_warehouse_id,accessToken) {
   const response = await fetch(`${baseUrl}warehousestocks/move`, {
     method: "POST",
     headers: {
@@ -86,7 +86,7 @@ export async function moveProduct(productId, quantity, source_warehouse_id, dest
       Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
-      productId, quantity, source_warehouse_id, destination_warehouse_id
+      product_id, source_warehouse_id, quantity,  destination_warehouse_id
     }),
   });
 
