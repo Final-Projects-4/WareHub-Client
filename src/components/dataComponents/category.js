@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { postCategory } from '@/fetching/postData';
 import { Button, 
-  Image, Box, Flex, Center, Stack, Grid,
+  Image, Box, Flex, Center, Grid,
   Collapse, useToast, Text,Heading,Link, useColorMode, useMediaQuery } from '@chakra-ui/react';
 import { allCategories } from './allData';
-import { FiEdit, FiDivideCircle } from 'react-icons/fi';
+import { FiDivideCircle } from 'react-icons/fi';
 import { useRouter } from 'next/router';
 import { deleteCategory } from '@/fetching/deleteData';
 //parents
@@ -190,7 +190,6 @@ export const RenderCategory = ({category, setCategory}) => {
             <Text fontSize="sm">{c.description}</Text>
               <Flex justify="flex-end">
             <Button
-              justify
               size="sm"
               leftIcon={<FiDivideCircle />}
               colorScheme="red"
