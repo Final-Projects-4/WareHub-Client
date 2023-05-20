@@ -1,7 +1,14 @@
 import { fetchUser } from '@/fetching/fetchData';
+import { Button, Menu, MenuButton, MenuDivider, MenuGroup, MenuItem, MenuList, useColorMode } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 
-function index() {
+
+
+
+function Dropdown() {
+    const { colorMode } = useColorMode();
+    const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+
     const user = async () => {
         // Replace 'fetchData' with your actual fetch function
         const response = await fetchUser();
@@ -33,20 +40,22 @@ function index() {
       };
     
       const { data } = useUser();
-    
+
 
   return (
     <div>
-        <h1>Profile</h1>
-        <h2>Nama Depan : {data.first_name} </h2>
-        <h2>Nama Belakang : {data.last_name} </h2>
-        <h2>Email : {data.email} </h2>
-        <h2>Username : {data.username} </h2>
-        <h2>Alamat : {data.address} </h2>
-        <h2>Nama Perusahaan : {data.company} </h2>
-        {/* {data.id} */}
+        <Menu>
+  <MenuButton as={Button} bgColor={buttonColor}>
+    Profile
+  </MenuButton>
+  <MenuList>
+    <MenuGroup  title={data.username}>
+      <MenuItem as='a' href="/profile" title="Profile"  >My Account</MenuItem>
+    </MenuGroup>
+  </MenuList>
+</Menu>
     </div>
   )
 }
 
-export default index
+export default Dropdown
