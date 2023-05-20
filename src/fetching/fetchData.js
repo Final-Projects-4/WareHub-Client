@@ -101,3 +101,8 @@ export const fetchCategories = async () => {
   const data = await fetchData("categories");
   return data;
 };
+
+export const fetchUser = async () => {
+  const data = await fetchData("user");
+  return data;
+};
