@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { postCategory } from '@/fetching/postData';
-import { Button, Collapse, useToast, Table, Tr, Text,  Td, Thead, Heading, Th, Tbody, HStack, Link, useColorMode } from '@chakra-ui/react';
+import { Button, 
+  Image, Box, Flex, Center, Stack, Grid,
+  Collapse, useToast, Text,Heading,Link, useColorMode, useMediaQuery } from '@chakra-ui/react';
 import { allCategories } from './allData';
 import { FiEdit, FiDivideCircle } from 'react-icons/fi';
 import { useRouter } from 'next/router';
@@ -115,15 +117,21 @@ export const AddCategoryForm = ({handleAddCategory}) => {
 export const RenderCategory = ({category, setCategory}) => {
   const router = useRouter();
   const toast = useToast();
+
+ 
+
   function renderData(data) {
 
     return data.categories.map((c) => {
+      
+      const getRandomUnsplashPhoto = () => {
+        const randomId = Math.floor(Math.random() * 1000); // Generate a random photo ID
+        return `https://source.unsplash.com/random/?Food&${randomId}`; // Replace with your desired photo size
+      };
 
       const handleCategoryDetails = (categoryId) => {
         router.push(`/category/${categoryId}`)
       }
-
-
       function handleDelete(categoryId) {
         const accessToken = sessionStorage.getItem('accessToken');
         deleteCategory(categoryId, accessToken)
@@ -150,52 +158,78 @@ export const RenderCategory = ({category, setCategory}) => {
       const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
       const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
       return(
-        <Tr key={c.id}>
-            <Td>
-            <HStack>
-            <Link
-              onClick={() => handleCategoryDetails(c.id)}
-              _hover={{
-                textDecoration: 'glow',
-                textShadow: '0 0 8px #fff, 0 0 12px #fff, 0 0 16px #fff',
-              }}
-            >
-              {c.name}
-              <Text fontSize="sm" color="gray.500" ml={1} display="inline">
-              <FiEdit />
-              </Text>
-            </Link>
-            </HStack>
-            </Td>
-            <Td>
-              {c.description}
-            </Td> 
+        <Box 
+          p={4}
+          flex="1"
+          key={c.id}
+          borderWidth="1px"
+          borderRadius="lg"
+          borderColor={buttonColor}
+          overflow="hidden"
+          boxShadow="sm"
+          maxW="sm"
+          maxH="sm"
+        >
+          <Image src={getRandomUnsplashPhoto()} alt="Random Unsplash Photo" height={200} width="100%" objectFit="cover" />
 
-            <Td>
-            <Button size="sm" bgColor={counterColor} leftIcon={<FiDivideCircle />} onClick={() => handleDelete(c.id)}>Delete</Button>
-            </Td>
-          </Tr>
+          <Box p={4}>
+            <Flex justify="space-between" align="center" mb={2}>
+              <Link
+                onClick={() => handleCategoryDetails(c.id)}
+                _hover={{
+                  textDecoration: 'glow',
+                  textShadow: '0 0 8px #fff, 0 0 12px #fff, 0 0 16px #fff',
+                }}
+              >
+                <Text fontSize="xl" textAlign="center" fontWeight="bold" mb={2}>
+                  {c.name}
+                </Text>
+              </Link>
+            </Flex>
+
+            <Text fontSize="sm">{c.description}</Text>
+              <Flex justify="flex-end">
+            <Button
+              justify
+              size="sm"
+              leftIcon={<FiDivideCircle />}
+              colorScheme="red"
+              variant="outline"
+              onClick={() => handleDelete(c.id)}
+              mt={4}
+              
+            >
+              Delete
+            </Button>
+            </Flex>
+          </Box>
+        </Box>
         );
     })
   }
 
-  const tableBody = renderData(category)
+  const categoryBody = renderData(category)
+  const [isLargerScreen] = useMediaQuery("(min-width: 600px)");
 
   return(
     <>
+      <Center>
       <Heading as="h2" size="lg" mb="4">
           Category List
         </Heading>
-        <Table>
-          <Thead style={{ position: "sticky", top: 0 }}>
-            <Tr>
-              <Th>Name</Th>
-              <Th>Description</Th>
-              <Th>Action</Th>
-            </Tr>
-          </Thead>
-          <Tbody>{tableBody}</Tbody>
-        </Table>
+        </Center>
+        <Grid
+          templateColumns={
+            isLargerScreen ? 'repeat(3, 1fr)' : "1fr"
+          }
+          gap="5"
+          maxW="100%"
+          mx="auto"
+        >
+          {categoryBody}
+        </Grid>
+          
+        
     </>
   )
 }

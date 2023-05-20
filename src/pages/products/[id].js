@@ -176,6 +176,8 @@ const ProductUpdateButton = ({ product, onUpdate }) => {
     };
     const {colorMode} = useColorMode()
     const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+    const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
+
     return (
       <>
         <Box
@@ -188,35 +190,36 @@ const ProductUpdateButton = ({ product, onUpdate }) => {
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>Edit Product</ModalHeader>
+            <ModalHeader textAlign="center" fontSize="sm">Edit Product</ModalHeader>
             <ModalBody>
               <FormControl id="name" mb={3}>
-                <FormLabel>Name</FormLabel>
-                <Input name="name" value={formData.name} onChange={handleInputChange} />
+                <FormLabel fontSize="sm">Name</FormLabel>
+                <Input size="sm" variant="filled" name="name" value={formData.name} onChange={handleInputChange} />
               </FormControl>
               <FormControl id="price" mb={3}>
-                <FormLabel>Price</FormLabel>
-                <Input name="price" type="number" value={formData.price} onChange={handleInputChange} />
+                <FormLabel fontSize="sm">Price</FormLabel>
+                <Input size="sm" variant="filled" name="price" type="number" value={formData.price} onChange={handleInputChange} />
               </FormControl>
               <FormControl id="weight" mb={3}>
-                <FormLabel>Weight</FormLabel>
-                <Input name="weight" value={formData.weight} onChange={handleInputChange} />
+                <FormLabel fontSize="sm">Weight</FormLabel>
+                <Input size="sm" variant="filled" name="weight" value={formData.weight} onChange={handleInputChange} />
               </FormControl>
               <FormControl id="size" mb={3}>
-                <FormLabel>Size</FormLabel>
-                <Input name="size" value={formData.size} onChange={handleInputChange} />
+                <FormLabel fontSize="sm">Size</FormLabel>
+                <Input size="sm" variant="filled" name="size" value={formData.size} onChange={handleInputChange} />
               </FormControl>
               <FormControl id="description" mb={3}>
-                <FormLabel>Description</FormLabel>
-                <Input name="description" value={formData.description} onChange={handleInputChange} />
+                <FormLabel fontSize="sm">Description</FormLabel>
+                <Input size="sm" variant="filled" name="description" value={formData.description} onChange={handleInputChange} />
               </FormControl>
               <FormControl id="SKU" mb={3}>
-                <FormLabel>SKU</FormLabel>
-                <Input name="SKU" value={formData.SKU} onChange={handleInputChange} />
+                <FormLabel fontSize="sm">SKU</FormLabel>
+                <Input size="sm" variant="filled" name="SKU" value={formData.SKU} onChange={handleInputChange} />
               </FormControl>
               <FormControl>
-              <FormLabel>Image</FormLabel>
+              <FormLabel fontSize="sm">Image</FormLabel>
               <Input
+                size="sm" variant="filled"
                 name="image"
                 type="file"
                 accept="image/*"
@@ -225,12 +228,12 @@ const ProductUpdateButton = ({ product, onUpdate }) => {
               />
               </FormControl>
             </ModalBody>
-            <ModalFooter>
-              <Button bgColor={buttonColor} mr={3} onClick={handleUpdate}>
+            <Flex pb={2} pl={4} justify="space-between" pr={4}>
+              <Button  size="sm" bgColor={buttonColor} mr={3} onClick={handleUpdate}>
                 Update
               </Button>
-              <Button onClick={() => setIsModalOpen(false)}>Cancel</Button>
-            </ModalFooter>
+              <Button size="sm" bgColor={counterColor} onClick={() => setIsModalOpen(false)}>Cancel</Button>
+            </Flex>
           </ModalContent>
         </Modal>
       </>
