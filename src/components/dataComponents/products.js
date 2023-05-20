@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { postProduct, postStock, bulkInsertProducts } from '@/fetching/postData';
-import { InputGroup, IconButton, ModalFooter, HStack, useToast, Link, FormControl, FormLabel, Text, Button, Card, Box, Input, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, Badge, Image, useColorMode} from "@chakra-ui/react";
+import { InputGroup, IconButton, ModalFooter, HStack, useToast, Link, FormControl, FormLabel, Text, Button, Card, Box, Input, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, Badge, Image, useColorMode, InputRightElement} from "@chakra-ui/react";
 import { allProducts, allVendors, allWarehouses, allCategories} from './allData';
 import { FiSearch, FiEdit,FiUpload, FiPlus, FiArrowLeft, FiArrowRight
  ,FiCircle,
@@ -10,6 +10,7 @@ import { FiSearch, FiEdit,FiUpload, FiPlus, FiArrowLeft, FiArrowRight
 import { deleteProduct } from '@/fetching/deleteData';
 import { useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, Accordion
 ,ModalBody,AccordionItem,AccordionButton,AccordionIcon,AccordionPanel, Icon, useMediaQuery } from '@chakra-ui/react';
+import { FaDice } from 'react-icons/fa';
 //Parent
 function Product() {
   const [dummyState, setDummyState] = useState(0); // Create dummy state
@@ -138,6 +139,39 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
           });
         }
   };
+  const handleRandom = async (e) => {
+      e.preventDefault();
+      // handleAddProduct(details);
+      const arng = new Date().getTime()
+      const rand = Math.ceil( arng * 87 );
+      console.log(rand)
+      try {
+        setDetails({
+          name: details.name,
+          price: details.price,
+          weight: details.weight,
+          size: details.size,
+          description: details.description,
+          SKU: rand,
+          category_id: details.category_id,
+          image: details.image
+        });
+        toast({
+          title: 'random number created.',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+        } catch (err) {
+          toast({
+            title: 'Failed to create random number.',
+            description: err.message,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+  };
 
   const handleChange = (e) => {
     const {name, value} = e.target;
@@ -205,6 +239,7 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
               onChange={handleChange}
               mb={4}
             />
+            <InputGroup>
             <Input
               size="sm"
               placeholder="SKU"
@@ -213,6 +248,11 @@ export const AddProductForm = ({ handleAddProduct, category }) => {
               onChange={handleChange}
               mb={4}
             />
+            <InputRightElement>
+            <IconButton icon={<FaDice/>} size="sm" mb={3} bgColor={buttonColor} onClick={handleRandom}>
+            </IconButton>
+            </InputRightElement>
+            </InputGroup>
             <Select
               variant="filled"
               size="sm"
