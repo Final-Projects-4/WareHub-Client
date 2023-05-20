@@ -78,6 +78,26 @@ export async function bulkInsertProducts(file, accessToken) {
   return data;
 }
 
+export async function moveProduct(product_id, source_warehouse_id, quantity,  destination_warehouse_id,accessToken) {
+  const response = await fetch(`${baseUrl}warehousestocks/move`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({
+      product_id, source_warehouse_id, quantity,  destination_warehouse_id
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data;
+}
+
 export async function postCategory(name, description, accessToken) {
   const response = await fetch(`${baseUrl}categories/create`, {
     method: "POST",
