@@ -1,7 +1,5 @@
 import { fetchUser } from '@/fetching/fetchData';
-import { Badge, Box, Text } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react'
-import { FiShoppingBag } from 'react-icons/fi';
 
 function index() {
     const user = async () => {
