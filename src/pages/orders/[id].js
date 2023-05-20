@@ -44,7 +44,7 @@ const OrderDetails = ({orderId}) => {
     const customer = order.customer // .first_name .last_name 1
     const warehouse = order.warehouse // .name 1
     const products = order.products //[] .SKU .price .name .image // .OrderProduct.price / quantity .createdAt
-    console.log(products)
+    
     return (
         <>
          <OrderDetailsCard orders={orders} details={details} customer={customer} warehouse={warehouse} products={products}/>

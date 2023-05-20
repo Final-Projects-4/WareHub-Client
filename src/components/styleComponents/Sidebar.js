@@ -8,7 +8,8 @@ FiUsers,
 FiPackage,
 FiUser, 
 FiHome, 
-FiLayout,} from "react-icons/fi";
+FiLayout,
+FiSliders,} from "react-icons/fi";
 import SideItem from "./SideItem";
 import { useRouter } from "next/router";
 
@@ -76,6 +77,7 @@ const Sidebar = () => {
           <SideItem navSize={navSize} icon={FiPackage} title="Warehouse" active={activeItem === "/warehouse"} to="/warehouse"onClick={() => handleItemClick("warehouse")} activeColor={activeColor}/>
           <SideItem navSize={navSize} icon={FiUsers} title="Vendors" active={activeItem === "/vendor"} to="vendor"onClick={() => handleItemClick("vendor")} activeColor={activeColor}/>
           <SideItem navSize={navSize} icon={FiUser} title="Customers" active={activeItem === "/customers"} to="/customers" onClick={() => handleItemClick("customers")} activeColor={activeColor}/>
+          <SideItem navSize={navSize} icon={FiSliders} title="Profile" active={activeItem === "/profile"} to="/profile" onClick={() => handleItemClick("profile")} activeColor={activeColor}/>
         </Flex>
       </Flex>
       

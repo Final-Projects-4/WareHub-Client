@@ -18,9 +18,11 @@ export default function App({ Component, pageProps }) {
           templateColumns="1fr"
           gap={0}
           >
+             {!isRootPage && (
               <Box w="100%" p={4} pb={0}>
                 <Navbar />
               </Box>
+              )}
             <Grid templateColumns="auto 1fr" height="100%">
                 {!isRootPage && (
                 <Box>
