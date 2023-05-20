@@ -1,7 +1,7 @@
 import {
   BulkInsertForm,
   LowStockAlert,
-} from "@/components/dataComponents/products";
+} from "@/components/dataComponents/products/products";
 import ProfitLoss from "@/components/dataComponents/profitLoss";
 import {
   Grid,

@@ -3,7 +3,7 @@ import { fetchCategoryById } from "@/fetching/fetchById";
 import { FiSettings } from "react-icons/fi";
 import {
     Box,
-    Badge,
+    Badge, useColorMode,
     Text,
     Stack,
     Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, FormControl, FormLabel, Input
@@ -28,6 +28,7 @@ const CategoryDetail = ({categoryId}) => {
         };
         fetchCategory();
       }, [categoryId, dummyState]);
+      console.log(category)
 
       const handleUpdate = (updatedData) => {
         setDummyState((prevState) => prevState + 1);;
@@ -39,8 +40,8 @@ const CategoryDetail = ({categoryId}) => {
     
     return (
         <>
-        <CategoryDetailCard category={category}/>
-        <CategoryUpdateButton category={category} onUpdate={handleUpdate} />
+        <CategoryDetailCard category={category.category}/>
+        <CategoryUpdateButton category={category.category} onUpdate={handleUpdate} />
         </>
     );
 };
@@ -100,6 +101,9 @@ const CategoryUpdateButton = ({ category, onUpdate }) => {
       } catch (err) {
       }
     };
+    const {colorMode} = useColorMode();
+    const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+    const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
   
     return (
       <>
@@ -112,22 +116,22 @@ const CategoryUpdateButton = ({ category, onUpdate }) => {
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>Edit Product</ModalHeader>
+            <ModalHeader textAlign="center">Edit Product</ModalHeader>
             <ModalBody>
               <FormControl id="name" mb={3}>
-                <FormLabel>Name</FormLabel>
-                <Input name="name" value={formData.name} onChange={handleInputChange} />
+                <FormLabel fontSize="sm">Name</FormLabel>
+                <Input size="sm" variant="filled" name="name" value={formData.name} onChange={handleInputChange} />
               </FormControl>
               <FormControl id="description" mb={3}>
-                <FormLabel>Description</FormLabel>
-                <Input name="description" value={formData.description} onChange={handleInputChange} />
+                <FormLabel fontSize="sm">Description</FormLabel>
+                <Input size="sm" variant="filled" name="description" value={formData.description} onChange={handleInputChange} />
               </FormControl>
             </ModalBody>
             <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={handleUpdate}>
+              <Button size="sm" bgColor={buttonColor} mr={3} onClick={handleUpdate}>
                 Update
               </Button>
-              <Button onClick={() => setIsModalOpen(false)}>Cancel</Button>
+              <Button size="sm" bgColor={counterColor} onClick={() => setIsModalOpen(false)}>Cancel</Button>
             </ModalFooter>
           </ModalContent>
         </Modal>

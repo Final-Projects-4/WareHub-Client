@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { postProduct, postStock, bulkInsertProducts } from '@/fetching/postData';
+import { postProduct, postStock, bulkInsertProducts, moveProduct } from '@/fetching/postData';
 import { InputGroup, IconButton, ModalFooter, HStack, useToast, Link, FormControl, FormLabel, Text, Button, Card, Box, Input, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, Badge, Image, useColorMode} from "@chakra-ui/react";
-import { allProducts, allVendors, allWarehouses, allCategories} from './allData';
+import { allProducts, allVendors, allWarehouses, allCategories} from '../allData';
 import { FiSearch, FiEdit,FiUpload, FiPlus, FiArrowLeft, FiArrowRight
  ,FiCircle,
  FiArrowUpRight,
- FiDelete}  from 'react-icons/fi';
+ FiDelete,
+ FiMove}  from 'react-icons/fi';
 import { deleteProduct } from '@/fetching/deleteData';
 import { useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, Accordion
 ,ModalBody,AccordionItem,AccordionButton,AccordionIcon,AccordionPanel, Icon, useMediaQuery } from '@chakra-ui/react';
@@ -41,6 +42,7 @@ function Product() {
 
   const { vendors } = allVendors();
   const { category} = allCategories();
+ 
 
 
   return(
@@ -53,6 +55,7 @@ function Product() {
         handleAddProduct={handleAddProduct}
         warehouses={warehouses}
         vendors={vendors}/>
+        <MoveStocks data={data} warehouse={warehouses}/>
       </HStack>
       
       <FilterForm 
@@ -74,6 +77,7 @@ function Product() {
 export default Product;
 
 //Add Product
+
 export const AddProductForm = ({ handleAddProduct, category }) => {
   const [details, setDetails] = useState({
     name: '',
@@ -578,7 +582,9 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
   const {colorMode} = useColorMode();
   const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
   const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
-  function renderProduct(data) {
+  function renderProduct(data, destinationWarehouse) {
+    const [isOpen, setIsOpen] = useState(false);
+
     return data.map((p) => {
       const warehousesForProduct = p.Warehouses ? p.Warehouses.map((w) => ({
         id: p.id,
@@ -642,7 +648,6 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
               });
             });
         }
-
         const handleProductDetails = (productId) => {
           router.push(`/products/${productId}`)
         }
@@ -677,7 +682,9 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
             <Image src={p.image}boxSize="50px" objectFit="cover" />
             </Td>
             <Td>
+              <Button size="sm"  bgColor={buttonColor} leftIcon={<FiMove />}></Button>
               <Button size="sm"  bgColor={counterColor} leftIcon={<FiDelete />} onClick={() => handleDelete(p.id)}></Button>
+              
             </Td>
           </Tr>
         );
@@ -904,6 +911,93 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
           </>
   );
 }
+
+export const MoveStocks = (data) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const handleOpenModal = () => {
+    setIsOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsOpen(false);
+  };
+
+  function handleMove(productId, quantity, source_warehouse_id, destination_warehouse_id) {
+    const accessToken = sessionStorage.getItem('accessToken');
+    moveProduct(productId, quantity, source_warehouse_id, destination_warehouse_id, accessToken)
+      .then(() => {
+        toast({
+          title: 'Product moved',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        });
+        setData((prevData) => ({
+          ...prevData,
+          products: prevData.products.filter((p) => p.id !== productId),
+        }));
+      })
+      .catch((error) => {
+        toast({
+          title: 'Error moving product',
+          description: error.message,
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+      });
+  }
+
+  const products = data.data.products;
+  const destinationWarehouse = data.warehouse;
+
+  return (
+    <>
+      <button onClick={handleOpenModal}>Open Modal</button>
+
+      <Modal isOpen={isOpen} onClose={handleCloseModal}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Move Stock</ModalHeader>
+          <ModalCloseButton />
+
+          <ModalBody>
+            {/* Mapping over products */}
+            {products.map((product) => (
+              <div key={product.id}>
+                <h2>Product ID: {product.id}</h2>
+                {/* Mapping over the product's warehouses */}
+                {product.Warehouses.map((warehouse) => (
+                  <div key={warehouse.id}>
+                    <p>Warehouse ID: {warehouse.id}</p>
+                    <p>Warehouse Name: {warehouse.name}</p>
+                    <p>Quantity: {warehouse.WarehouseStock.quantity}</p>
+                  </div>
+                ))}
+              </div>
+            ))}
+            {/* Mapping over destinationWarehouse */}
+            {destinationWarehouse.map((warehouse) => (
+              <div key={warehouse.id}>
+                <h2>{warehouse.name}</h2>
+                {/* Mapping over the warehouse's products */}
+                {warehouse.Products.map((product) => (
+                  <div key={product.id}>
+                    <p>Product ID: {product.id}</p>
+                    <p>Quantity: {product.WarehouseStock.quantity}</p>
+                  </div>
+                ))}
+              </div>
+            ))}
+
+            
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+};
+
 
 //low Stock alert
 export const LowStockAlert = ({ data }) => {
