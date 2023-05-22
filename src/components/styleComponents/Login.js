@@ -12,7 +12,8 @@ import {
   Box,
   Link,
   useToast,
-  useDisclosure, useColorMode
+  useDisclosure,
+  useColorMode,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { postLoginData } from "@/fetching/postData";
@@ -21,16 +22,15 @@ import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 // import Link from "next/link";
 
 const LoginPage = () => {
-
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const toast = useToast();
-  const {colorMode} = useColorMode();
-  const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
-  const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
+  const { colorMode } = useColorMode();
+  const buttonColor = colorMode === "dark" ? "#7289da" : "#3bd1c7";
+  const counterColor = colorMode === "dark" ? "#da7272" : "#fb997b";
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -75,10 +75,9 @@ const LoginPage = () => {
           boxShadow={"lg"}
           p={8}
         >
-          <Box rounded={"lg"}  p={4}>
+          <Box rounded={"lg"} p={4}>
             <Stack align={"center"}>
               <Heading fontSize={"4xl"}>Login</Heading>
-           
             </Stack>
           </Box>
 
@@ -117,7 +116,6 @@ const LoginPage = () => {
               <Button
                 onClick={handleSubmit}
                 mb={6}
-                
                 bgColor={buttonColor}
                 size="sm"
               >
