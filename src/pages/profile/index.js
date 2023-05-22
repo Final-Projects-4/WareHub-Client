@@ -62,8 +62,6 @@ const index = () => {
     setData(response);
   };
 
-  console.log(data);
-  console.log(typeof data);
   if (isLoading === true) {
     return <div>Loading data...</div>;
   }
@@ -75,23 +73,23 @@ const index = () => {
       </Heading>
       <TableContainer>
         <Table size="sm">
-          <Tbody>
+          <Tbody >
             {Object.keys(data).map((key, index) => {
               const subData = data[key];
               if (index == 5 || index == 0 || index == 8 || index == 9) {
-                return <></>;
+                return 
+                <div key={index}>
+                </div>;
               }
               return (
-                <>
-                  <Tr>
-                    <Td>
-                      <Text>{key}</Text>
+                  <Tr key={index}>
+                    <Td key={key}>
+                      {key}
                     </Td>
-                    <Td>
-                      <Text>{subData}</Text>
+                    <Td key={subData}>
+                      {subData}
                     </Td>
                   </Tr>
-                </>
               );
             })}
           </Tbody>

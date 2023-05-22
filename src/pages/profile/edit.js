@@ -4,7 +4,6 @@ import { useState } from "react";
 import { FiEdit, FiPlus } from "react-icons/fi";
 
 export const EditForm = ({data}) => {
-    console.log(data)
     const {id,first_name,last_name,email,username,password,address,company} = data
     const [updatedData, setupdatedData] = useState({
         first_name: "",
