@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { postCategory } from '@/fetching/postData';
 import { Button, 
-  Image, Box, Flex, Center, Stack, Grid,
-  Collapse, useToast, Text,Heading,Link, useColorMode, useMediaQuery } from '@chakra-ui/react';
+  Image, Box, Flex, Center, Grid,
+  Collapse, useToast, Text,Heading,Link, useColorMode, useMediaQuery, Input, InputGroup } from '@chakra-ui/react';
 import { allCategories } from './allData';
-import { FiEdit, FiDivideCircle } from 'react-icons/fi';
+import { FiDivideCircle } from 'react-icons/fi';
 import { useRouter } from 'next/router';
 import { deleteCategory } from '@/fetching/deleteData';
 //parents
@@ -88,25 +88,31 @@ export const AddCategoryForm = ({handleAddCategory}) => {
   const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
   return (
     <>
-      <Button size="sm" bgColor={buttonColor} onClick={() => setIsOpen(!isOpen)}>
-        {isOpen ? 'Cancel' : '+ Category'}
-      </Button>
+       <Button size="sm" bgColor={isOpen ? counterColor : buttonColor} onClick={() => setIsOpen(!isOpen)}>
+      {isOpen ? 'Cancel' : 'Add Category'}
+       </Button>
       <Collapse in={isOpen} animateOpacity>
         <form onSubmit={handleSubmit}>
-          <h3>Name:</h3>{' '}
-          <input
+          <InputGroup gap={4}>
+          <Input
             type='text'
             name='name'
+            size="sm"
+            variant="filled"
+            placeholder='Name'
             value={details.name}
             onChange={handleChange}
-          ></input>
-          <h3>Description</h3>{' '}
-          <input
+          ></Input>
+          <Input
             type='text'
+            size="sm"
+            variant="filled"
+            placeholder='Description'
             name='description'
             value={details.description}
             onChange={handleChange}
-          ></input>
+          ></Input>
+          </InputGroup>
           <Button size="sm" bgColor={buttonColor} type='submit'>Submit</Button>
         </form>
       </Collapse>
@@ -126,7 +132,7 @@ export const RenderCategory = ({category, setCategory}) => {
       
       const getRandomUnsplashPhoto = () => {
         const randomId = Math.floor(Math.random() * 1000); // Generate a random photo ID
-        return `https://source.unsplash.com/random/?Food&${randomId}`; // Replace with your desired photo size
+        return `https://source.unsplash.com/random/?${c.name}&${randomId}`; // Replace with your desired photo size
       };
 
       const handleCategoryDetails = (categoryId) => {
@@ -190,7 +196,6 @@ export const RenderCategory = ({category, setCategory}) => {
             <Text fontSize="sm">{c.description}</Text>
               <Flex justify="flex-end">
             <Button
-              justify
               size="sm"
               leftIcon={<FiDivideCircle />}
               colorScheme="red"

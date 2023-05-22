@@ -75,9 +75,8 @@ const Sidebar = () => {
           <SideItem navSize={navSize} icon={FiLayout} title="Order" active={activeItem === "/orders"} to="/orders" onClick={() => handleItemClick("orders")} activeColor={activeColor}/> 
           <SideItem navSize={navSize} icon={FiCodesandbox} title="Category" active={activeItem === "/category"} to="/category" onClick={() => handleItemClick("category")} activeColor={activeColor}/>
           <SideItem navSize={navSize} icon={FiPackage} title="Warehouse" active={activeItem === "/warehouse"} to="/warehouse"onClick={() => handleItemClick("warehouse")} activeColor={activeColor}/>
-          <SideItem navSize={navSize} icon={FiUsers} title="Vendors" active={activeItem === "/vendor"} to="vendor"onClick={() => handleItemClick("vendor")} activeColor={activeColor}/>
+          <SideItem navSize={navSize} icon={FiUsers} title="Vendors" active={activeItem === "/vendor"} to="/vendor"onClick={() => handleItemClick("vendor")} activeColor={activeColor}/>
           <SideItem navSize={navSize} icon={FiUser} title="Customers" active={activeItem === "/customers"} to="/customers" onClick={() => handleItemClick("customers")} activeColor={activeColor}/>
-          {/* <SideItem navSize={navSize} icon={FiSliders} title="Profile" active={activeItem === "/profile"} to="/profile" onClick={() => handleItemClick("profile")} activeColor={activeColor}/> */}
         </Flex>
       </Flex>
       

@@ -9,6 +9,7 @@ const Navbar = () => {
         <Footer/>
         <Spacer/>
         <Box flex="1" />
+        <Dropdown/>
         <ToggleColorButton />
         <Dropdown/>
       </HStack>
