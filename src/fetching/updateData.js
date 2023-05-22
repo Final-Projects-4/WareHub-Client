@@ -63,8 +63,8 @@ export const updateCustomer = async (id, updatedData) => {
   return data;
 };
 
-export const updateUser = async (id, updatedData) => {
-  const data = await updateData("users", id, updatedData);
+export const updateUser = async (updatedData) => {
+  const data = await updateData("user","", updatedData);
   return data;
 };
   
