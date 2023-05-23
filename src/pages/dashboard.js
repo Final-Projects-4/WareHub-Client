@@ -14,6 +14,7 @@ import {
   useColorMode,
   Badge,
   Text,
+  Spinner,
 } from "@chakra-ui/react";
 import { fetchData } from "@/fetching/fetchData";
 import { useState, useEffect } from "react";
@@ -102,7 +103,7 @@ const LastTransaction = () => {
           ))}
         </div>
       ) : (
-        <p>No transactions found.</p>
+        <Spinner/>
       )}
     </Box>
   );

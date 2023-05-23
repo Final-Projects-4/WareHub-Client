@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { postProduct, postStock, bulkInsertProducts, moveProduct } from '@/fetching/postData';
-import { InputGroup, IconButton, ModalFooter, HStack, useToast, Link, FormControl, FormLabel, Text, Button, Card, Box, Input, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, Badge, Image, useColorMode, VStack} from "@chakra-ui/react";
+import { InputGroup, IconButton, ModalFooter, HStack, useToast, Link, FormControl, FormLabel, Text, Button, Card, Box, Input, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, Badge, Image, useColorMode, VStack, Spinner} from "@chakra-ui/react";
 import { allProducts, allVendors, allWarehouses, allCategories} from '../allData';
 import { FiSearch, FiEdit,FiUpload, FiPlus, FiArrowLeft, FiArrowRight
  ,FiCircle,
@@ -1103,50 +1103,92 @@ export const MoveStocks = (data) => {
 
 //low Stock alert
 export const LowStockAlert = ({ data }) => {
+  const toast = useToast();
   const hasLowStock = (product) => {
     return product.Warehouses && product.Warehouses.some(
       (warehouse) => warehouse.WarehouseStock.quantity < 10
     );
   };
   const [sufficientStock, setSufficientStock] = useState(true);
+  const toastIdRef = useRef();
 
   useEffect(() => {
     const hasSufficientStock = data.every((product) => !hasLowStock(product));
     setSufficientStock(hasSufficientStock);
   }, [data]);
 
+  const { colorMode } = useColorMode();
+  const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7'; // Moved here
+
+  const handleToast = () => {
+    if (
+      data.length > 0 &&
+      data.some((product) => product.Warehouses && hasLowStock(product)) &&
+      !toastIdRef.current
+    ) {
+      toastIdRef.current = toast({
+        title: "Stock Alert",
+        description: "Check the dashboard for more details.",
+        status: "info",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+        variant: "top-accent",
+        placement: "top",
+        render: ({ onClose }) => (
+          <Box
+            color="white"
+            p={3}
+            bg={buttonColor}
+            borderRadius="md"
+            boxShadow="md"
+            onClick={() => {
+              onClose();
+              toastIdRef.current = undefined;
+            }}
+            cursor="pointer"
+          >
+            Stock Alert: Check the dashboard for more details.
+          </Box>
+        ),
+      });
+    }
+  };
+
   return (
-    <Card p={4} borderRadius="md" boxShadow="md" color="gray.400">
+    <Card p={4} borderRadius="md" boxShadow="md" color="gray.400" maxH="344px" bgColor="transparent" borderWidth="1px" borderColor={buttonColor} overflow="scroll">
       <Text fontSize="lg" fontWeight="bold" mb={2} textAlign="center">
         Stock Alert
       </Text>
       {data.length > 0 ? (
-        data.map((product) => (
-          product.Warehouses && hasLowStock(product) && (
+        data.map((product) =>
+          product.Warehouses && hasLowStock(product) ? (
             <Card key={product.id} mb={2} boxShadow="md" color="gray.400">
               <Text textAlign="center">{product.name}</Text>
               <Badge colorScheme="red" variant="subtle" ml={2}>
                 Low Stock
               </Badge>
-              <Box p={2} mt={2} borderRadius="md" bgColor="gray.50">
-                at{' '}
+              <Badge p={2} mt={2} borderRadius="md" bgColor="transparent">
+                at{" "}
                 {product.Warehouses.filter(
                   (warehouse) =>
                     warehouse.WarehouseStock.quantity >= 1 &&
                     warehouse.WarehouseStock.quantity < 10
-                ).map((warehouse) => warehouse.name).join(', ')}
-              </Box>
+                )
+                  .map((warehouse) => warehouse.name)
+                  .join(", ")}
+              </Badge>
             </Card>
-          )
-        ))
+          ) : null
+        )
       ) : (
-        <Box textAlign="center">
-            <Text color="green.500">Stocks sufficient</Text>
-        </Box>
+        <Spinner size="lg" />
       )}
+      {handleToast()}
     </Card>
   );
 };
+
 
 
 

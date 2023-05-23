@@ -13,7 +13,11 @@ import {
   Link,
   HStack,
   useToast,
+  Image,
   Spacer,
+  useColorMode,
+  Container,
+  Center
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
@@ -33,6 +37,9 @@ const Register = () => {
   const [company, setCompany] = useState("");
   const toast = useToast();
   const router = useRouter();
+  const {colorMode} = useColorMode();
+  const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
+  const counterColor = colorMode === 'dark' ? 'ProfileDark.png' : 'ProfileLight.png';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -71,7 +78,14 @@ const Register = () => {
   };
 
   return (
-    <Flex align={"center"} justify={"center"}>
+    <Container>
+     <HStack>
+      
+        <Image src={counterColor}/>
+     
+      
+ 
+    
       <Stack spacing={8} mx={"auto"} maxW={"lg"} px={6}>
         <Box
           rounded={"lg"}
@@ -82,7 +96,7 @@ const Register = () => {
           <Box rounded={"lg"} boxShadow={"lg"} p={2}>
             <Stack align={"center"}>
               <Heading fontSize={"4xl"} textAlign={"center"}>
-                Registrasi
+                Registration
               </Heading>
               <Text
                 fontSize={"lg"}
@@ -209,7 +223,7 @@ const Register = () => {
                 onClick={handleSubmit}
                 loadingText="Submitting"
                 size="lg"
-                bg={"teal.400"}
+                bg={buttonColor}
                 color={"white"}
                 _hover={{
                   bg: "teal.900",
@@ -229,7 +243,10 @@ const Register = () => {
           </Stack>
         </Box>
       </Stack>
-    </Flex>
+    
+  
+    </HStack>
+    </Container>
   );
 };
 

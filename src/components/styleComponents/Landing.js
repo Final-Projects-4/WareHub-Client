@@ -67,7 +67,7 @@ const Landing = () => {
 
   const { colorMode } = useColorMode();
   const buttonColor = colorMode === "dark" ? "#7289da" : "#3bd1c7";
-  const counterColor = colorMode === "dark" ? "#da7272" : "#fb997b";
+  const counterColor = colorMode === "dark" ? "LogisticDark.png" : "LogisticLight.png";
   return (
     <Box
       bg={useColorModeValue("white", "#1A202C")}
@@ -193,7 +193,7 @@ const Landing = () => {
           >
             <Box position="relative" width={500} height={400}>
               <img
-                src="adminweb1.png"
+                src={counterColor}
                 alt="Dummy Web Admin"
                 style={{
                   position: "absolute",
