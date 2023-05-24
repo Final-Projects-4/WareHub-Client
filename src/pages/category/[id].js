@@ -1,6 +1,6 @@
 import {useState, useEffect} from "react"
 import { fetchCategoryById } from "@/fetching/fetchById";
-import { FiSettings } from "react-icons/fi";
+import { FiEdit } from "react-icons/fi";
 import {
     Box,
     Badge, useColorMode,
@@ -108,7 +108,7 @@ const CategoryUpdateButton = ({ category, onUpdate }) => {
     return (
       <>
         <Box
-        as={FiSettings}
+        as={FiEdit}
         cursor="pointer"
         fontSize="xl"
         onClick={() => setIsModalOpen(true)}

@@ -3,7 +3,7 @@ import { postWarehouse } from '@/fetching/postData';
 import { Button, Collapse, Flex, useToast, Table, Tr, Text,  Td, Thead, Heading, Th, Tbody, HStack, Link, Spinner, useColorMode } from '@chakra-ui/react';
 import { allWarehouses } from '../allData';
 import { useRouter } from 'next/router';
-import { FiEdit, FiDivideCircle } from 'react-icons/fi';
+import { FiDivideCircle } from 'react-icons/fi';
 import { deleteWarehouse } from '@/fetching/deleteData';
 
 //parents
@@ -183,7 +183,6 @@ export const RenderWarehouses = ({warehouses, setWarehouses, isLoading}) => {
             >
               {w.name}
               <Text fontSize="sm" color="gray.500" ml={1} display="inline">
-              <FiEdit />
               </Text>
             </Link>
             </HStack>

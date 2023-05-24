@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { fetchProductById } from "@/fetching/fetchById";
-import { FiSettings } from "react-icons/fi";
+import { FiEdit } from "react-icons/fi";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -181,7 +181,7 @@ const ProductUpdateButton = ({ product, onUpdate }) => {
     return (
       <>
         <Box
-        as={FiSettings}
+        as={FiEdit}
         
         cursor="pointer"
         fontSize="xl"

@@ -1,6 +1,6 @@
 import {useState, useEffect} from "react"
 import { fetchWarehouseById } from "@/fetching/fetchById";
-import { FiSettings } from "react-icons/fi";
+import { FiEdit } from "react-icons/fi";
 import {
     Box,
     Badge,
@@ -106,7 +106,7 @@ const WarehouseUpdateButton = ({ warehouse, onUpdate }) => {
     return (
       <>
         <Box
-        as={FiSettings}
+        as={FiEdit}
         cursor="pointer"
         fontSize="xl"
         onClick={() => setIsModalOpen(true)}

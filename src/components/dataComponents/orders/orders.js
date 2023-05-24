@@ -9,7 +9,7 @@ import {
   Box, ModalHeader,
   HStack, Link , Text, Thead, Th, Tbody, Heading, Table, useToast, Tr, Td, Flex, useColorMode
 } from '@chakra-ui/react';
-import { FiPlus, FiEdit, FiDivideCircle, FiSearch, FiDelete, FiArrowLeft, FiArrowRight } from 'react-icons/fi';
+import { FiPlus, FiDivideCircle, FiSearch, FiDelete, FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import { allCustomers, allWarehouses, allOrders } from '../allData';
 import { postOrder } from '@/fetching/postData';
 import { deleteOrder } from '@/fetching/deleteData';
@@ -341,7 +341,6 @@ export const RenderOrders = ({ data, setData}) => {
             >
               {o.name}
               <Text fontSize="sm" color="gray.500" ml={1} display="inline">
-              <FiEdit />
               </Text>
             </Link>
             </HStack>

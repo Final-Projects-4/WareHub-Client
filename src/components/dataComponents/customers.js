@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { postCustomer } from '@/fetching/postData';
-import { Button, Collapse, Box,Flex, useToast, Table, Tr, Text,  Td, Thead, Heading, Th, Tbody, HStack, Link, Spinner, VStack, useColorMode } from '@chakra-ui/react';
+import { Button, Collapse,Flex, useToast, Table, Tr, Text,  Td, Thead, Heading, Th, Tbody, HStack, Link, Spinner, VStack, useColorMode } from '@chakra-ui/react';
 import { allCustomers } from './allData';
-import { FiEdit, FiDivideCircle, FiUserPlus } from 'react-icons/fi';
+import { FiDivideCircle, FiUserPlus } from 'react-icons/fi';
 import { useRouter } from 'next/router';
 import { deleteCustomer } from '@/fetching/deleteData';
 //parents
@@ -206,7 +206,6 @@ export const RenderCustomer = ({customer, setCustomer, isLoading}) => {
             >
               {c.first_name} {c.last_name}
               <Text fontSize="sm" color="gray.500" ml={1} display="inline">
-              <FiEdit />
               </Text>
             </Link>
             </HStack>

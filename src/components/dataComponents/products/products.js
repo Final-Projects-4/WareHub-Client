@@ -1,17 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { postProduct, postStock, bulkInsertProducts, moveProduct } from '@/fetching/postData';
-import { InputGroup, IconButton, ModalFooter, HStack, useToast, Link, FormControl, FormLabel, Text, Button, Card, Box, Input, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, Badge, Image, useColorMode, VStack, Spinner} from "@chakra-ui/react";
+import { InputGroup, IconButton, Stack,ModalFooter, useMediaQuery ,HStack, useToast, Link, FormControl, FormLabel, Text, Button, Card, Box, Input, Flex,Table, Thead, Tbody, Tr, Th, Td, Select, Heading, Badge, Image, useColorMode, VStack, Spinner} from "@chakra-ui/react";
 import { allProducts, allVendors, allWarehouses, allCategories} from '../allData';
-import { FiSearch, FiEdit,FiUpload, FiPlus, FiArrowLeft, FiArrowRight
+import { FiSearch,FiUpload, FiPlus, FiArrowLeft, FiArrowRight
  ,FiCircle,
  FiArrowUpRight,
  FiDelete,
- FiMove,
- FiMonitor}  from 'react-icons/fi';
+ FiMove}  from 'react-icons/fi';
 import { deleteProduct } from '@/fetching/deleteData';
 import { useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, Accordion
-,ModalBody, Option, AccordionItem,AccordionButton,AccordionIcon,AccordionPanel, Icon, useMediaQuery } from '@chakra-ui/react';
+,ModalBody,AccordionItem,AccordionButton,AccordionIcon,AccordionPanel, Icon } from '@chakra-ui/react';
 //Parent
 function Product() {
   const [dummyState, setDummyState] = useState(0); // Create dummy state
@@ -43,38 +42,54 @@ function Product() {
 
   const { vendors } = allVendors();
   const { category} = allCategories();
+  const [isLargerThan768] = useMediaQuery("(min-width: 768px)");
  
 
 
   return(
     <Box flex="1">
-      <HStack justify="space-between">
-        <AddProductForm category={category} handleAddProduct={handleAddProduct} />
-        <VStack>
-        <AddStockForm 
-        data={data} 
-        setData={setData} 
-        handleAddProduct={handleAddProduct}
+      {isLargerThan768 ? (
+        <HStack justify="space-between">
+          <AddProductForm category={category} handleAddProduct={handleAddProduct} />
+          <VStack>
+            <AddStockForm
+              data={data}
+              setData={setData}
+              handleAddProduct={handleAddProduct}
+              warehouses={warehouses}
+              vendors={vendors}
+            />
+            <MoveStocks data={data} warehouse={warehouses} />
+          </VStack>
+        </HStack>
+      ) : (
+        <Stack spacing={4}>
+          <AddProductForm category={category} handleAddProduct={handleAddProduct} />
+          <AddStockForm
+            data={data}
+            setData={setData}
+            handleAddProduct={handleAddProduct}
+            warehouses={warehouses}
+            vendors={vendors}
+          />
+          <MoveStocks data={data} warehouse={warehouses} />
+        </Stack>
+      )}
+
+      <FilterForm
+        filters={filters}
+        setFilters={setFilters}
+        handleApplyFilters={handleApplyFilters}
         warehouses={warehouses}
-        vendors={vendors}/>
-        <MoveStocks data={data} warehouse={warehouses} />
-        </VStack>
-      </HStack>
-      
-      <FilterForm 
-      filters={filters} 
-      setFilters={setFilters} 
-      handleApplyFilters={handleApplyFilters}
-      warehouses={warehouses}
-      vendors={vendors} 
-      category={category}
-      pageOptions={Array.from({length: totalPages}, (_, i) => i + 1)}
-      totalItems={totalItems}
-      data={data}
-      setData={setData}
+        vendors={vendors}
+        category={category}
+        pageOptions={Array.from({ length: totalPages }, (_, i) => i + 1)}
+        totalItems={totalItems}
+        data={data}
+        setData={setData}
       />
     </Box>
-  )
+  );
   
 }
 export default Product;
@@ -448,9 +463,9 @@ export const AddStockForm = ({ data, setData, warehouses, vendors, handleAddProd
       const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
       const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
     return (
-          <>
+          <Box>
       <Button size="sm" bgColor={buttonColor} leftIcon={<FiArrowUpRight/>} onClick={handleOpenModal}>
-        {isOpen ? 'Cancel' : 'Stocks'}
+        Add Stocks
       </Button>
       <Modal isOpen={isOpen} onClose={handleCloseModal}>
         <ModalOverlay />
@@ -525,7 +540,7 @@ export const AddStockForm = ({ data, setData, warehouses, vendors, handleAddProd
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </>
+    </Box>
   );
 };
 
@@ -667,7 +682,7 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
             >
               {p.name}
               <Text fontSize="sm" color="gray.500" ml={1} display="inline">
-              <FiEdit />
+              
               </Text>
             </Link>
             </HStack>
@@ -685,9 +700,7 @@ function FilterForm({ filters, setFilters, warehouses, vendors, category, totalI
             <Image src={p.image}boxSize="50px" objectFit="cover" />
             </Td>
             <Td>
-              {/* <Button size="sm"  bgColor={buttonColor} leftIcon={<FiMove />}></Button> */}
               <Button size="sm"  bgColor={counterColor} leftIcon={<FiDelete />} onClick={() => handleDelete(p.id)}></Button>
-              
             </Td>
           </Tr>
         );
@@ -985,9 +998,9 @@ export const MoveStocks = (data) => {
   const buttonColor = colorMode === 'dark' ? '#7289da' : '#3bd1c7';
   const counterColor = colorMode === 'dark' ? '#da7272' : '#fb997b';
   return (
-    <>
+    <Box>
       <Button size="sm" bgColor={buttonColor} leftIcon={<FiMove/>} onClick={handleOpenModal}>
-        Stocks
+        Move Stocks
         </Button>
 
       <Modal isOpen={isOpen} onClose={handleCloseModal}>
@@ -1096,7 +1109,7 @@ export const MoveStocks = (data) => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </>
+    </Box>
   );
 };
 

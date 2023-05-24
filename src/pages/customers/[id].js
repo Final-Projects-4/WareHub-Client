@@ -1,6 +1,6 @@
 import {useState, useEffect} from "react"
 import { fetchCustomerById } from "@/fetching/fetchById";
-import { FiSettings } from "react-icons/fi";
+import { FiEdit } from "react-icons/fi";
 import {
     Box,
     Badge,
@@ -112,7 +112,7 @@ const CustomersUpdateButton = ({ customers, onUpdate }) => {
     return (
       <>
         <Box
-        as={FiSettings}
+        as={FiEdit}
         cursor="pointer"
         fontSize="xl"
         onClick={() => setIsModalOpen(true)}

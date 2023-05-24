@@ -3,7 +3,7 @@ import { postVendor } from '@/fetching/postData';
 import { Button, Collapse, Flex, useToast, Table, Tr, Text,  Td, Thead, Heading, Th, Tbody, HStack, Link, Spinner, useColorMode } from '@chakra-ui/react';
 import { allVendors } from './allData';
 import { useRouter } from 'next/router';
-import { FiEdit, FiDivideCircle } from 'react-icons/fi';
+import { FiDivideCircle } from 'react-icons/fi';
 import { deleteVendor } from '@/fetching/deleteData';
 
 //parent
@@ -175,7 +175,6 @@ export const RenderVendors = ({vendors, setVendors, isLoading}) => {
             >
               {v.name}
               <Text fontSize="sm" color="gray.500" ml={1} display="inline">
-              <FiEdit />
               </Text>
             </Link>
             </HStack>
